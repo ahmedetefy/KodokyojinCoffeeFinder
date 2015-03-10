@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Coffee Finder</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+    <script>
+var map;
+var infowindow;
+
+function success(position) {
+
+  var lat = position.coords.latitude;
+  var long = position.coords.longitude;
+  var coords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+  map = new google.maps.Map(document.getElementById('map-canvas'), {
+    center: coords,
+    zoom: 15
+  });
+
+   var marker=new google.maps.Marker({
+   position:coords,
+   });
+
+ marker.setMap(map);
+ 
+  var infowindow = new google.maps.InfoWindow({
+    content:"You Are Here"
+  });
+
+  infowindow.open(map,marker);
+
+  google.maps.event.addListener(marker,'click',function() {
+  map.setZoom(18);
+  map.setCenter(marker.getPosition());
+  });
+}
+
+
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success);
+} else {
+  error('Geo Location is not supported');
+}
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
