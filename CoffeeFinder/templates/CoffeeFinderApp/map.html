@@ -12,6 +12,7 @@
         padding: 0px
       }
     </style>
+    <!-- Include google maps Javascript file to the page -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
     <script>
 var map;
@@ -19,36 +20,37 @@ var infowindow;
 
 function success(position) {
 
-  var lat = position.coords.latitude;
-  var long = position.coords.longitude;
-  var coords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var lat = position.coords.latitude; // Obtain user's current latitude
+  var long = position.coords.longitude; // Obtain user's current longitude
+  // Create a new google maps LatLng object containing both the longitude and latitude
+  var coords = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);  
 
-  map = new google.maps.Map(document.getElementById('map-canvas'), {
-    center: coords,
-    zoom: 15
+  map = new google.maps.Map(document.getElementById('map-canvas'), { // Create a new map object
+    center: coords, // Center of map equals user's location/coordinates
+    zoom: 15 // Zoom level of map
   });
 
-   var marker=new google.maps.Marker({
-   position:coords,
+   var marker=new google.maps.Marker({ // Create a marker to identify user's location
+   position:coords, // Position of marker equals user's coordinates
    });
 
- marker.setMap(map);
+ marker.setMap(map); // Place marker on the map
  
-  var infowindow = new google.maps.InfoWindow({
+  var infowindow = new google.maps.InfoWindow({ // Info window on marker saying it belongs to the user
     content:"You Are Here"
   });
 
-  infowindow.open(map,marker);
+  infowindow.open(map,marker); // Opening the info window above the marker on the map
 
-  google.maps.event.addListener(marker,'click',function() {
-  map.setZoom(18);
+  google.maps.event.addListener(marker,'click',function() { // Implementing an action listener upon clicking the marker
+  map.setZoom(18); // Zoom in when the marker is clicked
   map.setCenter(marker.getPosition());
   });
 }
 
 
 
-if (navigator.geolocation) {
+if (navigator.geolocation) { // Checks if Browser supports HTML5 GeoLocation API
   navigator.geolocation.getCurrentPosition(success);
 } else {
   error('Geo Location is not supported');
