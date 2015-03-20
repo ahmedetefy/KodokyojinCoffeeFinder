@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+   
+    <body>
+        <h3>Welcome to {{ page_name }}</h3>
+        {% if page %}
+            {% if coffee_items %}
+            <ul>
+                {% for coffee_item in coffee_items %}
+                <li><a href="/CoffeeFinderApp/coffee_item_page/{{ coffee_item.id }}">{{ coffee_item.name}}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <strong>No items are currently in page.</strong>
+            {% endif %}
+        {% else %}
+            The specified page {{ page_name }} does not exist!
+        {% endif %}
+    </body>
+</html>

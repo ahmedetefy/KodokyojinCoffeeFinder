@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item
+from CoffeeFinderApp.models import Coffee_item,Page
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from forms import Coffee_item_form
@@ -16,46 +16,38 @@ def map(request):
 	context_dict = {}
 	return render(request, 'CoffeeFinderApp/map.html', context_dict)
 
+def page_list(request):
+
+    page_list = Page.objects.all()
+    context_dict = {'pages': page_list}
+
+    # Render the response and send it back!
+    return render(request, 'CoffeeFinderApp/page_list.html', context_dict)
 
 
-def coffee_item_list(request):
-	category_list = Coffee_item.objects.order_by('-price')[:10]
-	context_dict = {'coffee_items': category_list}
-	return render(request, 'CoffeeFinderApp/coffee_item_list.html', context_dict)
+def coffee_item_page(request, coffee_item_name_id):
 
-    # category_list is assigned a list of ordered 'coffee_item' objects ' Coffee_item.objects.order_by ' . 
-    # items are sorted descendingly  with respect to price '('-price')[:10]' i.e most expensive 10 .
-    # the test value 10 is just for the current sprint . might be varied later on . 
-    # Kareem Tarek 28-1181 
-
-
-
-
-def coffee_item(request, coffee_item_name_slug):
-
+    # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
 
     try:
-        # Can we find a coffee_item name slug with the given name?
+        # Can we find a category name slug with the given name?
         # If we can't, the .get() method raises a DoesNotExist exception.
         # So the .get() method returns one model instance or raises an exception.
-        coffee_item = Coffee_item.objects.get(slug=coffee_item_name_slug)
+        coffee_item = Coffee_item.objects.get(id=coffee_item_name_id)
         context_dict['coffee_item_name'] = coffee_item.name
-
-        # Retrieve all of the associated pages.
-        # Note that filter returns >= 1 model instance.
-        # Adds our results list to the template context under name pages.
-        # We also add the coffee_item object from the database to the context dictionary.
-        # We'll use this in the template to verify that the coffee_item exists.
         context_dict['coffee_item'] = coffee_item
+
     except Coffee_item.DoesNotExist:
-        # We get here if we didn't find the specified coffee_item.
-        # Don't do anything - the template displays the "no coffee_item" message for us.
+        # We get here if we didn't find the specified category.
+        # Don't do anything - the template displays the "no category" message for us.
         pass
 
     # Go render the response and return it to the client.
-    # Kareem Tarek 28-1181 
-    return render(request, 'CoffeeFinderApp/coffee_item.html', context_dict)
+    return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
+
+
+
 
 def create_coffee_item(request):
     if request.POST:
@@ -78,6 +70,38 @@ def create_coffee_item(request):
 # Once form is filled we face two scenarios . whether form is invalid then error messages are displayed , for example" This field is required. "
 # Other scenario form is valid . form is then saved and we're redirected to our list of avalaible coffee_items .
 # Kareem Tarek 28-1181 
+
+
+def page(request, page_name_slug):
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+
+    try:
+        # Can we find a category name slug with the given name?
+        # If we can't, the .get() method raises a DoesNotExist exception.
+        # So the .get() method returns one model instance or raises an exception.
+        page = Page.objects.get(slug=page_name_slug)
+        context_dict['page_name'] = page.name
+
+        # Retrieve all of the associated pages.
+        # Note that filter returns >= 1 model instance.
+        coffee_items = Coffee_item.objects.filter(page=page)
+
+        # Adds our results list to the template context under name pages.
+        context_dict['coffee_items'] = coffee_items
+        # We also add the category object from the database to the context dictionary.
+        # We'll use this in the template to verify that the category exists.
+        context_dict['page'] = page
+    except Page.DoesNotExist:
+        # We get here if we didn't find the specified category.
+        # Don't do anything - the template displays the "no category" message for us.
+        pass
+
+    # Go render the response and return it to the client.
+    return render(request, 'CoffeeFinderApp/page.html', context_dict)
+
+
 
     
  
