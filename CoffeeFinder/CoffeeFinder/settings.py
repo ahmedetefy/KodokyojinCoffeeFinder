@@ -27,9 +27,15 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 STATIC_PATH = os.path.join(BASE_DIR,'static')
+<<<<<<< HEAD
 
 STATIC_URL = '/static/' # You may find this is already defined as such.
 
+=======
+
+STATIC_URL = '/static/' # You may find this is already defined as such.
+
+>>>>>>> master
 STATICFILES_DIRS = (
     STATIC_PATH,
 )

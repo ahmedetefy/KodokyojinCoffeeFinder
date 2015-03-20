@@ -1,5 +1,8 @@
 from django.shortcuts import render
+<<<<<<< HEAD
 from django.conf import settings
+=======
+>>>>>>> master
 from CoffeeFinderApp.models import Coffee_item,Page
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
@@ -8,7 +11,10 @@ from django.shortcuts import render_to_response
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 
 def index(request):
 	context_dict = {}
@@ -18,6 +24,7 @@ def map(request):
 	context_dict = {}
 	return render(request, 'CoffeeFinderApp/map.html', context_dict)
 
+<<<<<<< HEAD
 
 def shopSubscribe(request):
 
@@ -25,6 +32,8 @@ def shopSubscribe(request):
 	return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
 
+=======
+>>>>>>> master
 def page_list(request):
 
     page_list = Page.objects.all()
@@ -59,23 +68,35 @@ def coffee_item_page(request, coffee_item_name_id):
 
 
 def create_page(request):
+<<<<<<< HEAD
 
     if request.POST:
         
         form = Page_form(request.POST)
         
+=======
+    if request.POST:
+        form = Page_form(request.POST)
+>>>>>>> master
         if form.is_valid():
             form.save()
 
             return HttpResponseRedirect('/CoffeeFinderApp')
     else:
+<<<<<<< HEAD
         print form.errors
+=======
+>>>>>>> master
         form = Page_form()
 
     args = {}
     args.update(csrf(request))
     args['form']= form
+<<<<<<< HEAD
     return render_to_response('CoffeeFinderApp/shopSubscribe.html',args)
+=======
+    return render_to_response('CoffeeFinderApp/create_page.html',args)
+>>>>>>> master
 
 
 # After forms.py is created in its right directory , a ' Coffee_item_form ' is added to the list of forms .
