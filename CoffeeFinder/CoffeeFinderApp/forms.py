@@ -1,14 +1,14 @@
 from django import forms 
-from CoffeeFinderApp.models import Coffee_item
+from CoffeeFinderApp.models import Page
 
 
-class Coffee_item_form(forms.ModelForm):
+class Page_form(forms.ModelForm):
 
 	class Meta:
-		model = Coffee_item
-		fields = ['name', 'price']
+		model = Page
+		fields = ['owner', 'name' , 'longitude', 'latitude','area']
 
-# ' Coffee_item form model ' for addition of coffee items through user's suitable interface .
-# By using this form a coffee shop owner could add as much coffee items to his page as he/she desire.
+# ' Page form model ' for addition of pages through user's suitable interface .
+# By using this form a coffee shop owner could create his page  .
 # Kareem Tarek 28-1181 .
 

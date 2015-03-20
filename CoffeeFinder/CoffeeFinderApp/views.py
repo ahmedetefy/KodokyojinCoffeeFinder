@@ -2,7 +2,7 @@ from django.shortcuts import render
 from CoffeeFinderApp.models import Coffee_item,Page
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
-from forms import Coffee_item_form
+from forms import Page_form
 from django.shortcuts import render_to_response
 
 
@@ -49,20 +49,20 @@ def coffee_item_page(request, coffee_item_name_id):
 
 
 
-def create_coffee_item(request):
+def create_page(request):
     if request.POST:
-        form = Coffee_item_form(request.POST)
+        form = Page_form(request.POST)
         if form.is_valid():
             form.save()
 
             return HttpResponseRedirect('/CoffeeFinderApp/coffee_item_list')
     else:
-        form = Coffee_item_form()
+        form = Page_form()
 
     args = {}
     args.update(csrf(request))
     args['form']= form
-    return render_to_response('CoffeeFinderApp/create_coffee_item.html',args)
+    return render_to_response('CoffeeFinderApp/create_page.html',args)
 
 
 # After forms.py is created in its right directory , a ' Coffee_item_form ' is added to the list of forms .
