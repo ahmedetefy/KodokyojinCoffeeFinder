@@ -26,8 +26,14 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+STATIC_PATH = os.path.join(BASE_DIR,'static')
 
-# Application definition
+STATIC_URL = '/static/' # You may find this is already defined as such.
+
+STATICFILES_DIRS = (
+    STATIC_PATH,
+)
+# Application definitio
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -36,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'CoffeeFinderApp',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,3 +92,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
