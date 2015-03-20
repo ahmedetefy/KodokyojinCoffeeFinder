@@ -1,0 +1,13 @@
+
+        {% if pages %}
+            <ul>
+                {% for page in pages %}
+                <!-- Following line changed to add an HTML hyperlink -->
+                <li><a href="/CoffeeFinderApp/page/{{ page.slug }}">{{ page.name }}</a></li><br><br>
+                {% endfor %}
+            </ul>
+       {% else %}
+            <strong>There are no Coffee Shops present.</strong>
+       {% endif %}
+
+       <!-- for loop , loops through ' Page' table in our database to list all Coffee Shop pages  -->
