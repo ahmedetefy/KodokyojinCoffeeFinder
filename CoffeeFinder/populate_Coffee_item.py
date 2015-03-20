@@ -13,6 +13,10 @@ def populate():
         name= 'Starbucks'
        )
 
+    python_pa= add_page(
+        name= 'Cilantro'
+       )
+
     django_pag= add_page(
         name= 'Costa'
        )

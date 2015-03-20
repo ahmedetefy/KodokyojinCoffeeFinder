@@ -6,6 +6,10 @@ class Page(models.Model):
         longitude = models.DecimalField(max_digits=20, decimal_places=10 ,default=0.0)
         latitude = models.DecimalField(max_digits=20, decimal_places=10 ,default=0.0)
         slug = models.SlugField(unique=True)
+        area = models.CharField(max_length=128,default='')
+        city = models.CharField(max_length=128,default='')
+        country = models.CharField(max_length=128,default='')
+        street_number = models.IntegerField(max_length=12,default=0)
        
 
         def save(self, *args, **kwargs):
