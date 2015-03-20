@@ -55,7 +55,7 @@ def create_page(request):
         if form.is_valid():
             form.save()
 
-            return HttpResponseRedirect('/CoffeeFinderApp/coffee_item_list')
+            return HttpResponseRedirect('/CoffeeFinderApp')
     else:
         form = Page_form()
 
