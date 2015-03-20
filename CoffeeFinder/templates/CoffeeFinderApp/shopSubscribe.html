@@ -68,6 +68,8 @@ function initialize() {
   google.maps.event.addListener(map, 'click', function(event) {
    //adds a marker at the place of the click
         placeMarker(event.latLng);
+        document.getElementById("lat").value = event.latLng.lat();
+        document.getElementById("long").value = event.latLng.lng();
         
     });
 
@@ -193,16 +195,22 @@ function initialize() {
      
         <!-- form for getting coffeshop registeration info-->
        <h2>
-       <form >
-        Street No:<input id="street" size="20" type="text"  name="streetno" disabled >
+       <form action ="/CoffeeFinderApp/create_page/" method="post">{% csrf_token%}
+        CoffeeShop Owner:<input size="20" type="text"  name='owner'  >
         <br>
-        Area: <input id="area" size="20" type="text" name="area" disabled>
+        CoffeeShop Name:<input size="20" type="text"  name="name"  >
         <br>
-        City: <input id="city" size="20" type="text" name="city" disabled>
+        Street No:<input id="street" size="20" type="text"  name="street_number"  >
         <br>
-        Country: <input id="country" size="20" type="text" name="country" disabled>
+        Area: <input id="area" size="20" type="text" name="area" >
         <br>
-        <input size = "20" type="submit" value="Submit">  
+        City: <input id="city" size="20" type="text" name="city" >
+        <br>
+        Country: <input id="country" size="20" type="text" name="country"  >
+        <br>
+        <input id="long" size="20" type="text" name="longitude"  hidden> <br>
+        <input id="lat" size="20" type="text" name="latitude" hidden >
+        <input size = "20" type="submit" value="create page">  
         </form>
       </h2>
 

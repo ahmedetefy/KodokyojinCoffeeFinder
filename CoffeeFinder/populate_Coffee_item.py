@@ -35,6 +35,12 @@ def populate():
         price=25
         )
 
+    add_coffee_item(
+        page=django_pag,
+        name='latte',
+        price=25
+        )
+
 
 
 

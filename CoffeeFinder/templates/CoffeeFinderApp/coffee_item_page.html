@@ -1,5 +1,11 @@
+{% load staticfiles %} 
+
+
 <h4> Name : {{ coffee_item.name }} <br><br> </h4>
 <h4>  Price: {{ coffee_item.price }} </h4> 
+<h4>  <img src="{% static coffee_item.url %}" alt="No picture of item" /> </h4>
 
- <!-- detailed view for each Coffee item -->
+ <!-- detailed view for each Coffee item plus an image for each . 
+ image is added to object's url attribute -->
+ 
  <!-- Kareem Tarek 28-1181-->
