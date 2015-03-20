@@ -1,6 +1,14 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import User
 
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+
+
+    def __unicode__(self):
+        return self.user.username
 class Page(models.Model):
         owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)
