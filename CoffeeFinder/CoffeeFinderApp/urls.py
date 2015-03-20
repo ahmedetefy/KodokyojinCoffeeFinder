@@ -8,7 +8,10 @@ urlpatterns = patterns('',
         url(r'^page/(?P<page_name_slug>[\w\-]+)/$', views.page, name='page'),
         url(r'^coffee_item_page/(?P<coffee_item_name_id>[\w\-]+)/$', views.coffee_item_page, name='coffee_item_page'),
         url(r'^page_list/', views.page_list, name='page_list'),
-
+        url(r'^register/$', views.register, name='register'),
+        url(r'^login/$', views.user_login, name='login'),
+        url(r'^restricted/', views.restricted, name='restricted'),
+        url(r'^logout/$', views.user_logout, name='logout'),
 
 
 
