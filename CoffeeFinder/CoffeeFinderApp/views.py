@@ -78,29 +78,29 @@ def page(request, page_name_slug):
     context_dict = {}
 
     try:
-        # Can we find a category name slug with the given name?
+        # Can we find a page name slug with the given name?
         # If we can't, the .get() method raises a DoesNotExist exception.
         # So the .get() method returns one model instance or raises an exception.
         page = Page.objects.get(slug=page_name_slug)
         context_dict['page_name'] = page.name
 
-        # Retrieve all of the associated pages.
+        # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
         coffee_items = Coffee_item.objects.filter(page=page)
 
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
-        # We also add the category object from the database to the context dictionary.
-        # We'll use this in the template to verify that the category exists.
+        # We also add the page object from the database to the context dictionary.
+        # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
     except Page.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything - the template displays the "no category" message for us.
+        # We get here if we didn't find the specified page.
+        # Don't do anything - the template displays the "no page" message for us.
         pass
 
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
-
+    #Kareem Tarek 28-1181
 
 
     

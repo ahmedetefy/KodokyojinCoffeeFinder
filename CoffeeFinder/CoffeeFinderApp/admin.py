@@ -6,4 +6,5 @@ from CoffeeFinderApp.models import Coffee_item, Page
 admin.site.register(Coffee_item)
 admin.site.register(Page)
 
-# Register your models here.
+# Register Coffee_item and page models so that they can be edited from admin system .
+# Kareem Tarek 28-1181 
