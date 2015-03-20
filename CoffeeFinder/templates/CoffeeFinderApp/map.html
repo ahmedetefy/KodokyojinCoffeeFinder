@@ -42,25 +42,25 @@
           infowindow.open(map,marker); // Opening the info window above the marker on the map
           google.maps.event.addListener(marker,'click',function() { // Implementing an action listener upon clicking the marker
           map.setZoom(18); // Zoom in when the marker is clicked
-          map.setCenter(marker.getPosition());
+          map.setCenter(marker.getPosition());// center the map on the marker
             });
           var dest;
           var distance;
   
-           {% for coffeeshop in coffeeshops %}
-              dest = new google.maps.LatLng({{ coffeeshop.latitude}}, {{ coffeeshop.longitude }});
-               distance = google.maps.geometry.spherical.computeDistanceBetween(dest, coords);
+           {% for coffeeshop in coffeeshops %}  // loop on elements of page table
+              dest = new google.maps.LatLng({{ coffeeshop.latitude}}, {{ coffeeshop.longitude }});// find location through longitude and latitude
+               distance = google.maps.geometry.spherical.computeDistanceBetween(dest, coords); // find distance between your location and coffeehop
               if (distance < 1555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555) {  
                 marker{{ coffeeshop.pk }} = buildMarker(map, 
                   {{ coffeeshop.latitude}}, 
                   {{ coffeeshop.longitude }}, 
-                  "{{ coffeeshop.name }}");
-                infowindow{{ coffeeshop.pk }} = new google.maps.InfoWindow({ // Info window on marker saying it belongs to the user 
-                content:"{{ coffeeshop.name }}" }); 
-                infowindow{{ coffeeshop.pk }}.open(map,marker{{ coffeeshop.pk }});
+                  "{{ coffeeshop.name }}");// calls build marker to create a marker at given locations
+                infowindow{{ coffeeshop.pk }} = new google.maps.InfoWindow({ 
+                content:"{{ coffeeshop.name }}" }); // creates an info window object
+                infowindow{{ coffeeshop.pk }}.open(map,marker{{ coffeeshop.pk }});// adds an info window above marker
               }  
            {% endfor %}
-           map.fitBounds(bounds);
+           map.fitBounds(bounds); // fits the map to show all markers
           }
           function buildMarker(map, latitude, longitude, name) {
             var latlng = new google.maps.LatLng(latitude, longitude);
@@ -70,7 +70,7 @@
               map: map,
               title:name,
               });
-              bounds.extend(latlng);
+              bounds.extend(latlng);// to extend map to accommodate marker 
         
             return marker
           }
