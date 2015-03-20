@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_19na&1di&&7a%sgym1y8)0q^6^8v7ti-)h-egyexu4la4o&!l'
+SECRET_KEY = 'l#$^sw$t(*=&p*##h+vfl^pk-c%#40eilo_%7*++e5gzb(k#no'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -62,6 +62,10 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
+TEMPLATE_DIRS = [TEMPLATE_PATH,]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
