@@ -2,7 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 class Page(models.Model):
-        owner = models.CharField(max_length=128 , null= False)
+        owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         latitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
