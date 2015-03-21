@@ -18,8 +18,10 @@ def index(request):
 	return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 def map(request):
-	context_dict = {}
-	return render(request, 'CoffeeFinderApp/map.html', context_dict)
+
+    categ_list = Page.objects.all()
+    context_dict = {'coffeeshops' : categ_list}
+    return render(request, 'CoffeeFinderApp/map.html', context_dict)
 
 
 def shopSubscribe(request):
