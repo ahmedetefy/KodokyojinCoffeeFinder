@@ -10,7 +10,7 @@ class Page_form(forms.ModelForm):
 		model = Page
 
 		fields = ['owner', 'name' , 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
-
+    
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())

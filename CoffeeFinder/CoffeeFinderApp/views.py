@@ -70,7 +70,8 @@ def create_page(request):
         form = Page_form(request.POST)
         if form.is_valid():
             form.save()
-
+            if request.POST.get('delivery', True):
+                Delivery.save()
             return HttpResponseRedirect('/CoffeeFinderApp')
         else:
 

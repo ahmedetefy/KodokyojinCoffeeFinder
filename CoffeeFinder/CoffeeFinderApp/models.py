@@ -22,6 +22,7 @@ class Page(models.Model):
 
 
 
+
        
 
         def save(self, *args, **kwargs):
@@ -31,6 +32,9 @@ class Page(models.Model):
         def __unicode__(self):
                 return self.name
 
+class Delivery(models.Model):
+    page = models.OneToOneField(Page)
+    delivery = models.BooleanField(default=False)
 
 
 
@@ -56,3 +60,5 @@ class Coffee_item(models.Model):
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 # Kareem Tarek 28-1181
 
+
+    
