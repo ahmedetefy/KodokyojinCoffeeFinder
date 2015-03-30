@@ -13,6 +13,18 @@
 	 image is added to object's url attribute -->
 	 
 	 <!-- Kareem Tarek 28-1181-->
+
+	 <div>
+	 		<h2>
+		       <form action ="/CoffeeFinderApp/post_item_review/" method="post">{% csrf_token%}
+		        Review:<input size="20" type="text"  name="field"  >
+		        <br>
+		        <input size="20" type="text" name="user" value={{user_id}} hidden> <br>
+        		<input size="20" type="text" name="coffee_item" value={{coffee_item.id}} hidden >
+        		<input size = "20" type="submit" value="submit review">
+		        </form>
+	      	</h2>
+	 	</div>
 	 	
 	 </body>
 <html>
