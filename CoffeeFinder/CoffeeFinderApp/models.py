@@ -12,6 +12,7 @@ class UserProfile(models.Model):
 class Page(models.Model):
         owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)
+        delivery = models.BooleanField(default=False)
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         latitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         slug = models.SlugField(unique=True)
@@ -31,10 +32,6 @@ class Page(models.Model):
 
         def __unicode__(self):
                 return self.name
-
-class Delivery(models.Model):
-    page = models.OneToOneField(Page)
-    delivery = models.BooleanField(default=False)
 
 
 
@@ -59,6 +56,7 @@ class Coffee_item(models.Model):
 # After assigning a ' space free 'slug name Mocha-Frappe is easily accessed as an individual item through the url 
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 # Kareem Tarek 28-1181
+
 
 
     

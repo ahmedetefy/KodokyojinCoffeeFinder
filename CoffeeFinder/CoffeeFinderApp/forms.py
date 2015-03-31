@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page 
+from CoffeeFinderApp.models import Page
 from django.contrib.auth.models import User
 
 
@@ -9,7 +9,7 @@ class Page_form(forms.ModelForm):
 	class Meta:
 		model = Page
 
-		fields = ['owner', 'name' , 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
     
 
 class UserForm(forms.ModelForm):
