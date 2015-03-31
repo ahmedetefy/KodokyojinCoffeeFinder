@@ -26,6 +26,10 @@ class UserForm(forms.ModelForm):
 
 
 
+class ReviewForm(forms.ModelForm):
+	class Meta:
+		model = Coffee_item_review
+		fields = ['field','user','coffee_item']
 
 
 
