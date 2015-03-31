@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html>
-	<head></head>
+	<head>
+		<script src="http://code.jquery.com/jquery-1.5.js"></script>
+		<!-- Character counting function for the review -->
+    <script>
+      function countChar(val) {
+        var len = val.value.length;
+        if (len >= 400) {
+          val.value = val.value.substring(0, 400);
+        } else {
+          $('#charNum').text(400 - len);
+        }
+      };
+    </script>
+	</head>
 	{% load staticfiles %} 
 	<body>
 		<div>
@@ -16,13 +29,16 @@
 
 	 <div>
 	 		<h2>
-		       <form action ="/CoffeeFinderApp/post_item_review/" method="post">{% csrf_token%}
-		        Review:<input size="20" type="text"  name="field"  >
+	 			{{username}}! Your opinion matters
+	 			<br><textarea rows="6" cols="70" size="200" name="field" form="reviewForm" onkeyup="countChar(this)">Enter your review here... (400 Characters or less)</textarea>
+	 			<div id="charNum"></div>
+		       <form action ="/CoffeeFinderApp/post_item_review/" method="post" id="reviewForm">{% csrf_token%}
 		        <br>
-		        <input size="20" type="text" name="user" value={{user_id}} hidden> <br>
+		        <input size="20" type="text" name="user" value={{user_id}} hidden>
         		<input size="20" type="text" name="coffee_item" value={{coffee_item.id}} hidden >
         		<input size = "20" type="submit" value="submit review">
 		        </form>
+		        <br>
 	      	</h2>
 	 	</div>
 	 	

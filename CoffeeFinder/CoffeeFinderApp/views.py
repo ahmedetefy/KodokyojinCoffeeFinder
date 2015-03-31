@@ -61,6 +61,7 @@ def coffee_item_page(request, coffee_item_name_id):
     
     current_user = request.user
     context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
 
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
