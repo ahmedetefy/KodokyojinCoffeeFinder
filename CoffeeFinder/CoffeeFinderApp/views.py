@@ -91,7 +91,19 @@ def create_page(request):
 # Once form is filled we face two scenarios . whether form is invalid then error messages are displayed , for example" This field is required. "
 # Other scenario form is valid . form is then saved and we're redirected to our list of avalaible coffee_items .
 # Kareem Tarek 28-1181 
+def post_item_review(request):
+    if request.POST:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/CoffeeFinderApp')
+        else:
+            form = ReviewForm()
+    args = {}
+    args.update(csrf(request))
+    args['form'] = form
 
+    return render_to_response('CoffeeFinderApp/index.html',args)
 
 def page(request, page_name_slug):
 
