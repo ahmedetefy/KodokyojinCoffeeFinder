@@ -18,22 +18,6 @@
 	 image is added to object's url attribute -->
 	 
 	 <!-- Kareem Tarek 28-1181-->
-
-	 <div>
-	 		<h2>
-	 			{% if user.is_authenticated %}
-		 			{{username}}! Your opinion matters
-		 			<br><textarea rows="6" cols="70" size="200" name="field" form="reviewForm" onkeyup="countChar(this)">Enter your review here... (400 Characters or less)</textarea>
-		 			<h3><div id="charNum"></div></h3>
-			       <form action ="/CoffeeFinderApp/post_item_review/" method="post" id="reviewForm">{% csrf_token%}
-			        <br>
-			        <input size="20" type="text" name="user" value={{user_id}} hidden>
-	        		<input size="20" type="text" name="coffee_item" value={{coffee_item.id}} hidden >
-	        		<input size = "20" type="submit" value="submit review">
-			        </form>
-			     {% endif %}
-	      	</h2>
-	 	</div>
 		
 	 	
 	 </body>
