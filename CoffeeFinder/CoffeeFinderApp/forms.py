@@ -1,7 +1,6 @@
 from django import forms 
-from CoffeeFinderApp.models import Page 
+from CoffeeFinderApp.models import Page, Coffee_item_review  
 from django.contrib.auth.models import User
-
 
 
 class Page_form(forms.ModelForm):
@@ -25,6 +24,12 @@ class UserForm(forms.ModelForm):
 # By using this form a coffee shop owner could create his page  .
 # Kareem Tarek 28-1181 .
 
+
+
+class ReviewForm(forms.ModelForm):
+	class Meta:
+		model = Coffee_item_review
+		fields = ['field','user','coffee_item']
 
 
 
