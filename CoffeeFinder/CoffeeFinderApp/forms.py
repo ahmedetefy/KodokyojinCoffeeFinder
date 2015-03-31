@@ -27,9 +27,4 @@ class UserForm(forms.ModelForm):
 
 
 
-from CoffeeFinderApp.models import Coffee_item_review 
-class ReviewForm(forms.ModelForm):
-	class Meta:
-		model = Coffee_item_review
-		fields = ['field','user','coffee_item']
 
