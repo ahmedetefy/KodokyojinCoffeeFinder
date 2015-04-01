@@ -50,13 +50,14 @@ class Coffee_item(models.Model):
         def __unicode__(self):
                 return self.name
 
-class Coffee_page_image(models.Model):
-        image = models.ImageField(upload_to='Coffee_page_images')
-        page = models.ForeignKey(Page)
-
 # Since a space is not allowed in a url , presence of slug explicitly eliminates spaces in objects' name for url access  .
 # For example , item Mocha Frappe would automatically assigned slug name Mocha-Frappe .
 # After assigning a ' space free 'slug name Mocha-Frappe is easily accessed as an individual item through the url 
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 # Kareem Tarek 28-1181
 
+class Coffee_page_image(models.Model):
+        image = models.ImageField(upload_to='Coffee_page_images')
+        page = models.ForeignKey(Page)
+
+# Coffee_page_image model is for images uploaded to coffee shop pages by users.
