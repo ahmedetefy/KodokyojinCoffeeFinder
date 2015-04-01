@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
 from forms import Page_form , UserForm, ImageForm
@@ -116,6 +116,8 @@ def page(request, page_name_slug):
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
+    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+    context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
     # Go render the response and return it to the client.
