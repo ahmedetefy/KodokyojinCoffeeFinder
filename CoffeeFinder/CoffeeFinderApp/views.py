@@ -3,12 +3,12 @@ from django.shortcuts import render
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
-from forms import Page_form , UserForm
+from forms import Page_form , UserForm, ImageForm
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-
+from django.shortcuts import redirect
 
 
 
@@ -116,9 +116,23 @@ def page(request, page_name_slug):
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
+    form = ImageForm()
+    context_dict['form'] = form
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
     #Kareem Tarek 28-1181
+
+def uploadImage(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.index'))
+    else:
+        form = ImageForm()
+
+    return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
 
 
 
