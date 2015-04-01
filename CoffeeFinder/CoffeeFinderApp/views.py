@@ -119,6 +119,9 @@ def page(request, page_name_slug):
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
     #Kareem Tarek 28-1181
+
+
+
 def register(request):
     registered = False
     if request.method == 'POST':
