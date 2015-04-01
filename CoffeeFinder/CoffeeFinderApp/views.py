@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 
 
 
@@ -125,6 +126,7 @@ def page(request, page_name_slug):
     #Kareem Tarek 28-1181
 
 def uploadImage(request):
+    context_dict = {}
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid:
