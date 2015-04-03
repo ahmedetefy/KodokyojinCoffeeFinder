@@ -19,12 +19,12 @@
         {% else %}
             The specified page {{ page_name }} does not exist!
         {% endif %}
-
+        <h3> User uploaded images </h3>
         {% if images %}
             <ul>
             {% for image in images %}
                 <li><a href="{{ image.image.url }}">{{ image.image }}</a></li>
-                <img src="{{ image.image.url }}" alt="{{ image.image.name }}">
+                <img src="{{ image.image.url }}" width="200" height="100" alt="{{ image.image.name }}">
             {% endfor %}
             </ul>
         {% else %}
