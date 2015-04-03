@@ -131,7 +131,9 @@ def uploadImage(request):
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid:
             form.save()
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.index'))
+            page = form.cleaned_data['page']
+            page_name_slug = page.slug
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
     else:
         form = ImageForm()
 
