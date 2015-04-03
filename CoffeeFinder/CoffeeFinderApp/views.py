@@ -121,6 +121,9 @@ def page(request, page_name_slug):
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
     #Kareem Tarek 28-1181
@@ -136,7 +139,6 @@ def uploadImage(request):
             return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
     else:
         form = ImageForm()
-
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 

@@ -23,6 +23,7 @@
         {% if images %}
             <ul>
             {% for image in images %}
+                <p>By {{ image.user }}</p>
                 <li><a href="{{ image.image.url }}">{{ image.image }}</a></li>
                 <img src="{{ image.image.url }}" width="200" height="100" alt="{{ image.image.name }}">
             {% endfor %}
@@ -41,7 +42,8 @@
                 {{ form.image }}
             </p>
             <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} 
-            <input hidden id="lat" size="20" type="text" name="page" value={{ page.id }}  >
+            <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
+            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
             <p><input type="submit" value="Upload" /></p>
         </form>
     </body>

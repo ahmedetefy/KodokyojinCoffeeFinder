@@ -59,5 +59,8 @@ class Coffee_item(models.Model):
 class Coffee_page_image(models.Model):
         image = models.ImageField(upload_to='Coffee_page_images')
         page = models.ForeignKey(Page)
+        user = models.ForeignKey(User)
 
+        def __unicode__(self):
+                return self.name
 # Coffee_page_image model is for images uploaded to coffee shop pages by users.

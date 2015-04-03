@@ -29,7 +29,7 @@ class ImageForm(forms.ModelForm):
 	image = forms.ImageField( label='Select an image', )
 	class Meta:
 		model = Coffee_page_image
-		fields = ['image','page']
+		fields = ['image','page','user']
 
 # ImageForm is a form used for uploading images to a certain coffee shop page. It takes an image
 # from the user, the one which he will upload, and the page's id
