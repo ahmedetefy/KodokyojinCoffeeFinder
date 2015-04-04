@@ -5,6 +5,29 @@
    
     <body>
         <h3>Welcome to {{ page_name }}</h3>
+        {% ifequal page.owner current_user.username %}
+            <h4>Orders: </h4>
+            {% if orders %}
+                    <table style="width:40%">
+                      <tr>
+                        <td>Name</td>
+                        <td>Quantity</td>
+                        <td>Price</td>
+                      </tr>
+                    {% for order in orders %}
+                      <tr>
+                        <td>{{ order.coffeeshop_item.name}}</td>
+                        <td>{{ order.quantity}}</td>
+                        <td>{{ order.coffeeshop_item.price}}</td>
+                      </tr>
+                    {% endfor %}
+                    </table>
+            {% else %}
+                <strong>There are currently no orders.</strong>
+            {% endif %}
+        {% endifequal %}
+
+        <h4>Items: </h4>
         {% if page %}
             {% if coffee_items %}
             <ul>
