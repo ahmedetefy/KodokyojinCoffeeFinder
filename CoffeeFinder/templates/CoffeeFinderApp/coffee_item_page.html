@@ -14,6 +14,23 @@
 			<h4>  <img src="{% static coffee_item.url %}" alt="No picture of item" /> </h4>
 		</div>
 
+
+		<div>
+			<h3>Customers' Reviews</h3>
+			{%if reviews%}
+			<ul>
+				{%for review in reviews%}
+				<p>By {{ review.user }}</p>
+                <li>{{ review.field }}</li>
+                {%endfor%}
+            </ul>
+
+            {% else %}
+            <h5> There are no reviews.</h5>
+            {%endif%}
+
+		</div>
+
 	 <!-- detailed view for each Coffee item plus an image for each . 
 	 image is added to object's url attribute -->
 	 

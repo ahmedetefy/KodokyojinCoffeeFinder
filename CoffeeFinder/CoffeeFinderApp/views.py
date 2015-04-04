@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from CoffeeFinderApp.models import Coffee_item_review
 
 
 
@@ -30,8 +31,6 @@ def shopSubscribe(request):
     context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
     return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
-
-
 def page_list(request):
 
     page_list = Page.objects.all()
@@ -53,6 +52,9 @@ def coffee_item_page(request, coffee_item_name_id):
         coffee_item = Coffee_item.objects.get(id=coffee_item_name_id)
         context_dict['coffee_item_name'] = coffee_item.name
         context_dict['coffee_item'] = coffee_item
+
+        reviews = Coffee_item_review.objects.filter(coffee_item_id = coffee_item_name_id)
+        context_dict['reviews'] = reviews
 
     except Coffee_item.DoesNotExist:
         # We get here if we didn't find the specified category.
@@ -123,6 +125,7 @@ def page(request, page_name_slug):
 
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
+
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
