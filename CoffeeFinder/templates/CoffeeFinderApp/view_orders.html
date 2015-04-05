@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    
+
+    <body>
+        <h1>View Orders</h1>
+
+        {% if orders %}
+                    <table style="width:40%">
+                      <tr>
+                        <td>Name</td>
+                        <td>Quantity</td>
+                        <td>Price</td>
+                        <td>Coffeeshop</td>
+                      </tr>
+                    {% for order in orders %}
+                      <tr>
+                        <td>{{ order.coffeeshop_item.name}}</td>
+                        <td>{{ order.quantity}}</td>
+                        <td>{{ order.coffeeshop_item.price}}</td>
+                        <td>{{ order.coffeeshop}}</td>
+                      </tr>
+                    {% endfor %}
+                    </table>
+            {% else %}
+                <strong>There are currently no orders.</strong>
+            {% endif %}
+
+    </body>
+</html>

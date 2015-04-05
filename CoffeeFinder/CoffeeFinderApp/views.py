@@ -29,7 +29,13 @@ def shopSubscribe(request):
 	context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
 	return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
-
+def view_orders(request):
+    context_dict = {}
+    current_user = request.user
+    context_dict['current_user'] = current_user
+    userorder = Order.objects.filter(user=current_user)
+    context_dict['orders'] = userorder
+    return render(request, 'CoffeeFinderApp/view_orders.html', context_dict)
 
 def page_list(request):
 
