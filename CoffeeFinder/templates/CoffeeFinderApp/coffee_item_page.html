@@ -21,7 +21,7 @@
 			<ul>
 				{%for review in reviews%}
 				<p>By {{ review.user }}</p>
-                <li>{{ review.field }}</li>
+                <li><a href="/CoffeeFinderApp/review/{{ review.id }}/">{{ review.field }}</a></li>
                 {%endfor%}
             </ul>
 

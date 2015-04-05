@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
@@ -106,6 +106,14 @@ def post_item_review(request):
     args['form'] = form
 
     return render_to_response('CoffeeFinderApp/index.html',args)
+
+
+def view_review(request, review_id):
+    context_dict={}
+    review = get_object_or_404(Coffee_item_review, pk=review_id)
+    context_dict['review_field'] = review.field
+    context_dict['review_id'] = review.id
+    return render(request,'CoffeeFinderApp/view_review.html',context_dict)
 
 def page(request, page_name_slug):
 
