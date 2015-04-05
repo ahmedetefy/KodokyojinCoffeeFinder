@@ -1,9 +1,17 @@
 {% load staticfiles %} 
 
+<h4> Name : {{ coffee_item.name }}</h4>
+<h4>  Price: {{ coffee_item.price }}</h4> 
+<h4>  Description: {{ coffee_item.description }} <br><br>
+</h4> 
 
-<h4> Name : {{ coffee_item.name }} <br><br> </h4>
-<h4>  Price: {{ coffee_item.price }} </h4> 
 <h4>  <img src="{% static coffee_item.url %}" alt="No picture of item" /> </h4>
+<br><br>
+
+ <a href="/CoffeeFinderApp/delete/{{ coffee_item.id }}"> Delete item </a><br><br>
+
+<a href="/CoffeeFinderApp/item_edit/"> Edit info  </a>
+
 
  <!-- detailed view for each Coffee item plus an image for each . 
  image is added to object's url attribute -->

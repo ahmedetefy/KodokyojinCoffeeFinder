@@ -19,6 +19,7 @@ class Page(models.Model):
         city = models.CharField(max_length=128,default='')
         country = models.CharField(max_length=128,default='')
         street_number = models.CharField(max_length=12,default=0)
+        description = models.CharField(max_length=500,default='')
 
 
 
@@ -39,7 +40,8 @@ class Coffee_item(models.Model):
         price = models.IntegerField(default=0)
         slug = models.SlugField(unique=False)
         page = models.ForeignKey(Page)
-        url = models.URLField()
+        photo = models.ImageField(upload_to = 'static/images', default = 'static/images/no-img.jpg')
+        description = models.CharField(max_length=200)
        
 
         def save(self, *args, **kwargs):
@@ -49,6 +51,7 @@ class Coffee_item(models.Model):
 
         def __unicode__(self):
                 return self.name
+
 
 # Since a space is not allowed in a url , presence of slug explicitly eliminates spaces in objects' name for url access  .
 # For example , item Mocha Frappe would automatically assigned slug name Mocha-Frappe .

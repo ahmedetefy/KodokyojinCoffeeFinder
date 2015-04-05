@@ -1,13 +1,16 @@
 from django.conf import settings
 from django.shortcuts import render
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-from forms import Page_form , UserForm
+from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.template import RequestContext
+from django.contrib import messages
+
 
 
 
@@ -42,23 +45,24 @@ def page_list(request):
 
 def coffee_item_page(request, coffee_item_name_id):
 
-    # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
+     
+
+
 
     try:
-        # Can we find a category name slug with the given name?
-        # If we can't, the .get() method raises a DoesNotExist exception.
-        # So the .get() method returns one model instance or raises an exception.
+       
         coffee_item = Coffee_item.objects.get(id=coffee_item_name_id)
         context_dict['coffee_item_name'] = coffee_item.name
         context_dict['coffee_item'] = coffee_item
+        request.session['item_id'] = coffee_item.id
+
+
 
     except Coffee_item.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything - the template displays the "no category" message for us.
+  
         pass
 
-    # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
 
 
@@ -90,6 +94,7 @@ def create_page(request):
 # Kareem Tarek 28-1181 
 
 
+
 def page(request, page_name_slug):
 
     # Create a context dictionary which we can pass to the template rendering engine.
@@ -101,6 +106,9 @@ def page(request, page_name_slug):
         # So the .get() method returns one model instance or raises an exception.
         page = Page.objects.get(slug=page_name_slug)
         context_dict['page_name'] = page.name
+        context_dict['page_description'] = page.description
+        request.session['page_id'] = page.id
+
 
         # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
@@ -115,6 +123,8 @@ def page(request, page_name_slug):
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
+
+
 
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
@@ -167,15 +177,105 @@ def user_logout(request):
     return HttpResponseRedirect('/CoffeeFinderApp/')
 
 
-    
+def add_item(request):
+    # Get the context from the request.
+    context = RequestContext(request)
+    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
+    context['page_name']= Page.objects.get(id=request.session['page_id']).name
+
  
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = Coffee_item_form(request.POST)
 
 
 
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # Save the new category to the database.
+            page = Page.objects.get(id=request.session['page_id'])
+            item = form.save(commit=False)
+
+            if Coffee_item.objects.filter(name=item.name,page= page):
+               messages.error(request, " You've already added this item ")
+            else:
+                if item.price < 0:  
+                   messages.error(request, " Invalid price ")
+                else: 
+                    item.page = page
+                    item.save()
+                    messages.success(request, " New item added !")
 
 
-    
+      # Send a success message to the template using messages framework.
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+
+        form = Coffee_item_form()
+
+
+    # Bad form (or form details), no form supplied...
+    # Render the form with error messages (if any).
+    return render_to_response('CoffeeFinderApp/add_item.html', {'form': form}, context,)
+
+
+def description_edit(request):
+
+    context = RequestContext(request)
+    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
+    context['page_name']= Page.objects.get(id=request.session['page_id']).name
+
+
+    page = Page.objects.get(id=request.session['page_id'])
+
+    if request.POST:
+        form = Page_form_edit(request.POST, instance=page)
+        if form.is_valid():
+            form.save()
+            messages.success(request, " Your data has been edited successfully ! ")
+            # If the save was successful, redirect to another page
  
+    else:
+        form = Page_form_edit(instance=page)
+ 
+    return render_to_response('CoffeeFinderApp/description_edit.html', {
+        'form': form, }, context)
+
+def item_edit(request):
+
+    context = RequestContext(request)
+    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
+    context['page_name']= Page.objects.get(id=request.session['page_id']).name
 
 
+    item = Coffee_item.objects.get(id=request.session['item_id'])
+    context['item']= item
+
+
+
+    if request.POST:
+        form = Coffee_item_form(request.POST, instance=item)
+        if form.is_valid():
+            if item.price < 0:  
+                   messages.error(request, " Invalid price ")
+            else: 
+                form.save()
+                messages.success(request, " Your Info have been edited successfully !")
+ 
+    else:
+        form = Coffee_item_form(instance=item)
+ 
+    return render_to_response('CoffeeFinderApp/item_edit.html', {
+        'form': form, }, context)
+
+def delete_item(request, id):
+        context_dict = {}
+        context_dict['page_slug']= Page.objects.get(id=request.session['page_id']).slug
+        context_dict['page_name']= Page.objects.get(id=request.session['page_id']).name
+        context_dict['item']= Coffee_item.objects.get(id=id)
+        item = Coffee_item.objects.get(pk=id).delete()
+        return render(request, 'CoffeeFinderApp/deleted.html', context_dict)
 

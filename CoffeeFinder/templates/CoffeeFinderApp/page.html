@@ -2,7 +2,7 @@
 {% load staticfiles %} 
 
 <html>
-   
+
     <body>
         <h3>Welcome to {{ page_name }}</h3>
         {% if page %}
@@ -14,11 +14,23 @@
                 {% endfor %}
             </ul>
             {% else %}
-                <strong>No items are currently in page.</strong>
+                <strong>No items are currently in page </strong>
             {% endif %}
         {% else %}
             The specified page {{ page_name }} does not exist!
         {% endif %}
+         <br><br>
+
+
+         <h4> What makes us special ? 
+         <a href="/CoffeeFinderApp/description_edit/"> Edit </a></h4> 
+         {{ page_description}}
+         <br><br>
+        <h4> <a href="/CoffeeFinderApp/add_item/"> Add new item </a></h4>
+
+      <br><br>
+
+
     </body>
 </html>
 

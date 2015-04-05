@@ -13,6 +13,9 @@ urlpatterns = patterns('',
         url(r'^login/$', views.user_login, name='login'),
         url(r'^restricted/', views.restricted, name='restricted'),
         url(r'^logout/$', views.user_logout, name='logout'),
-
+        url(r'^add_item/$', views.add_item, name='add_item'),
+        url(r'^description_edit/', views.description_edit, name = 'description_edit'),
+        url(r'^item_edit/', views.item_edit, name = 'item_edit'),
+        url(r'^delete/(?P<id>\d+)/$', views.delete_item ,name = 'delete_item'),
 
         )
