@@ -125,19 +125,21 @@ def makeOrder(request, page_name_slug):
     # Get the context from the request.
     page = Page.objects.get(slug=page_name_slug)
     context_dict['myPage'] = page
-    context_dict["Coffee"] = Coffee_item.objects.filter(page = page)
+    context_dict["Coffee"] = Coffee_item.objects.filter(page_id = page.id)
     context = RequestContext(request)
 
     # A HTTP POST?
     if request.method == 'POST':
         form = DeliveryForm(request.POST)
-
         # Have we been provided with a valid form?
         if form.is_valid():
             # Save the new category to the database.
             myOrder = form.save(commit=False)
             try:
-                coffee = Coffee_item.objects.get(id=form['coffeeshop_item_id'].value())
+                try:
+                    coffee = Coffee_item.objects.get(id=form['coffeeshop_item_id'].value(),page_id = page.id)
+                except:
+                    return HttpResponse("An incorrect ID was entered.. Order was not Successful")
                 myOrder.coffeeshop_item = coffee
             except Order.DoesNotExist:
                 # If we get here, the category does not exist.
