@@ -5,6 +5,9 @@
    
     <body>
         <h3>Welcome to {{ page_name }}</h3>
+        {% if page.delivery %}
+        <a href="/CoffeeFinderApp/{{ page_name_slug}}/makeOrder">Make an Order</a>
+        {% endif %}
         {% if page %}
             {% if coffee_items %}
             <ul>
@@ -14,6 +17,7 @@
                 {% endfor %}
             </ul>
             {% else %}
+                </br>
                 <strong>No items are currently in page.</strong>
             {% endif %}
         {% else %}
