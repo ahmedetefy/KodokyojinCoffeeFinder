@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Order
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
 from forms import Page_form , UserForm
@@ -105,10 +105,7 @@ def page(request, page_name_slug):
         # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
         coffee_items = Coffee_item.objects.filter(page=page)
-        order = Order.objects.filter(coffeeshop=page)
-        context_dict['orders'] = order
-        current_user = request.user
-        context_dict['current_user'] = current_user
+
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
         # We also add the page object from the database to the context dictionary.
