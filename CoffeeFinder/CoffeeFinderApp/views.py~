@@ -14,8 +14,8 @@ from django.contrib.auth import logout
 
 
 def index(request):
-    context_dict = {}
-    return render(request, 'CoffeeFinderApp/index.html', context_dict)
+	context_dict = {}
+	return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 def map(request):
 
@@ -26,8 +26,8 @@ def map(request):
 
 def shopSubscribe(request):
 
-    context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
-    return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
+	context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
+	return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
 
 
@@ -101,24 +101,19 @@ def page(request, page_name_slug):
         # So the .get() method returns one model instance or raises an exception.
         page = Page.objects.get(slug=page_name_slug)
         context_dict['page_name'] = page.name
+
         # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
         coffee_items = Coffee_item.objects.filter(page=page)
+        order = Order.objects.filter(coffeeshop_item_page=page)
+        context_dict['orders'] = order
+        current_user = request.user
+        context_dict['current_user'] = current_user
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
-        #Yasser
-        #Retrieve all orders that are associated with the current page.
-        order = Order.objects.filter(coffeeshop=page)
-        #Add the results to the template context under the name orders.
-        context_dict['orders'] = order
-        #Retreieve the currently signed in user.
-        current_user = request.user
-        #Add the result to the template context under the name current_user.
-        context_dict['current_user'] = current_user
-        #Yasser
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
@@ -173,3 +168,17 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/CoffeeFinderApp/')
+
+
+    
+ 
+
+
+
+
+
+    
+ 
+
+
+
