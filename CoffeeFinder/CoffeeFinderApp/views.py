@@ -3,13 +3,22 @@ from django.shortcuts import render
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
+<<<<<<< HEAD
 from forms import Page_form , UserForm, ImageForm
+=======
+from forms import Page_form , UserForm , ReviewForm
+>>>>>>> master
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+<<<<<<< HEAD
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+=======
+from django.core.urlresolvers import reverse
+
+>>>>>>> master
 
 
 
@@ -27,8 +36,8 @@ def map(request):
 
 def shopSubscribe(request):
 
-	context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
-	return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
+    context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
+    return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
 
 
@@ -58,6 +67,10 @@ def coffee_item_page(request, coffee_item_name_id):
         # We get here if we didn't find the specified category.
         # Don't do anything - the template displays the "no category" message for us.
         pass
+    
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
 
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
@@ -82,14 +95,31 @@ def create_page(request):
     args['form']= form
 
     return render_to_response('CoffeeFinderApp/shopSubscribe.html',args)
-
-
 # After forms.py is created in its right directory , a ' Coffee_item_form ' is added to the list of forms .
 # .. so we could create several instances of Coffee_items manualy . 
 # Once form is filled we face two scenarios . whether form is invalid then error messages are displayed , for example" This field is required. "
 # Other scenario form is valid . form is then saved and we're redirected to our list of avalaible coffee_items .
 # Kareem Tarek 28-1181 
 
+
+#action called by review post form, it validates the form and enters the review in the item review model
+def post_item_review(request):
+
+    if request.POST:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            coffee_item = form.cleaned_data['coffee_item']
+            coffee_item_id = coffee_item.id
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_id}))
+            #return HttpResponseRedirect('/CoffeeFinderApp')
+        else:
+            form = ReviewForm()
+    args = {}
+    args.update(csrf(request))
+    args['form'] = form
+
+    return HttpResponseRedirect('CoffeeFinderApp/page_list')
 
 def page(request, page_name_slug):
 
