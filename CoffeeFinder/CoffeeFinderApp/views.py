@@ -75,14 +75,10 @@ def create_page(request):
 
     if request.POST:
         form = Page_form(request.POST)
-        if form.is_valid():
-            form.save()
-
-            return HttpResponseRedirect('/CoffeeFinderApp')
-        else:
-
+        return HttpResponseRedirect('/CoffeeFinderApp')
+    else:
          form = Page_form()
-
+         
     args = {}
     args.update(csrf(request))
     args['form']= form
