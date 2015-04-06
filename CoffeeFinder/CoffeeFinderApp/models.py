@@ -56,3 +56,7 @@ class Coffee_item(models.Model):
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 # Kareem Tarek 28-1181
 
+class Coffee_item_review(models.Model):
+    field = models.TextField(max_length=400, null = False)
+    coffee_item = models.ForeignKey(Coffee_item)
+    user = models.ForeignKey(User)
