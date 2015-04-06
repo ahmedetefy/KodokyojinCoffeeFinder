@@ -57,7 +57,7 @@ class Coffee_item(models.Model):
 # Kareem Tarek 28-1181
 
 class Coffee_page_image(models.Model):
-        image = models.ImageField(upload_to='Coffee_page_images')
+        image = models.ImageField(upload_to='Coffee_page_images', null=False)
         page = models.ForeignKey(Page)
         user = models.ForeignKey(User)
 

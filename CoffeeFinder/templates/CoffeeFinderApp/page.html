@@ -31,7 +31,9 @@
         {% else %}
             <h3>No images.</h3>
         {% endif %}
-
+        {% if noImage %}
+            PLEASE CHOOSE A PHOTO
+        {% endif %}
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "uploadImage" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}

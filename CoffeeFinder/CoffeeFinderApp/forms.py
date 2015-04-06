@@ -25,8 +25,9 @@ class UserForm(forms.ModelForm):
 # By using this form a coffee shop owner could create his page  .
 # Kareem Tarek 28-1181 .
 
-class ImageForm(forms.ModelForm): 
-	image = forms.ImageField( label='Select an image', )
+class ImageForm(forms.ModelForm):
+	image = forms.ImageField( label='Select an image', required=True)
+
 	class Meta:
 		model = Coffee_page_image
 		fields = ['image','page','user']

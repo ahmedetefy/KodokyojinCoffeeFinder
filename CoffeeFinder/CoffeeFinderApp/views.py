@@ -112,6 +112,7 @@ def page(request, page_name_slug):
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
+        request.session['page_id'] = page.id
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
@@ -136,6 +137,16 @@ def uploadImage(request):
             form.save()
             page = form.cleaned_data['page']
             page_name_slug = page.slug
+            noImage = False
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+        else:
+            form = form.save(commit=False)
+            page = form.cleaned_data['page']
+            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
+            form = ImageForm()
+            noImage = True
+            context_dict['noImage'] = noImage
             return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
     else:
         form = ImageForm()
