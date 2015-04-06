@@ -54,7 +54,7 @@ class Order(models.Model):
         coffeeshop_item = models.ForeignKey(Coffee_item)
         quantity = models.IntegerField(default=1)
         coffeeshop = models.ForeignKey(Page)
-        user = models.ForeignKey(User)
+        name = models.CharField(max_length=128)
         longitude = models.IntegerField()
         latitude = models.IntegerField()
 

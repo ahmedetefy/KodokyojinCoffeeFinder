@@ -11,6 +11,7 @@
             {% if orders %}
                     <table style="width:60%">
                       <tr>
+                        <td>ID</td>
                         <td>Name</td>
                         <td>Quantity</td>
                         <td>Price</td>
@@ -19,10 +20,11 @@
                       </tr>
                     {% for order in orders %}
                       <tr>
+                        <td>{{ order.id}}</td>
                         <td>{{ order.coffeeshop_item.name}}</td>
                         <td>{{ order.quantity}}</td>
                         <td>{{ order.coffeeshop_item.price}}</td>
-                        <td>{{ order.user}}</td>
+                        <td>{{ order.name}}</td>
                         <td>{{ order.longitude}} , {{ order.latitude}}</td>
                       </tr>
                     {% endfor %}
