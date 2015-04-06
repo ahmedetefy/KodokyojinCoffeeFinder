@@ -56,7 +56,18 @@ class Coffee_item(models.Model):
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 # Kareem Tarek 28-1181
 
+<<<<<<< HEAD
+class Coffee_page_image(models.Model):
+        image = models.ImageField(upload_to='Coffee_page_images', null=False)
+        page = models.ForeignKey(Page)
+        user = models.ForeignKey(User)
+
+        def __unicode__(self):
+                return self.name
+# Coffee_page_image model is for images uploaded to coffee shop pages by users.
+=======
 class Coffee_item_review(models.Model):
     field = models.TextField(max_length=400, null = False)
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
+>>>>>>> master

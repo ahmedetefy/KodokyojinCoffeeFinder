@@ -1,15 +1,24 @@
 from django.conf import settings
 from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
+<<<<<<< HEAD
+from forms import Page_form , UserForm, ImageForm
+=======
 from forms import Page_form , UserForm , ReviewForm
+>>>>>>> master
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+<<<<<<< HEAD
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+=======
 from django.core.urlresolvers import reverse
 
+>>>>>>> master
 
 
 
@@ -133,14 +142,49 @@ def page(request, page_name_slug):
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
+        request.session['page_id'] = page.id
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
+    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+    context_dict['images'] = images
+    form = ImageForm()
+    context_dict['form'] = form
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
     #Kareem Tarek 28-1181
+
+def uploadImage(request):
+    context_dict = {}
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid:
+            form.save()
+            page = form.cleaned_data['page']
+            page_name_slug = page.slug
+            noImage = False
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+        else:
+            form = form.save(commit=False)
+            page = form.cleaned_data['page']
+            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
+            form = ImageForm()
+            noImage = True
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+    else:
+        form = ImageForm()
+    return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+
+
+
 def register(request):
     registered = False
     if request.method == 'POST':
