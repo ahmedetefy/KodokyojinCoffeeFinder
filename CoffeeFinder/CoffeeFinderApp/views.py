@@ -110,6 +110,8 @@ def view_review(request, review_id):
     context_dict['review_field'] = review.field
     context_dict['review_id'] = review.id
     return render(request,'CoffeeFinderApp/view_review.html',context_dict)
+    # view_review to get a review object if it's in the review table else will return error
+    # define the fields in the html page by context_dict and link the view to the view_review html page 
 
 def page(request, page_name_slug):
 

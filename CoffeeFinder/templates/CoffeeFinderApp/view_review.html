@@ -12,17 +12,21 @@
                 js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
                 fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
-
+       
             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-
+    <!--the facebook and twitter javascript provided by facebook and twitter share page -->
         {{ review_field }}  
         <br><br><br><br>
         <div class="fb-share-button" data-href="/CoffeeFinderApp/review/{{ review_id }}/" data-layout="button_count"></div>
+        <!-- the button count for the facebook share provided by the link of the review to share review-->
         <br><br>
         <a href="https://twitter.com/share" class="twitter-share-button" data-url="&quot;/CoffeeFinderApp/review/{{ review_id }}/&quot;">Tweet</a>
+        <!-- the button count for the twitter share provided by the link encoded of the review to share review-->
         <br><br>
        <div class="g-plus" data-action="share" data-annotation="bubble"></div>
+       <!-- the bubble button for the google plus share -->
        <script src="https://apis.google.com/js/platform.js" async defer></script>
+       <!-- google+ java script provided by google+ share page -->
     </body>
         
 </html>
