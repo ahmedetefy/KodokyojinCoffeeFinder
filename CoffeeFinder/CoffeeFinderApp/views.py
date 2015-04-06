@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-
+from django.core.urlresolvers import reverse
 
 
 
@@ -92,18 +92,22 @@ def create_page(request):
 # Other scenario form is valid . form is then saved and we're redirected to our list of avalaible coffee_items .
 # Kareem Tarek 28-1181 
 def post_item_review(request):
+
     if request.POST:
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/CoffeeFinderApp')
+            coffee_item = form.cleaned_data['coffee_item']
+            coffee_item_id = coffee_item.id
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_id}))
+            #return HttpResponseRedirect('/CoffeeFinderApp')
         else:
             form = ReviewForm()
     args = {}
     args.update(csrf(request))
     args['form'] = form
 
-    return render_to_response('CoffeeFinderApp/index.html',args)
+    return HttpResponseRedirect('/CoffeeFinderApp')
 
 def page(request, page_name_slug):
 
