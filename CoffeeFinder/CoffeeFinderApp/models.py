@@ -19,11 +19,7 @@ class Page(models.Model):
         city = models.CharField(max_length=128,default='')
         country = models.CharField(max_length=128,default='')
         street_number = models.CharField(max_length=12,default=0)
-
-
-
-       
-
+        delivery = models.BooleanField(default=False)
         def save(self, *args, **kwargs):
                 self.slug = slugify(self.name)
                 super(Page, self).save(*args, **kwargs)
@@ -56,7 +52,7 @@ class Coffee_item(models.Model):
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 # Kareem Tarek 28-1181
 
-<<<<<<< HEAD
+
 class Coffee_page_image(models.Model):
         image = models.ImageField(upload_to='Coffee_page_images', null=False)
         page = models.ForeignKey(Page)
@@ -65,9 +61,17 @@ class Coffee_page_image(models.Model):
         def __unicode__(self):
                 return self.name
 # Coffee_page_image model is for images uploaded to coffee shop pages by users.
-=======
+
 class Coffee_item_review(models.Model):
     field = models.TextField(max_length=400, null = False)
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
->>>>>>> master
+
+
+class Order(models.Model):
+        coffeeshop_item = models.ForeignKey(Coffee_item)
+        quantity = models.IntegerField(default=1)
+        Name = models.CharField(max_length = 128)
+        phone = models.CharField(max_length = 128)
+        status = models.CharField(max_length = 128)
+        coffeeshop= models.ForeignKey(Page)

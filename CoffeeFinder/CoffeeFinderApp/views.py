@@ -1,27 +1,16 @@
 from django.conf import settings
 from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
-<<<<<<< HEAD
-from forms import Page_form , UserForm, ImageForm
-=======
-from forms import Page_form , UserForm , ReviewForm
->>>>>>> master
+from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-<<<<<<< HEAD
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-=======
-from django.core.urlresolvers import reverse
-
->>>>>>> master
-
-
-
+from django.template import RequestContext
 
 def index(request):
 	context_dict = {}
@@ -132,7 +121,7 @@ def page(request, page_name_slug):
         # So the .get() method returns one model instance or raises an exception.
         page = Page.objects.get(slug=page_name_slug)
         context_dict['page_name'] = page.name
-
+        context_dict['page_name_slug'] = page_name_slug
         # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
         coffee_items = Coffee_item.objects.filter(page=page)
@@ -181,6 +170,80 @@ def uploadImage(request):
     else:
         form = ImageForm()
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+def makeOrder(request, page_name_slug):
+    context_dict = {}
+ 
+    
+    page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
+    context_dict['myPage'] = page #pass in context dictionary the page instance
+    context_dict["Coffee"] = Coffee_item.objects.filter(page_id = page.id) #sends in context dictionary all coffee items belonging to the page instance
+    context = RequestContext(request) # Get the context from the request.
+
+    # A HTTP POST?
+    if request.method == 'POST': #checks to see if the form is to be submitted
+        form = DeliveryForm(request.POST) 
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # add the form item to myOrder.
+            myOrder = form.save(commit=False)
+            try:
+                #check to see if the id entered is one of the correct IDs
+                try:
+                    coffee = Coffee_item.objects.get(id=form['coffeeshop_item_id'].value(),page_id = page.id) #gets the coffee item through ID given in form
+                except:
+                    # sends to a new page that has the following text
+                    return HttpResponse("An incorrect ID was entered.. Order was not Successful")
+                #
+                myOrder.coffeeshop_item = coffee #adds the coffeeshop item to the foriegn key hidden in form
+                myOrder.coffeeshop = page
+            except Order.DoesNotExist:
+                # If we get here, the Order does not exist.
+                # Go back and render the add makeOrder form as a way of saying the order does not exist.
+                return render_to_response('CoffeeFinderApp/makeOrder.html', {}, context)
+            myOrder.save() #save the form to our model
+            return HttpResponse('Your Coffee has been ordered') #send to a new page that has the following text
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+        form = DeliveryForm()
+    context_dict['form'] = form
+    # Bad form (or form details), no form supplied...
+    # Render the form with error messages (if any).
+    v = 'CoffeeFinderApp/makeOrder.html'
+    return render_to_response(v, context_dict, context) #TO DO
+#done by Ahmed Etefy 28 - 3954
+def editStatus(request, page_name_slug):
+    context_dict = {}
+    page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
+    context = RequestContext(request) # Get the context from the request.
+    current_user = request.user #get the user instance currently logged onto the website
+    context_dict['current_user'] = current_user #pass the current user into context dictionary
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = EditStatus(request.POST) #save the form instance into var form
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # save the form item to x.
+            x = form.save(commit=False)
+            try:
+                temp = Order.objects.get(id=form['id'].value()) #obtain the order object with id passed in form into temp
+            except:
+                return HttpResponse('Invalid Order ID') #send to a HTTP page with the following text
+            temp.status = form['status'].value() #set the status attribute of the temp object to status field passed in form
+            temp.save() #update the object instance into the model
+            return HttpResponse('Status has been added') #redirect to a HTTP Page that has the following text
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+        form = EditStatus()
+    context_dict['form'] = form #pass the form into the context dictionary
+    return render_to_response('CoffeeFinderApp/editStatus.html',context_dict,context)
+#Done by Ahmed Etefy #28 - 3954
 
 
 

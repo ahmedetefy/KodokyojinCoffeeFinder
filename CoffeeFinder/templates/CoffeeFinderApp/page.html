@@ -5,6 +5,13 @@
    
     <body>
         <h3>Welcome to {{ page_name }}</h3>
+        {% if page.delivery %}
+        <a href="/CoffeeFinderApp/{{ page_name_slug}}/makeOrder">Make an Order</a>
+        {% endif %}
+        </br>
+        {% ifequal page.owner username %}
+        <a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a>
+        {% endifequal %}
         {% if page %}
             {% if coffee_items %}
             <ul>

@@ -105,10 +105,7 @@ USE_TZ = True
 
 STATIC_PATH = os.path.join(BASE_DIR,'static')
 STATIC_URL = '/static/'
-<<<<<<< HEAD
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = '/media/'
-=======
+
 
 STATICFILES_DIRS = (
     STATIC_PATH,
@@ -116,4 +113,4 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Absolute path to the media directory
->>>>>>> master
+
