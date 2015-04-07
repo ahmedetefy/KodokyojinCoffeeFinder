@@ -55,11 +55,14 @@
 
      
         <!-- form for getting coffeshop registeration info-->
+       <!-- checkbox added to the form for the delivery option -->
        <h2>
        <form action ="/CoffeeFinderApp/create_page/" method="post">{% csrf_token%}
         CoffeeShop Owner:<input size="20" type="text"  name='owner' >
         <br>
         CoffeeShop Name:<input size="20" type="text"  name="name"  >
+        <br>
+        Delivery: <input type="checkbox" name='delivery'>
         <br>
         Street No:<input id="street" size="20" type="text"  name="street_number"  >
         <br>
@@ -71,6 +74,9 @@
         <br>
         <input id="long" size="20" type="text" name="longitude" runat="server" > <br>
         <input id="lat" size="20" type="text" name="latitude" runat="server" >
+        <br> 
+        <input id="long" size="20" type="text" name="longitude"  hidden> <br>
+        <input id="lat" size="20" type="text" name="latitude" hidden >
         <input size = "20" type="submit" value="create page">  
         </form>
       </h2>
