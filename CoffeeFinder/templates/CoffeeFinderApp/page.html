@@ -19,6 +19,35 @@
         {% else %}
             The specified page {{ page_name }} does not exist!
         {% endif %}
+        <h3> User uploaded images </h3>
+        {% if images %}
+            <ul>
+            {% for image in images %}
+                <p>By {{ image.user }}</p>
+                <li><a href="{{ image.image.url }}">{{ image.image }}</a></li>
+                <img src="{{ image.image.url }}" width="200" height="100" alt="{{ image.image.name }}">
+            {% endfor %}
+            </ul>
+        {% else %}
+            <h3>No images.</h3>
+        {% endif %}
+        {% if noImage %}
+            PLEASE CHOOSE A PHOTO
+        {% endif %}
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url "uploadImage" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
+            <p>
+                {{ form.image.errors }}
+                {{ form.image }}
+            </p>
+            <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} 
+            <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
+            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+            <p><input type="submit" value="Upload" /></p>
+        </form>
     </body>
 </html>
 

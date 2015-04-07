@@ -15,5 +15,5 @@ urlpatterns = patterns('',
         url(r'^restricted/', views.restricted, name='restricted'),
         url(r'^logout/$', views.user_logout, name='logout'),
         url(r'^review/(?P<review_id>\d+)/$', views.view_review, name='view_review'),
-
+        url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
         )

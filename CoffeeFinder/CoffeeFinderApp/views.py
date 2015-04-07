@@ -1,17 +1,20 @@
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
+from django.shortcuts import render
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
+from forms import Page_form , UserForm, ImageForm
 from forms import Page_form , UserForm , ReviewForm
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from CoffeeFinderApp.models import Coffee_item_review
-
-
-
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse
 
 
 
@@ -89,19 +92,26 @@ def create_page(request):
 # Once form is filled we face two scenarios . whether form is invalid then error messages are displayed , for example" This field is required. "
 # Other scenario form is valid . form is then saved and we're redirected to our list of avalaible coffee_items .
 # Kareem Tarek 28-1181 
+
+
+#action called by review post form, it validates the form and enters the review in the item review model
 def post_item_review(request):
+
     if request.POST:
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/CoffeeFinderApp')
+            coffee_item = form.cleaned_data['coffee_item']
+            coffee_item_id = coffee_item.id
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_id}))
+            #return HttpResponseRedirect('/CoffeeFinderApp')
         else:
             form = ReviewForm()
     args = {}
     args.update(csrf(request))
     args['form'] = form
 
-    return render_to_response('CoffeeFinderApp/index.html',args)
+    return HttpResponseRedirect('CoffeeFinderApp/page_list')
 
 
 def view_review(request, review_id):
@@ -135,14 +145,49 @@ def page(request, page_name_slug):
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
+        request.session['page_id'] = page.id
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
+    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+    context_dict['images'] = images
+    form = ImageForm()
+    context_dict['form'] = form
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
     #Kareem Tarek 28-1181
+
+def uploadImage(request):
+    context_dict = {}
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid:
+            form.save()
+            page = form.cleaned_data['page']
+            page_name_slug = page.slug
+            noImage = False
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+        else:
+            form = form.save(commit=False)
+            page = form.cleaned_data['page']
+            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
+            form = ImageForm()
+            noImage = True
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+    else:
+        form = ImageForm()
+    return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+
+
+
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -189,17 +234,3 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/CoffeeFinderApp/')
-
-
-    
- 
-
-
-
-
-
-    
- 
-
-
-
