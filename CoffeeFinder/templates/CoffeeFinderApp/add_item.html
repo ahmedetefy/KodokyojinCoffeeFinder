@@ -1,0 +1,35 @@
+<html>
+      <body>
+              
+
+        <h3> Add item </h3>
+
+        <form id="Coffee_item_form" method="post" action="/CoffeeFinderApp/add_item/">
+
+            {% csrf_token %}
+            
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+                <br>
+                <br>
+            {% endfor %} 
+            <br><br>
+
+                   {% if messages %}
+          <div class="alert alert-success">
+            {% for msg in messages %}{{ msg }}{% endfor %}
+          </div>
+          {% endif %}
+
+
+      <input type="submit" name="submit" value="Create Item" />
+        </form> <br><br>
+
+
+         <a href="/CoffeeFinderApp/page/{{page_slug}}"> Back to {{page_name}} </a>
+
+    </body>
+
+</html>
