@@ -213,6 +213,12 @@ def register(request):
             user.set_password(user.password)
             user.save()
             registered = True
+            # From this part till the return http response, we login the user automatically
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return HttpResponseRedirect('/CoffeeFinderApp/')
         else:
             print user_form.errors
     else:
