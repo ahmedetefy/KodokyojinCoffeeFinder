@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
-from django.http import HttpResponseRedirect,HttpResponse
-from django.core.context_processors import csrf
 from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
@@ -20,8 +18,8 @@ from django.contrib import messages
 
 
 def index(request):
-	context_dict = {}
-	return render(request, 'CoffeeFinderApp/index.html', context_dict)
+    context_dict = {}
+    return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 def map(request):
 
@@ -151,14 +149,24 @@ def page(request, page_name_slug):
         # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
         coffee_items = Coffee_item.objects.filter(page=page)
-
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
 
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
+        #Yasser
+        #Retrieve all orders that are associated with the current page.
+        order = Order.objects.filter(coffeeshop=page)
+        #Add the results to the template context under the name orders.
+        context_dict['orders'] = order
+        #Retreieve the currently signed in user.
+        current_user = request.user
+        #Add the result to the template context under the name current_user.
+        context_dict['current_user'] = current_user
+        #Yasser
         request.session['page_id'] = page.id
+
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
