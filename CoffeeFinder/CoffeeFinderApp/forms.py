@@ -1,16 +1,16 @@
 from django import forms 
-from CoffeeFinderApp.models import Page , Coffee_item  , Coffee_item_image 
+from CoffeeFinderApp.models import Page , Coffee_item  , Coffee_item_image ,Coffee_item_review
 from django.contrib.auth.models import User
 
 
-    
 class Page_form(forms.ModelForm):
 
 	class Meta:
 		model = Page
 
-		fields = ['owner', 'name' , 'latitude', 'longitude', 'area', 'city', 
-        'country', 'street_number','description']
+
+		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+        # delivery added to the page_form 
 
 class Page_form_edit(forms.ModelForm):
 
@@ -22,6 +22,7 @@ class Page_form_edit(forms.ModelForm):
         model = Page
 
         fields = ['description']
+
 
 
 class UserForm(forms.ModelForm):
@@ -72,3 +73,19 @@ class ImageForm_item_edit(forms.ModelForm):
 
 
 
+class ImageForm(forms.ModelForm):
+	image = forms.ImageField( label='Select an image', required=True)
+
+	class Meta:
+		model = Coffee_page_image
+		fields = ['image','page','user']
+
+# ImageForm is a form used for uploading images to a certain coffee shop page. It takes an image
+# from the user, the one which he will upload, and the page's id
+
+
+
+class ReviewForm(forms.ModelForm):
+	class Meta:
+		model = Coffee_item_review
+		fields = ['field', 'user', 'coffee_item']

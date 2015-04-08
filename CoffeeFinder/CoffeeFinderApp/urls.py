@@ -6,6 +6,7 @@ urlpatterns = patterns('',
         url(r'^map/', views.map, name='map'),
         url(r'^shopSubscribe/', views.shopSubscribe, name = 'shopSubscribe'),
         url(r'^create_page/', views.create_page, name='create_page'),
+        url(r'^post_item_review/', views.post_item_review, name='post_item_review'),
         url(r'^page/(?P<page_name_slug>[\w\-]+)/$', views.page, name='page'),
         url(r'^coffee_item_page/(?P<coffee_item_name_id>[\w\-]+)/$', views.coffee_item_page, name='coffee_item_page'),
         url(r'^page_list/', views.page_list, name='page_list'),
@@ -20,9 +21,6 @@ urlpatterns = patterns('',
         url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
         url(r'^upload_to_item/$', views.upload_to_item, name='upload_to_item'),
         url(r'^delete_photos/(?P<id>\d+)/$', views.delete_photos, name='delete_photos'),
-
-
-        
-
-
+        url(r'^review/(?P<review_id>\d+)/$', views.view_review, name='view_review'),
+        url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
         )

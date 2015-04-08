@@ -1,18 +1,19 @@
 from django.conf import settings
 from django.shortcuts import render , render_to_response
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Coffee_item_image
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Coffee_item_image,Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
+from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,
+ImageForm_item_edit,ReviewForm,ImageForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.template import RequestContext
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-
-
-
+from django.shortcuts import render, get_object_or_404
+from CoffeeFinderApp.models import Coffee_item_review
+from django.contrib.auth import authenticate, login
 
 
 
@@ -29,10 +30,8 @@ def map(request):
 
 def shopSubscribe(request):
 
-	context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
-	return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
-
-
+    context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
+    return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
 def page_list(request):
 
@@ -65,9 +64,16 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['form'] = form
 
 
+        reviews = Coffee_item_review.objects.filter(coffee_item_id = coffee_item_name_id)
+        context_dict['reviews'] = reviews
+
     except Coffee_item.DoesNotExist:
   
         pass
+    
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
 
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
 
@@ -78,21 +84,15 @@ def create_page(request):
 
     if request.POST:
         form = Page_form(request.POST)
-        if form.is_valid():
-            form.save()
-
-            return HttpResponseRedirect('/CoffeeFinderApp')
-        else:
-
+        return HttpResponseRedirect('/CoffeeFinderApp')
+    else:
          form = Page_form()
-
+         
     args = {}
     args.update(csrf(request))
     args['form']= form
 
     return render_to_response('CoffeeFinderApp/shopSubscribe.html',args)
-
-
 # After forms.py is created in its right directory , a ' Coffee_item_form ' is added to the list of forms .
 # .. so we could create several instances of Coffee_items manualy . 
 # Once form is filled we face two scenarios . whether form is invalid then error messages are displayed , for example" This field is required. "
@@ -100,6 +100,35 @@ def create_page(request):
 # Kareem Tarek 28-1181 
 
 
+
+#action called by review post form, it validates the form and enters the review in the item review model
+def post_item_review(request):
+
+    if request.POST:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            coffee_item = form.cleaned_data['coffee_item']
+            coffee_item_id = coffee_item.id
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_id}))
+            #return HttpResponseRedirect('/CoffeeFinderApp')
+        else:
+            form = ReviewForm()
+    args = {}
+    args.update(csrf(request))
+    args['form'] = form
+
+    return HttpResponseRedirect('CoffeeFinderApp/page_list')
+
+
+def view_review(request, review_id):
+    context_dict={}
+    review = get_object_or_404(Coffee_item_review, pk=review_id)
+    context_dict['review_field'] = review.field
+    context_dict['review_id'] = review.id
+    return render(request,'CoffeeFinderApp/view_review.html',context_dict)
+    # view_review to get a review object if it's in the review table else will return error
+    # define the fields in the html page by context_dict and link the view to the view_review html page 
 
 def page(request, page_name_slug):
 
@@ -122,19 +151,53 @@ def page(request, page_name_slug):
 
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
+
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
+        request.session['page_id'] = page.id
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
-
-
+    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+    context_dict['images'] = images
+    form = ImageForm()
+    context_dict['form'] = form
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
     # Go render the response and return it to the client.
     return render(request, 'CoffeeFinderApp/page.html', context_dict)
     #Kareem Tarek 28-1181
+
+def uploadImage(request):
+    context_dict = {}
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid:
+            form.save()
+            page = form.cleaned_data['page']
+            page_name_slug = page.slug
+            noImage = False
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+        else:
+            form = form.save(commit=False)
+            page = form.cleaned_data['page']
+            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
+            form = ImageForm()
+            noImage = True
+            context_dict['noImage'] = noImage
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+    else:
+        form = ImageForm()
+    return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+
+
+
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -343,7 +406,6 @@ def delete_photos(request, id):
 
 
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
-
 
 
 
