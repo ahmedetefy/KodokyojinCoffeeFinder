@@ -17,5 +17,12 @@ urlpatterns = patterns('',
         url(r'^description_edit/', views.description_edit, name = 'description_edit'),
         url(r'^item_edit/', views.item_edit, name = 'item_edit'),
         url(r'^delete/(?P<id>\d+)/$', views.delete_item ,name = 'delete_item'),
+        url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
+        url(r'^upload_to_item/$', views.upload_to_item, name='upload_to_item'),
+        url(r'^delete_photos/(?P<id>\d+)/$', views.delete_photos, name='delete_photos'),
+
+
+        
+
 
         )

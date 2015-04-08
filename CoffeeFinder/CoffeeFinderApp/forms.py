@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page , Coffee_item 
+from CoffeeFinderApp.models import Page , Coffee_item  , Coffee_item_image 
 from django.contrib.auth.models import User
 
 
@@ -51,6 +51,24 @@ class Coffee_item_form(forms.ModelForm):
         fields = ('name', 'price', 'description' )
 
         exclude = ['page']
+        
+
+class ImageForm_item(forms.ModelForm):
+    image = forms.ImageField( label='Select an image', )
+
+    class Meta:
+
+      model = Coffee_item_image
+      fields = ['image','page','item']
+
+
+class ImageForm_item_edit(forms.ModelForm):
+    image = forms.ImageField( label='Select an image', )
+
+    class Meta:
+
+      model = Coffee_item_image
+      fields = ['image','page','item']
 
 
 

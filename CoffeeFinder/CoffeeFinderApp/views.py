@@ -1,15 +1,15 @@
 from django.conf import settings
-from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
+from django.shortcuts import render , render_to_response
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Coffee_item_image
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit
-from django.shortcuts import render_to_response
-from django.contrib.auth import authenticate, login
+from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.template import RequestContext
 from django.contrib import messages
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 
 
 
@@ -46,9 +46,6 @@ def page_list(request):
 def coffee_item_page(request, coffee_item_name_id):
 
     context_dict = {}
-     
-
-
 
     try:
        
@@ -56,7 +53,16 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['coffee_item_name'] = coffee_item.name
         context_dict['coffee_item'] = coffee_item
         request.session['item_id'] = coffee_item.id
+        context_dict['page_id'] = request.session['page_id']
 
+        page = Page.objects.get(id= request.session['page_id'])
+        context_dict['page'] = page
+
+
+        images = Coffee_item_image.objects.filter(item_id= coffee_item.id ,page_id= page.id )
+        context_dict['images'] = images
+        form = ImageForm_item()
+        context_dict['form'] = form
 
 
     except Coffee_item.DoesNotExist:
@@ -221,6 +227,13 @@ def add_item(request):
     # Render the form with error messages (if any).
     return render_to_response('CoffeeFinderApp/add_item.html', {'form': form}, context,)
 
+    # Add_item is a form to add new item to a certain page .
+    # Since our path to the link to add new item includes url of a page , we use session page_id
+    # page_id is passed to template to be inserted of the newly created item 
+    # field checks are performed . price should be > 0 and item should be new to the page
+    # Pre implemented django messaging system is used to guide user through the form 
+    # Kareem Tarek 28-1181 
+
 
 def description_edit(request):
 
@@ -237,7 +250,10 @@ def description_edit(request):
             form.save()
             messages.success(request, " Your data has been edited successfully ! ")
             # If the save was successful, redirect to another page
+            # Description attribute of page is fetched to be edited .
+            # Kareem Tarek 28-1181 
  
+
     else:
         form = Page_form_edit(instance=page)
  
@@ -278,4 +294,57 @@ def delete_item(request, id):
         context_dict['item']= Coffee_item.objects.get(id=id)
         item = Coffee_item.objects.get(pk=id).delete()
         return render(request, 'CoffeeFinderApp/deleted.html', context_dict)
+
+def uploadImage(request):
+  context_dict = {}
+
+  if request.method == 'POST':
+     form = ImageForm_item(request.POST, request.FILES)
+
+     if form.is_valid():
+
+          form.save()
+          item = form.cleaned_data['item']
+          coffee_item_name_id = item.id
+
+          return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_name_id}))
+  
+  else:
+      form = ImageForm_item()
+  return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+def upload_to_item(request):
+
+    context = {}
+    page = Page.objects.get(id=request.session['page_id'])
+    item = Coffee_item.objects.get(id= request.session['item_id'] )
+    context['page_id'] = page.id
+    context['item_id'] = item.id
+    form = ImageForm_item()
+    context['form'] = form
+
+    return render(request, 'CoffeeFinderApp/upload_to_item.html', context)
+
+    # Since our path to the link to upload_to_item ( Upload image to item ) 
+    # includes url of a page , url of item ,  we use sessions page_id and item_id 
+    # parameters are passed to template to be added to image attributes 
+    # In template we're able to browse computer to fetch desired image .
+    # Once upload is triggered we're redirected to uploadImage for the actual upload of the image 
+    # Necessary form validations are handled there.
+    # Kareem Tarek 28-1181
+
+
+def delete_photos(request, id):
+        context_dict = {}
+        page= Page.objects.get(id=request.session['page_id'])
+        item = Coffee_item.objects.get(id=id)
+        context_dict['item']= item
+        images = Coffee_item_image.objects.filter(item_id= item.id ,page_id= page.id ).delete()
+
+
+        return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
+
+
+
+
 

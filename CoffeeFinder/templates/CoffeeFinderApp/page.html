@@ -10,7 +10,6 @@
             <ul>
                 {% for coffee_item in coffee_items %}
                 <li><h5><a href="/CoffeeFinderApp/coffee_item_page/{{ coffee_item.id }}">{{ coffee_item.name}}</a></h5></li>
-                <img src="{% static coffee_item.url %}" alt="No picture of item" />
                 {% endfor %}
             </ul>
             {% else %}
@@ -27,6 +26,9 @@
          {{ page_description}}
          <br><br>
         <h4> <a href="/CoffeeFinderApp/add_item/"> Add new item </a></h4>
+
+        <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
+
 
       <br><br>
 
