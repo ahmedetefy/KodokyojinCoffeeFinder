@@ -1,7 +1,6 @@
 from django import forms 
 from CoffeeFinderApp.models import Page, Coffee_page_image 
 from CoffeeFinderApp.models import Page, Coffee_item_review  
-from CoffeeFinderApp.models import Page
 from django.contrib.auth.models import User
 
 
@@ -38,9 +37,7 @@ class ImageForm(forms.ModelForm):
 # ImageForm is a form used for uploading images to a certain coffee shop page. It takes an image
 # from the user, the one which he will upload, and the page's id
 
-
-
 class ReviewForm(forms.ModelForm):
 	class Meta:
 		model = Coffee_item_review
-		fields = ['field', 'user', 'coffee_item']
+		fields = ['field','user','coffee_item']
