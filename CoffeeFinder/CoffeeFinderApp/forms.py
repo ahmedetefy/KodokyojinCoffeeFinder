@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page , Coffee_item  , Coffee_item_image ,Coffee_item_review
+from CoffeeFinderApp.models import Page , Coffee_item , Coffee_item_image ,Coffee_item_review ,Coffee_page_image
 from django.contrib.auth.models import User
 
 

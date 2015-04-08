@@ -3,8 +3,7 @@ from django.shortcuts import render , render_to_response
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Coffee_item_image,Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,
-ImageForm_item_edit,ReviewForm,ImageForm
+from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit,ReviewForm,ImageForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.template import RequestContext
