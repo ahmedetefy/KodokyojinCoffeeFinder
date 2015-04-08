@@ -214,50 +214,7 @@ def makeOrder(request, page_name_slug):
                 return render_to_response('CoffeeFinderApp/makeOrder.html', {}, context)
             myOrder.save() #save the form to our model
             return HttpResponse('Your Coffee has been ordered') #send to a new page that has the following text
-def makeOrder(request, page_name_slug):
-    #pageID = request.session['my_page']
-    context_dict = {}
- 
-    # Get the context from the request.
-    page = Page.objects.get(slug=page_name_slug)
-    context_dict['myPage'] = page
-    context_dict["Coffee"] = Coffee_item.objects.filter(page_id = page.id)
-    context = RequestContext(request)
 
-    # A HTTP POST?
-    if request.method == 'POST':
-        form = DeliveryForm(request.POST)
-        # Have we been provided with a valid form?
-        if form.is_valid():
-            # Save the new category to the database.
-            myOrder = form.save(commit=False)
-            try:
-                try:
-                    coffee = Coffee_item.objects.get(id=form['coffeeshop_item_id'].value(),page_id = page.id)
-                except:
-                    return HttpResponse("An incorrect ID was entered.. Order was not Successful")
-                myOrder.coffeeshop_item = coffee
-                myOrder.coffeeshop = page
-            except Order.DoesNotExist:
-                # If we get here, the category does not exist.
-                # Go back and render the add category form as a way of saying the category does not exist.
-                return render_to_response('CoffeeFinderApp/makeOrder.html', {}, context)
-            # Now call the index() view.
-            # The user will be shown the homepage.
-            myOrder.save()
-            return HttpResponse('Your Coffee has been ordered')
-        else:
-            # The supplied form contained errors - just print them to the terminal.
-            print form.errors
-    else:
-        # If the request was not a POST, display the form to enter details.
-        form = DeliveryForm()
-    context_dict['form'] = form
-    # Bad form (or form details), no form supplied...
-    # Render the form with error messages (if any).
-    v = 'CoffeeFinderApp/makeOrder.html'
-    return render_to_response(v, context_dict, context) #TO DO
-#done by Ahmed Etefy 28 - 3954
 def editStatus(request, page_name_slug):
     context_dict = {}
     page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
