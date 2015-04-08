@@ -80,5 +80,5 @@ class Order(models.Model):
         Name = models.CharField(max_length = 128)
         phone = models.CharField(max_length = 128)
         status = models.CharField(max_length = 128)
-        coffeeshop= models.ForeignKey(Page)
+        coffeeshop = models.ForeignKey(Page)
 

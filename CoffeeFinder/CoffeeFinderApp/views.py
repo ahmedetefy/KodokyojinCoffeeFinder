@@ -237,6 +237,7 @@ def makeOrder(request, page_name_slug):
                 except:
                     return HttpResponse("An incorrect ID was entered.. Order was not Successful")
                 myOrder.coffeeshop_item = coffee
+                myOrder.coffeeshop = page
             except Order.DoesNotExist:
                 # If we get here, the category does not exist.
                 # Go back and render the add category form as a way of saying the category does not exist.
