@@ -14,7 +14,9 @@ urlpatterns = patterns('',
         url(r'^login/$', views.user_login, name='login'),
         url(r'^restricted/', views.restricted, name='restricted'),
         url(r'^logout/$', views.user_logout, name='logout'),
+        url(r'^review/(?P<review_id>\d+)/$', views.view_review, name='view_review'),
         url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
         url(r'^(?P<page_name_slug>[\w\-]+)/makeOrder/', views.makeOrder, name='makeOrder'),
         url(r'^(?P<page_name_slug>[\w\-]+)/editStatus/', views.editStatus, name='editOrder'))
+
 

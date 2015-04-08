@@ -1,6 +1,8 @@
 from django.conf import settings
+from django.shortcuts import render, get_object_or_404
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile
 from django.shortcuts import render
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review
 from django.http import HttpResponseRedirect,HttpResponse
 from django.core.context_processors import csrf
 from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
@@ -11,6 +13,7 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+
 
 
 def index(request):
@@ -28,8 +31,6 @@ def shopSubscribe(request):
 
     context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
     return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
-
-
 
 def page_list(request):
 
@@ -53,6 +54,9 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['coffee_item_name'] = coffee_item.name
         context_dict['coffee_item'] = coffee_item
 
+        reviews = Coffee_item_review.objects.filter(coffee_item_id = coffee_item_name_id)
+        context_dict['reviews'] = reviews
+
     except Coffee_item.DoesNotExist:
         # We get here if we didn't find the specified category.
         # Don't do anything - the template displays the "no category" message for us.
@@ -72,14 +76,10 @@ def create_page(request):
 
     if request.POST:
         form = Page_form(request.POST)
-        if form.is_valid():
-            form.save()
-
-            return HttpResponseRedirect('/CoffeeFinderApp')
-        else:
-
+        return HttpResponseRedirect('/CoffeeFinderApp')
+    else:
          form = Page_form()
-
+         
     args = {}
     args.update(csrf(request))
     args['form']= form
@@ -111,6 +111,16 @@ def post_item_review(request):
 
     return HttpResponseRedirect('CoffeeFinderApp/page_list')
 
+
+def view_review(request, review_id):
+    context_dict={}
+    review = get_object_or_404(Coffee_item_review, pk=review_id)
+    context_dict['review_field'] = review.field
+    context_dict['review_id'] = review.id
+    return render(request,'CoffeeFinderApp/view_review.html',context_dict)
+    # view_review to get a review object if it's in the review table else will return error
+    # define the fields in the html page by context_dict and link the view to the view_review html page 
+
 def page(request, page_name_slug):
 
     # Create a context dictionary which we can pass to the template rendering engine.
@@ -128,6 +138,7 @@ def page(request, page_name_slug):
 
         # Adds our results list to the template context under name pages.
         context_dict['coffee_items'] = coffee_items
+
         # We also add the page object from the database to the context dictionary.
         # We'll use this in the template to verify that the page exists.
         context_dict['page'] = page
@@ -326,14 +337,4 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/CoffeeFinderApp/')
-
-
-
-
-
-
-    
- 
-
-
 
