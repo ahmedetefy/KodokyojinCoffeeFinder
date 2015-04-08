@@ -1,6 +1,5 @@
 from django import forms 
 from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order
-
 from django.contrib.auth.models import User
 
 
@@ -9,7 +8,9 @@ class Page_form(forms.ModelForm):
 	class Meta:
 		model = Page
 
-		fields = ['owner', 'name' , 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+
+# delivery added to the page_form 
 
 
 class UserForm(forms.ModelForm):
@@ -78,3 +79,4 @@ class EditStatus(forms.ModelForm):
 #the delivery form for making an order 
 #edit status for manager of the page to be able to add status on his order
 #Ahmed Etefy 28 - 3954
+
