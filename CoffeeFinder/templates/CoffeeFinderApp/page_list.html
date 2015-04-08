@@ -11,4 +11,9 @@
        {% endif %}
 
        <!-- for loop , loops through ' Page' table in our database to list all Coffee Shop pages  -->
-       <!-- Kareem Tarek 28-1181 -->
+       <!-- Kareem Tarek 28-1181 -->  {% if user.is_authenticated %}
+<a href="/CoffeeFinderApp/logout/">Logout</a><br />
+{% else %}
+<a href="/CoffeeFinderApp/register/">Register Here</a><br />
+<a href="/CoffeeFinderApp/login/">Login</a><br />
+{% endif %}
