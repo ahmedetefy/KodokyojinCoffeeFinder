@@ -9,9 +9,12 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
+
 class Page(models.Model):
         owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)
+        delivery = models.BooleanField(default=False)
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         latitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         slug = models.SlugField(unique=True)
@@ -21,9 +24,6 @@ class Page(models.Model):
         street_number = models.CharField(max_length=12,default=0)
 
 
-
-       
-
         def save(self, *args, **kwargs):
                 self.slug = slugify(self.name)
                 super(Page, self).save(*args, **kwargs)
@@ -31,7 +31,7 @@ class Page(models.Model):
         def __unicode__(self):
                 return self.name
 
-
+#boolean feila added to Page to make the owner able to add delivery option to his coffeeshop
 
 
 class Coffee_item(models.Model):
@@ -70,4 +70,3 @@ class Coffee_item_review(models.Model):
     field = models.TextField(max_length=400, null = False)
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
-

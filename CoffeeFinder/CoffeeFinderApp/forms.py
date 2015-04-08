@@ -9,7 +9,9 @@ class Page_form(forms.ModelForm):
 	class Meta:
 		model = Page
 
-		fields = ['owner', 'name' , 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+
+# delivery added to the page_form 
 
 
 class UserForm(forms.ModelForm):
@@ -35,9 +37,7 @@ class ImageForm(forms.ModelForm):
 # ImageForm is a form used for uploading images to a certain coffee shop page. It takes an image
 # from the user, the one which he will upload, and the page's id
 
-
 class ReviewForm(forms.ModelForm):
 	class Meta:
 		model = Coffee_item_review
 		fields = ['field','user','coffee_item']
-
