@@ -55,8 +55,12 @@
                   {{ coffeeshop.latitude}}, 
                   {{ coffeeshop.longitude }}, 
                   "{{ coffeeshop.name }}");// calls build marker to create a marker at given locations
+                var alink = document.createElement("a");
+                alink.href = "/CoffeeFinderApp/page/{{ coffeeshop.slug}}/";
+                alink.text = "{{ coffeeshop.name }}";
+                document.getElementsByTagName("body")[0].appendChild(alink)
                 infowindow{{ coffeeshop.pk }} = new google.maps.InfoWindow({ 
-                content:"{{ coffeeshop.name }}" }); // creates an info window object
+                content: alink }); // creates an info window object
                 infowindow{{ coffeeshop.pk }}.open(map,marker{{ coffeeshop.pk }});// adds an info window above marker
               }  
            {% endfor %}
