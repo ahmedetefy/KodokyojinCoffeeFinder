@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page , Coffee_item , Coffee_item_image ,Coffee_item_review ,Coffee_page_image
+from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item
 from django.contrib.auth.models import User
 
 
@@ -32,12 +32,25 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password')
 
+class DeliveryForm(forms.ModelForm):
+	coffeeshop_item_id = forms.IntegerField(help_text="Please enter the ID of your favorite Coffee.")
+	quantity = forms.IntegerField(min_value = 1, help_text = "Enter a quantity")
+	Name = forms.CharField(max_length = 128, help_text = "Enter Your Name")
+	phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
 
+	class Meta:
+		model = Order
+		fields = ('quantity', 'Name','phone')
+    
+    #class Meta:
+    #	model = Order
+    #	fields = ('coffeeshop_item', 'quantity','Name','phone')
 
 
 # ' Page form model ' for addition of pages through user's suitable interface .
 # By using this form a coffee shop owner could create his page  .
 # Kareem Tarek 28-1181 .
+
 
 class Coffee_item_form(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Item Title")
@@ -73,6 +86,7 @@ class ImageForm_item_edit(forms.ModelForm):
 
 
 
+
 class ImageForm(forms.ModelForm):
 	image = forms.ImageField( label='Select an image', required=True)
 
@@ -87,3 +101,29 @@ class ReviewForm(forms.ModelForm):
 	class Meta:
 		model = Coffee_item_review
 		fields = ['field','user','coffee_item']
+
+
+
+
+class DeliveryForm(forms.ModelForm):
+	coffeeshop_item_id = forms.IntegerField(help_text="Please enter the ID of your favorite Coffee.")
+	quantity = forms.IntegerField(min_value = 1, help_text = "Enter a quantity")
+	Name = forms.CharField(max_length = 128, help_text = "Enter Your Name")
+	phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
+
+	class Meta:
+		model = Order
+		fields = ('quantity', 'Name','phone')
+
+class EditStatus(forms.ModelForm):
+	id = forms.IntegerField(help_text="Please enter the ID of the Order.")
+	status = forms.CharField(max_length = 128, help_text = "Enter the Status of Order")
+	class Meta:
+		model = Order
+		fields = ('id',)
+   
+#the delivery form for making an order 
+#edit status for manager of the page to be able to add status on his order
+#Ahmed Etefy 28 - 3954
+
+

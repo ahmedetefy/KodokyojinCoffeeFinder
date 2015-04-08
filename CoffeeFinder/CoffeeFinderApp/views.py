@@ -1,25 +1,21 @@
 from django.conf import settings
+from django.shortcuts import get_object_or_404
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
+from django.http import HttpResponseRedirect,HttpResponse
+from django.core.context_processors import csrf
+from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
 from django.shortcuts import render , render_to_response
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Coffee_item_image,Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
 
-from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit,ReviewForm,ImageForm
-
-
+from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
 from django.contrib.auth import authenticate, login
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.template import RequestContext
-from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-
-from django.shortcuts import render, get_object_or_404
-from CoffeeFinderApp.models import Coffee_item_review
-
-
+from django.template import RequestContext
+from django.contrib import messages
 
 
 
@@ -142,16 +138,15 @@ def page(request, page_name_slug):
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
-
     try:
         # Can we find a page name slug with the given name?
         # If we can't, the .get() method raises a DoesNotExist exception.
         # So the .get() method returns one model instance or raises an exception.
         page = Page.objects.get(slug=page_name_slug)
         context_dict['page_name'] = page.name
+        context_dict['page_name_slug'] = page_name_slug
         context_dict['page_description'] = page.description
         request.session['page_id'] = page.id
-
 
         # Retrieve all of the associated Coffee items.
         # Note that filter returns >= 1 model instance.
@@ -200,6 +195,82 @@ def uploadImage(request):
     else:
         form = ImageForm()
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+
+def makeOrder(request, page_name_slug):
+    #pageID = request.session['my_page']
+    context_dict = {}
+ 
+    # Get the context from the request.
+    page = Page.objects.get(slug=page_name_slug)
+    context_dict['myPage'] = page
+    context_dict["Coffee"] = Coffee_item.objects.filter(page_id = page.id)
+    context = RequestContext(request)
+
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = DeliveryForm(request.POST)
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # Save the new category to the database.
+            myOrder = form.save(commit=False)
+            try:
+                try:
+                    coffee = Coffee_item.objects.get(id=form['coffeeshop_item_id'].value(),page_id = page.id)
+                except:
+                    return HttpResponse("An incorrect ID was entered.. Order was not Successful")
+                myOrder.coffeeshop_item = coffee
+                myOrder.coffeeshop = page
+            except Order.DoesNotExist:
+                # If we get here, the category does not exist.
+                # Go back and render the add category form as a way of saying the category does not exist.
+                return render_to_response('CoffeeFinderApp/makeOrder.html', {}, context)
+            # Now call the index() view.
+            # The user will be shown the homepage.
+            myOrder.save()
+            return HttpResponse('Your Coffee has been ordered')
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+        form = DeliveryForm()
+    context_dict['form'] = form
+    # Bad form (or form details), no form supplied...
+    # Render the form with error messages (if any).
+    v = 'CoffeeFinderApp/makeOrder.html'
+    return render_to_response(v, context_dict, context) #TO DO
+#done by Ahmed Etefy 28 - 3954
+def editStatus(request, page_name_slug):
+    context_dict = {}
+    page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
+    context = RequestContext(request) # Get the context from the request.
+    current_user = request.user #get the user instance currently logged onto the website
+    context_dict['current_user'] = current_user #pass the current user into context dictionary
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = EditStatus(request.POST) #save the form instance into var form
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # save the form item to x.
+            x = form.save(commit=False)
+            try:
+                temp = Order.objects.get(id=form['id'].value()) #obtain the order object with id passed in form into temp
+            except:
+                return HttpResponse('Invalid Order ID') #send to a HTTP page with the following text
+            temp.status = form['status'].value() #set the status attribute of the temp object to status field passed in form
+            temp.save() #update the object instance into the model
+            return HttpResponse('Status has been added') #redirect to a HTTP Page that has the following text
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+        form = EditStatus()
+    context_dict['form'] = form #pass the form into the context dictionary
+    return render_to_response('CoffeeFinderApp/editStatus.html',context_dict,context)
+#Done by Ahmed Etefy #28 - 3954
+
 
 
 
@@ -418,7 +489,6 @@ def delete_photos(request, id):
 
 
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
-
 
 
 

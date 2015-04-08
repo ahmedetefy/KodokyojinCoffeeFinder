@@ -1,7 +1,10 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
-
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -18,12 +21,12 @@ class Page(models.Model):
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         latitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
         slug = models.SlugField(unique=True)
+        delivery = models.BooleanField(default=False)
         area = models.CharField(max_length=128,default='')
         city = models.CharField(max_length=128,default='')
         country = models.CharField(max_length=128,default='')
         street_number = models.CharField(max_length=12,default=0)
         description = models.CharField(max_length=500,default='')
-
 
         def save(self, *args, **kwargs):
                 self.slug = slugify(self.name)
@@ -50,6 +53,7 @@ class Coffee_item(models.Model):
 
         def __unicode__(self):
                 return self.name
+
 
 class Coffee_item_image(models.Model):
 
@@ -87,3 +91,11 @@ class Coffee_item_review(models.Model):
     field = models.TextField(max_length=400, null = False)
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
+class Order(models.Model):
+        coffeeshop_item = models.ForeignKey(Coffee_item)
+        quantity = models.IntegerField(default=1)
+        Name = models.CharField(max_length = 128)
+        phone = models.CharField(max_length = 128)
+        status = models.CharField(max_length = 128)
+        coffeeshop = models.ForeignKey(Page)
+
