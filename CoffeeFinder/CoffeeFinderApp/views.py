@@ -3,16 +3,23 @@ from django.shortcuts import render , render_to_response
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile,Coffee_item_image,Coffee_page_image
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
+
 from forms import Page_form , UserForm , Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit,ReviewForm,ImageForm
+
+
+from django.contrib.auth import authenticate, login
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.template import RequestContext
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+
 from django.shortcuts import render, get_object_or_404
 from CoffeeFinderApp.models import Coffee_item_review
-from django.contrib.auth import authenticate, login
+
+
 
 
 
@@ -83,6 +90,8 @@ def create_page(request):
 
     if request.POST:
         form = Page_form(request.POST)
+        if form.is_valid():
+            form.save()
         return HttpResponseRedirect('/CoffeeFinderApp')
     else:
          form = Page_form()
@@ -175,7 +184,7 @@ def uploadImage(request):
     context_dict = {}
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
-        if form.is_valid:
+        if form.is_valid():
             form.save()
             page = form.cleaned_data['page']
             page_name_slug = page.slug
@@ -183,8 +192,6 @@ def uploadImage(request):
             context_dict['noImage'] = noImage
             return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
         else:
-            form = form.save(commit=False)
-            page = form.cleaned_data['page']
             page_name_slug = Page.objects.get(id=request.session['page_id']).slug
             form = ImageForm()
             noImage = True
