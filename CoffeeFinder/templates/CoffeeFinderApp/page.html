@@ -12,6 +12,7 @@
         {% ifequal page.owner username %}
         <a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a>
         {% endifequal %}
+
         {% if page %}
             {% if coffee_items %}
             <ul>
@@ -21,6 +22,7 @@
                 {% endfor %}
             </ul>
             {% else %}
+                </br>
                 <strong>No items are currently in page.</strong>
             {% endif %}
         {% else %}

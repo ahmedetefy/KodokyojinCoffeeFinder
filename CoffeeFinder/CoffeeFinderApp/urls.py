@@ -17,3 +17,4 @@ urlpatterns = patterns('',
         url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
         url(r'^(?P<page_name_slug>[\w\-]+)/makeOrder/', views.makeOrder, name='makeOrder'),
         url(r'^(?P<page_name_slug>[\w\-]+)/editStatus/', views.editStatus, name='editOrder'))
+
