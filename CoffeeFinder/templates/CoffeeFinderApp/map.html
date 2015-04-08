@@ -41,9 +41,9 @@
           });
           infowindow.open(map,marker); // Opening the info window above the marker on the map
           google.maps.event.addListener(marker,'click',function() { // Implementing an action listener upon clicking the marker
-          map.setZoom(18); // Zoom in when the marker is clicked
-          map.setCenter(marker.getPosition());// center the map on the marker
-            });
+            map.setZoom(18); // Zoom in when the marker is clicked
+            map.setCenter(marker.getPosition());// center the map on the marker
+          });
           var dest;
           var distance;
   
@@ -60,7 +60,9 @@
                 infowindow{{ coffeeshop.pk }}.open(map,marker{{ coffeeshop.pk }});// adds an info window above marker
               }  
            {% endfor %}
-           map.fitBounds(bounds); // fits the map to show all markers
+           map.setCenter(coords);
+           //map.setZoom(15);
+           //map.fitBounds(bounds); // fits the map to show all markers
           }
           function buildMarker(map, latitude, longitude, name) {
             var latlng = new google.maps.LatLng(latitude, longitude);
@@ -70,7 +72,7 @@
               map: map,
               title:name,
               });
-              bounds.extend(latlng);// to extend map to accommodate marker 
+              //bounds.extend(latlng);// to extend map to accommodate marker 
         
             return marker
           }

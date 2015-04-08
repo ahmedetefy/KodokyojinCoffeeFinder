@@ -2,7 +2,7 @@
 {% load staticfiles %} 
 
 <html>
-   
+
     <body>
         <h3>Welcome to {{ page_name }}</h3>
         <!-- Yasser -->
@@ -35,19 +35,72 @@
         {% endifequal %}
         <!-- Yasser -->
         <h4>Items: </h4>
+        {% if page.delivery %}
+        <a href="/CoffeeFinderApp/{{ page_name_slug}}/makeOrder">Make an Order</a>
+        {% endif %}
+        </br>
+        {% ifequal page.owner username %}
+        <a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a>
+        {% endifequal %}
+
         {% if page %}
             {% if coffee_items %}
             <ul>
                 {% for coffee_item in coffee_items %}
                 <li><h5><a href="/CoffeeFinderApp/coffee_item_page/{{ coffee_item.id }}">{{ coffee_item.name}}</a></h5></li>
-                <img src="{% static coffee_item.url %}" alt="No picture of item" />
                 {% endfor %}
             </ul>
             {% else %}
+                </br>
                 <strong>No items are currently in page.</strong>
+
             {% endif %}
         {% else %}
             The specified page {{ page_name }} does not exist!
+        {% endif %}
+         <br><br>
+
+
+         <h4> What makes us special ? 
+         <a href="/CoffeeFinderApp/description_edit/"> Edit </a></h4> 
+         {{ page_description}}
+         <br><br>
+        <h4> <a href="/CoffeeFinderApp/add_item/"> Add new item </a></h4>
+
+        <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
+
+
+      <br><br>
+        <h3> User uploaded images </h3>
+        {% if images %}
+            <ul>
+            {% for image in images %}
+                <p>By {{ image.user }}</p>
+                <li><a href="{{ image.image.url }}">{{ image.image }}</a></li>
+                <img src="{{ image.image.url }}" width="200" height="100" alt="{{ image.image.name }}">
+            {% endfor %}
+            </ul>
+        {% else %}
+            <h3>No images.</h3>
+        {% endif %}
+        {% if noImage %}
+            PLEASE CHOOSE A PHOTO
+        {% endif %} 
+        {% if user.is_authenticated %}
+        <!-- Upload form. Note enctype attribute! -->
+            <form action="{% url "uploadImage" %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
+                <p>
+                    {{ form.image.errors }}
+                    {{ form.image }}
+                </p>
+                <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} 
+                <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
+                <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                <p><input type="submit" value="Upload" /></p>
+            </form>
         {% endif %}
     </body>
 </html>

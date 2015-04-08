@@ -1,50 +1,5 @@
-<!DOCTYPE html>
-<html>
-  <head>
-     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <style type="text/css">
-      html, body, #map-canvas { height: 100%; margin: 0; padding: 0; width: 80%}
 
-      .controls { margin-top: 16px; border: 1px solid transparent; border-radius: 2px 0 0 2px; box-sizing: border-box; -moz-box-sizing: border-box; height: 32px;  outline: none;  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);}
 
-      #pac-input {
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 400px;
-      }
-
-       #pac-input:focus {
-        border-color: #4d90fe;
-      }
-
-      .pac-container {
-        font-family: Roboto;
-      }
-
-      #type-selector {
-        color: #fff;
-        background-color: #4d90fe;
-        padding: 5px 11px 0px 11px;
-      }
-
-      #type-selector label {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: 300;
-      }
-
-    </style>
-   
-  <script type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places">
-  </script>
-  <script type="text/javascript">
 
 
 
@@ -68,7 +23,7 @@ function initialize() {
   google.maps.event.addListener(map, 'click', function(event) {
    //adds a marker at the place of the click
         placeMarker(event.latLng);
-        document.getElementById("lat").value = event.latLng.lat();
+        document.getElementById('lat').value = event.latLng.lat();
         document.getElementById("long").value = event.latLng.lng();
         
     });
@@ -173,50 +128,15 @@ function initialize() {
 
    //splits the string into fields and store it in an array
    var add = lol.split(',');
-    document.getElementById("street").value = add[0];
-    document.getElementById("area").value = add[2];
+    window.document.getElementById("street").value = "add[0]";
+    window.document.getElementById("area").value = add[2];
     document.getElementById("city").value = add[3];
     document.getElementById("country").value = add[4];
     //document.getElementById("demo").
     //response;
   }
 
+ 
   
     google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-
-
-  </head>
-  <body>
-      
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-     
-
-     
-        <!-- form for getting coffeshop registeration info-->
-       <h2>
-       <form action ="/CoffeeFinderApp/create_page/" method="post">{% csrf_token%}
-        CoffeeShop Owner:<input size="20" type="text"  name='owner'  >
-        <br>
-        CoffeeShop Name:<input size="20" type="text"  name="name"  >
-        <br>
-        Delivery:<input size="20" type="checkbox"  name="delivery"  >
-        <br>
-        Street No:<input id="street" size="20" type="text"  name="street_number"  >
-        <br>
-        Area: <input id="area" size="20" type="text" name="area" >
-        <br>
-        City: <input id="city" size="20" type="text" name="city" >
-        <br>
-        Country: <input id="country" size="20" type="text" name="country"  >
-        <br>
-        <input id="long" size="20" type="text" name="longitude"  hidden> <br>
-        <input id="lat" size="20" type="text" name="latitude" hidden >
-        <input size = "20" type="submit" value="create page">  
-        </form>
-      </h2>
-
-
-   <div id="map-canvas"></div>
-  </body>
-</html>
+ 

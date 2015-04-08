@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CoffeeFinder App</title>
+    </head>
+
+    <body>
+        <h1>Make an Order</h1>
+        <table style="width:40%">
+        <tr>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Price</td>
+        </tr>
+        {% for c in Coffee %}
+            <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.price }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        </br>
+        <form method="post" action="">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field.help_text }}
+                {{ field }}
+                </br>
+            {% endfor %}
+            </br>
+            <input type="submit" name="submit" value="Make an Order" />
+        </form>
+    </body>
+
+</html>
