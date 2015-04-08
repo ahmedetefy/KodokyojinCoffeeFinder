@@ -40,7 +40,6 @@ class Coffee_item(models.Model):
         price = models.IntegerField(default=0)
         slug = models.SlugField(unique=False)
         page = models.ForeignKey(Page)
-        photo = models.ImageField(upload_to = 'static/images', default = 'static/images/no-img.jpg')
         description = models.CharField(max_length=200)
        
 
