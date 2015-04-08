@@ -17,7 +17,6 @@
                         <td>Price</td>
                         <td>Customer's name</td>
                         <td>Phone number</td>
-                        <td>Status</td>
                       </tr>
                     {% for order in orders %}
                       <tr>
@@ -25,9 +24,8 @@
                         <td>{{ order.coffeeshop_item.name}}</td>
                         <td>{{ order.quantity}}</td>
                         <td>{{ order.coffeeshop_item.price}}</td>
-                        <td>{{ order.Name}}</td>
-                        <td>{{ order.phone}}</td>
-                        <td>{{ order.status}}</td>
+                        <td>{{ order.name}}</td>
+                        <td>{{ order.longitude}} , {{ order.latitude}}</td>
                       </tr>
                     {% endfor %}
                     </table>
