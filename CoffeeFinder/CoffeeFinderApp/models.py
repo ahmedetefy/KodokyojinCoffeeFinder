@@ -50,15 +50,7 @@ class Coffee_item(models.Model):
         def __unicode__(self):
                 return self.name
 
-class Order(models.Model):
-        coffeeshop_item = models.ForeignKey(Coffee_item)
-        quantity = models.IntegerField(default=1)
-        Name = models.CharField(max_length = 128)
-        phone = models.CharField(max_length = 128)
 
-
-        def __unicode__(self):
-                return self.coffeeshop_item
 # Since a space is not allowed in a url , presence of slug explicitly eliminates spaces in objects' name for url access  .
 # For example , item Mocha Frappe would automatically assigned slug name Mocha-Frappe .
 # After assigning a ' space free 'slug name Mocha-Frappe is easily accessed as an individual item through the url 
