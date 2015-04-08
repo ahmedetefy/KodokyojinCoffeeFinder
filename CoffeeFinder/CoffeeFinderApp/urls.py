@@ -23,4 +23,9 @@ urlpatterns = patterns('',
         url(r'^delete_photos/(?P<id>\d+)/$', views.delete_photos, name='delete_photos'),
         url(r'^review/(?P<review_id>\d+)/$', views.view_review, name='view_review'),
         url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
+        url(r'^uploadImage_item/$', views.uploadImage_item, name='uploadImage_item'),
+
+
+
+        
         )

@@ -357,7 +357,7 @@ def delete_item(request, id):
         item = Coffee_item.objects.get(pk=id).delete()
         return render(request, 'CoffeeFinderApp/deleted.html', context_dict)
 
-def uploadImage(request):
+def uploadImage_item(request):
   context_dict = {}
 
   if request.method == 'POST':

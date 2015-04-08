@@ -1,4 +1,4 @@
-<form action="{% url "uploadImage" %}" method="post" enctype="multipart/form-data">
+<form action="{% url "uploadImage_item" %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <p>{{ form.non_field_errors }}</p>
   <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
