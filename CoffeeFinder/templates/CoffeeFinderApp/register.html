@@ -96,7 +96,7 @@
                 <h2 id="order" class="section-heading text-center">thank you for registering!</h2>
                 <a href="/CoffeeFinderApp/">Return to the HomePage</a><br/>
             {% else %}
-            <form role="form" data-menu-order="content-form" class="box" id="user_form" method="post" action="/CoffeeFinderApp/register/" enctype="multipart/form-data">
+            <form role="form" data-menu-order="content-form" class="box" id="login_form" method="post" action="/CoffeeFinderApp/register/" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
             {{ user_form.as_p }}
