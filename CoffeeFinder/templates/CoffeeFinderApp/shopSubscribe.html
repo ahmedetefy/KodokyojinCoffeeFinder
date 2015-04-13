@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
         <style>
       html, body, #map {
-        height: 80%;
+        height: 500px;
         margin: 100px 0px 0px 0px;
         padding: 0px 5px 0px 5px;
       }
@@ -193,7 +193,8 @@ function initialize() {
           </div>
         </div>
       </header>
-          <section class="style-2">
+
+          <section class="style-2" >
         <div class="container">
           <div class="row">
             <div class="col-md-12">
@@ -232,7 +233,6 @@ function initialize() {
           </div>
           <div class="row">
             <div class="col-md-6">
-              <input id="pac-input" class="controls" type="text" placeholder="Search Box">
             <!-- form for getting coffeshop registeration info-->
             <form role="form" data-menu-order="content-form" class="box" id="login_form" action ="/CoffeeFinderApp/create_page/" method="post">
             {% csrf_token %}
@@ -243,8 +243,11 @@ function initialize() {
             <input size="20" type="text"  name="name" placeholder="CoffeeShop Name"  >
             </div>
             <div class="form-group">
-            Delivery: <input size="20" type="checkbox"  name="delivery"  >
+            Do You Offer Delivery? : <input size="20" type="checkbox"  name="delivery"  >
             </div>
+            <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+            <div class="form-group">
+          </div>
             <div class="form-group">
             <input id="street" size="20" type="text"  name="street_number" placeholder="Street Nr." >
             </div>
@@ -264,13 +267,18 @@ function initialize() {
             <input type="submit" value="Create Your Page" data-menu-order="content-form-submit" class="btn " />
         </form>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" >
+              <br>
+              <h6> Where is your Coffee Maker? </h6>
+                          <section id="map" class ="map"></section>
+
+
             </div>
           </div>
         </div>
       </section>
     </div>
-                <section id="map" class ="map"></section>
+    </div>
                       <footer class="site-footer">
         <div class="copyright">
           <div class="container">
@@ -282,7 +290,6 @@ function initialize() {
               </div>
             </div>
           </div>
-        </div>
       </footer>
         </body>
 
