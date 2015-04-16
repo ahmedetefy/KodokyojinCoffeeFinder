@@ -139,15 +139,14 @@
           </div>
         </div>
       </div>
-        <section class="style-2">
+    
                 <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
                     <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
                         <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
                         <br><br>
-                        <h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>
+                        <!--<h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>-->
                     </div>
                 </div>
-        </section> 
           
       <section>
         <div class="container">
@@ -211,7 +210,16 @@
               </div>
             </div>
           </div>
+
+                    <div class="row">
+            <div class="col-md-12">
+                {% if page.delivery %}
+              <h2 id="pizzas" class="section-heading text-center"> <a href="/CoffeeFinderApp/{{ page_name_slug}}/makeOrder">Make an Order</a></h2>
+                {% endif %}
+            </div>
+          </div>
         </div>
+       
       </section>
 
       <section class="style-2">
@@ -271,6 +279,27 @@
               </div>
             </div>
           </div>
+            <div class="row">
+              <div class="col-md-4 col-sm-6">
+                  {% if user.is_authenticated %}
+                  <h5> Upload an Image of our CoffeeShop</h5>
+        <!-- Upload form. Note enctype attribute! -->
+            <form action="{% url "uploadImage" %}" method="post" class="box" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
+                <p>
+                    {{ form.image.errors }}
+                    {{ form.image }}
+                </p>
+                <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} 
+                <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
+                <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                <p><input type="submit" value="Upload" class="btn md" /></p>
+            </form>
+        {% endif %}
+      </div>
+      </div>
         </div>
       </section>
     <header class="site-header">
@@ -290,9 +319,6 @@
                 </li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
-                <li>
-                <a href="/CoffeeFinderApp/description_edit/"> Edit Page's Info</a>
-                </li>
                 {% if user.is_authenticated %}
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
                 {% else %}
@@ -304,25 +330,7 @@
           </div>
         </div>
       </header>
-
-          
-        <footer class="site-footer">
-        <div class="copyright">
-          <div class="container">
-            <div class="row">
-              <div class="col-sm-6"></div>
-              <div class="col-sm-6">
-                <div class="social"><a href="#" class="fa fa-twitter"></a><a href="#" class="fa fa-facebook"></a><a href="#" class="fa fa-behance"></a><a href="#" class="fa fa-skype"></a><a href="#" class="fa fa-vimeo-square"></a><a href="#" class="fa fa-google-plus"></a><a href="#" class="fa fa-linkedin-square"></a>
-                </div>
-              </div>
-            </div>
-          </div>
-      </footer>
-  </body>
-
-    <body>
-
-        <!-- Yasser -->
+              <!-- Yasser -->
         {% ifequal page.owner current_user.username %}
             <h4>Orders: </h4>
             {% if orders %}
@@ -353,59 +361,30 @@
             {% endif %}
         {% endifequal %}
         <!-- Yasser -->
-        {% if page.delivery %}
-        <a href="/CoffeeFinderApp/{{ page_name_slug}}/makeOrder">Make an Order</a>
-        {% endif %}
+
         </br>
         {% ifequal page.owner username %}
         <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
-        <h4><a href="/CoffeeFinderApp/description_edit/"> Edit </a></h4> 
-
-   
-        <h4> <a href="/CoffeeFinderApp/add_item/"> Add new item </a></h4>
-
+        <h4><a href="/CoffeeFinderApp/description_edit/"> Edit Page's Info </a></h4> 
+        <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item </a></h4>
         <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
         {% endifequal %}
 
+          
+        <footer class="site-footer">
+        <div class="copyright">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6"></div>
+              <div class="col-sm-6">
+                <div class="social"><a href="#" class="fa fa-twitter"></a><a href="#" class="fa fa-facebook"></a><a href="#" class="fa fa-behance"></a><a href="#" class="fa fa-skype"></a><a href="#" class="fa fa-vimeo-square"></a><a href="#" class="fa fa-google-plus"></a><a href="#" class="fa fa-linkedin-square"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+      </footer>
+
         
-
-
-      
-
-
-
-      <br><br>
-        <h3> User uploaded images </h3>
-        {% if images %}
-            <ul>
-            {% for image in images %}
-                <p>By {{ image.user }}</p>
-                <li><a href="{{ image.image.url }}">{{ image.image }}</a></li>
-                <img src="{{ image.image.url }}" width="200" height="100" alt="{{ image.image.name }}">
-            {% endfor %}
-            </ul>
-        {% else %}
-            <h3>No images.</h3>
-        {% endif %}
-        {% if noImage %}
-            PLEASE CHOOSE A PHOTO
-        {% endif %} 
-        {% if user.is_authenticated %}
-        <!-- Upload form. Note enctype attribute! -->
-            <form action="{% url "uploadImage" %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <p>{{ form.non_field_errors }}</p>
-                <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
-                <p>
-                    {{ form.image.errors }}
-                    {{ form.image }}
-                </p>
-                <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} 
-                <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
-                <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
-                <p><input type="submit" value="Upload" /></p>
-            </form>
-        {% endif %}
 
         <script src="{% static 'javascript/jquery.js' %}"></script>
         <script src="{% static 'javascript/gmap3.js' %}"></script>
