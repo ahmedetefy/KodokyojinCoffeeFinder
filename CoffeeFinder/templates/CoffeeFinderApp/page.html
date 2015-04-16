@@ -321,7 +321,7 @@
   </body>
 
     <body>
-        <h3>Welcome to {{ page_name }}</h3>
+
         <!-- Yasser -->
         {% ifequal page.owner current_user.username %}
             <h4>Orders: </h4>
@@ -358,19 +358,20 @@
         {% endif %}
         </br>
         {% ifequal page.owner username %}
-        <a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a>
+        <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
+        <h4><a href="/CoffeeFinderApp/description_edit/"> Edit </a></h4> 
+
+   
+        <h4> <a href="/CoffeeFinderApp/add_item/"> Add new item </a></h4>
+
+        <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
         {% endifequal %}
 
         
 
 
-         <h4> What makes us special ? 
-         <a href="/CoffeeFinderApp/description_edit/"> Edit </a></h4> 
-         {{ page_description}}
-         <br><br>
-        <h4> <a href="/CoffeeFinderApp/add_item/"> Add new item </a></h4>
+      
 
-        <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
 
 
       <br><br>
