@@ -16,6 +16,10 @@
         <link rel="stylesheet" href="{% static 'css/layerslider.css' %}">
         <link rel="stylesheet" href="{% static 'css/prettyPhoto.css' %}">
         <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
+        <script src="{% static 'javascript/jquery.js' %}"></script>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
             <style>
           html, body, #map {
             height: 500px;
@@ -25,8 +29,63 @@
         </style>
 
        
-      <script type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places">
+      <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places">
+      </script>
+      <script type="text/javascript">
+        var lat;
+        var long;
+        var coords;
+
+        function reverseGecoding(location){
+          var lat = location.lat();
+          var lng = location.lng();
+          var xmlHttp = null;
+        
+        
+          //initialize request and send it
+          xmlHttp = new XMLHttpRequest();
+          xmlHttp.open( "GET", "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&key={{APIkey}}", false );
+          xmlHttp.send( null );
+   
+          //calls a function to process the response that was received from the request
+          ProcessRequest(xmlHttp.responseText);
+        }
+
+        function myFunction() {
+          if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            window.alert(pos);
+            reverseGecoding(pos);
+            }, function() {
+              handleNoGeolocation(true);
+            });
+          } else {
+            // Browser doesn't support Geolocation
+            handleNoGeolocation(false);
+          }
+        }
+          function ProcessRequest(response) {
+          //parse json object to a dictionary
+          var json_data = JSON.parse(response);
+          
+          //get the formatted address from the dictionary
+          var lol = json_data.results[0]['formatted_address'];
+
+          //splits the string into fields and store it in an array
+          var add = lol.split(',');
+          document.getElementById("street").value = add[0];
+          document.getElementById("area").value = add[2];
+          document.getElementById("city").value = add[3];
+          document.getElementById("country").value = add[4];
+        }
+        function handleNoGeolocation(errorFlag) {
+          if (errorFlag) {
+            var content = 'Error: The Geolocation service failed.';
+          } else {
+            var content = 'Error: Your browser doesn\'t support geolocation.';
+          }
+        }
       </script>
     </head>
     <body>
@@ -102,7 +161,7 @@
                 <button data-menu-order="notes" class="btn btn-md">add order notes</button>
               </div>
               <div class="col-md-6">
-                <button data-menu-order="review" class="btn btn-md">review your order</button>
+                <button onclick="myFunction()" data-menu-order="review" class="btn btn-md">review your order</button>
               </div>
             </div>
           </div>
@@ -127,6 +186,22 @@
               <div class="form-group">
                 <textarea placeholder="Add Notes" name="note" class="order-notes hidden"></textarea>
               </div>
+              <div class="form-group">
+              <input id="street" size="20" type="text"  name="street_number" placeholder="Street Nr." >
+              </div>
+              <div class="form-group">
+              <input id="area" size="20" type="text" name="area" placeholder="Area">
+              </div>
+              <div class="form-group">
+              <input id="city" size="20" type="text" name="city" placeholder="City">
+              </div>
+              <div class="form-group">
+              <input id="country" size="20" type="text" name="country" placeholder = "Country" >
+              </div>
+              <div class="form-group">
+              <input id="long" size="20" type="text" name="longitude"  hidden> <br>
+              <input id="lat" size="20" type="text" name="latitude" hidden >
+            </div>
               <div class="row">
                 <div class="col-md-6">
                   <button data-menu-order="back" class="btn btn-md">go back</button>
@@ -139,18 +214,12 @@
           </div>
         </div>
       </div>
-    
-                <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
-                    <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
-                        <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
-<<<<<<< HEAD
-                        <br><br>
-                        <!--<h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>-->
-=======
->>>>>>> 68ed63d40b6b67d0886bb5fff9ef5aa0f78d82d8
-                    </div>
+        <section class="style-2">
+            <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 100%;" class="parallax hidden-xs">
+                <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
+                     <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
                 </div>
-          
+            </div>
       <section>
         <div class="container">
           <div class="row">
