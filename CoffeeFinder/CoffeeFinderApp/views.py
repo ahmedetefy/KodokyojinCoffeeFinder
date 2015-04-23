@@ -126,8 +126,12 @@ def post_item_review(request):
 def view_review(request, review_id):
     context_dict={}
     review = get_object_or_404(Coffee_item_review, pk=review_id)
+    coffee_item_id = review.coffee_item_id
+    coffee_item = Coffee_item.objects.get(id=coffee_item_id)
+    context_dict['review'] = review
     context_dict['review_field'] = review.field
     context_dict['review_id'] = review.id
+    context_dict['coffee_item'] = coffee_item
     return render(request,'CoffeeFinderApp/view_review.html',context_dict)
     # view_review to get a review object if it's in the review table else will return error
     # define the fields in the html page by context_dict and link the view to the view_review html page 
