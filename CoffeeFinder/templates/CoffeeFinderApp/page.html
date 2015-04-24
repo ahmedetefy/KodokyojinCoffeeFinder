@@ -187,16 +187,20 @@
                 <textarea placeholder="Add Notes" name="note" class="order-notes hidden"></textarea>
               </div>
               <div class="form-group">
-              <input id="street" size="20" type="text"  name="street_number" placeholder="Street Nr." >
+              <input type="hidden" name="street_number" >
+              <input id="street" size="20" type="text"  name="street_number" placeholder="Street Nr." readonly>
               </div>
               <div class="form-group">
-              <input id="area" size="20" type="text" name="area" placeholder="Area">
+              <input type="hidden" name="area" >
+              <input id="area" size="20" type="text" name="area" placeholder="Area" readonly>
               </div>
               <div class="form-group">
-              <input id="city" size="20" type="text" name="city" placeholder="City">
+              <input type="hidden" name="city" >
+              <input id="city" size="20" type="text" name="city" placeholder="City" readonly>
               </div>
               <div class="form-group">
-              <input id="country" size="20" type="text" name="country" placeholder = "Country" >
+              <input type="hidden" name="country" >
+              <input id="country" size="20" type="text" name="country" placeholder = "Country" readonly>
               </div>
               <div class="form-group">
               <input id="long" size="20" type="text" name="longitude"  hidden> <br>

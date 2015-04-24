@@ -125,8 +125,7 @@
                 infowindow{{ coffeeshop.pk }}.open(map,marker{{ coffeeshop.pk }});// adds an info window above marker
               }  
            {% endfor %}
-           map.setCenter(coords);
-           //map.setZoom(15);
+            map.setCenter(coords);
            //map.fitBounds(bounds); // fits the map to show all markers
           }
           function buildMarker(map, latitude, longitude, name) {
