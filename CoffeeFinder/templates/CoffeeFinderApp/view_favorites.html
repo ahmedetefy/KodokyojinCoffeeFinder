@@ -1,0 +1,12 @@
+{% if items %}
+           
+     {% for item in items %}
+                <!-- Following line changed to add an HTML hyperlink -->
+   		hii   
+		<h4 >{{ item.coffeeshop_item_id }}</h4>
+
+     {% endfor %}
+           
+ {% else %}
+       <strong>There are no Coffee Shops present.</strong>
+ {% endif %}

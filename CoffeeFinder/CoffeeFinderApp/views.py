@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, Favourite
 from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
@@ -40,6 +40,13 @@ def page_list(request):
 
     # Render the response and send it back!
     return render(request, 'CoffeeFinderApp/page_list.html', context_dict)
+
+
+def view_favorites(request):
+    
+    items = Favourite.objects.filter(user_id = request.user.id )
+    context_dict = { 'items': items }
+    return render(request, 'CoffeeFinderApp/view_favorites.html', context_dict)
 
 
 def coffee_item_page(request, coffee_item_name_id):

@@ -102,3 +102,8 @@ class Order(models.Model):
         status = models.CharField(max_length = 128)
         coffeeshop = models.ForeignKey(Page)
 
+class Favourite(models.Model):
+    user = models.ForeignKey(User)
+    coffeeshop_item = models.ForeignKey(Coffee_item)
+    page = models.ForeignKey(Page)
+
