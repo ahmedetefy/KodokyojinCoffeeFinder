@@ -13,9 +13,8 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return self.user.username
 
-
 class Page(models.Model):
-        owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
+        owner = models.ForeignKey(User)
         name = models.CharField(max_length=128,unique=True)
         delivery = models.BooleanField(default=False)
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
@@ -27,6 +26,9 @@ class Page(models.Model):
         country = models.CharField(max_length=128,default='')
         street_number = models.CharField(max_length=12,default=0)
         description = models.CharField(max_length=500,default='')
+        verified = models.BooleanField(default=0)
+
+
 
         def save(self, *args, **kwargs):
                 self.slug = slugify(self.name)
@@ -71,13 +73,13 @@ class Coffee_item_image(models.Model):
 # After assigning a ' space free 'slug name Mocha-Frappe is easily accessed as an individual item through the url 
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 
-# Kareem Tarek 28-1181
+# Kareem Tarek 
 
 
 # Coffee_item_image model is used to attach one or more image to each Coffee_item model 
 # Use of item foreign key makes sure that an image should belong to a single Coffee item 
 # page foreign key specifies the page the Coffee item belongs to 
-# Kareem Tarek 28-1181
+# Kareem Tarek 
 
 
 class Coffee_page_image(models.Model):
