@@ -44,8 +44,19 @@ def page_list(request):
 
 def view_favorites(request):
     
-    items = Favourite.objects.filter(user_id = request.user.id )
-    context_dict = { 'items': items }
+    favorites = Favourite.objects.filter(user_id = request.user.id )
+    items = []
+    pages = []
+    for favorite in favorites:
+       item = Coffee_item.objects.get(id=favorite.coffeeshop_item_id)
+       items.append(item)
+
+
+    for item in items:
+        page = Page.objects.get(id=item.page_id)
+        pages.append(page)
+
+    context_dict = { 'items': items, 'pages': pages }
     return render(request, 'CoffeeFinderApp/view_favorites.html', context_dict)
 
 

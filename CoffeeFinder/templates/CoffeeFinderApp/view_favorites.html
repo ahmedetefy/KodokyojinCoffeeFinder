@@ -1,12 +1,19 @@
 {% if items %}
-           
-     {% for item in items %}
-                <!-- Following line changed to add an HTML hyperlink -->
-   		hii   
-		<h4 >{{ item.coffeeshop_item_id }}</h4>
+     {% for item in items %}                
+        	<h3>
+       	 		<a href="/CoffeeFinderApp/coffee_item_page/{{ item.id }}">{{ item.name}}</a>
+   		{% for page in pages %}  
+   			{% if forloop.counter == forloop.parentloop.counter %}	
+   				<h5 >
+   					by: <a href="/CoffeeFinderApp/page/{{ page.slug }}">{{ page.name }}</a>
+   				</h5>
+   			</h3>
 
+   			{% endif %}
+   		{% endfor %}
+   		<br>
      {% endfor %}
            
  {% else %}
-       <strong>There are no Coffee Shops present.</strong>
+       <strong>you have no favorites.</strong>
  {% endif %}
