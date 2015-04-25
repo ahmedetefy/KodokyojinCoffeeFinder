@@ -268,8 +268,16 @@
                 {% if images %}
                     {% for image in images %}
                         <article class="col-md-4 col-sm-6"><a href="{{ image.image.url }}"><img alt="{{ image.image.name }}" src="{{ image.image.url }}">
+
                             <div class="hover"><i class="fa fa-cutlery"></i></div></a><a href="{{ image.image.url }}"></a>
                             <div class="author">
+                            {% ifequal user_id image.user_id %}
+                        <form action="/CoffeeFinderApp/delete_photo_user/" method='post'>{% csrf_token %}
+                            <input type="hidden" name="id" value="{{ image.id }}"/>
+                            <input type="hidden" name="page_id" value="{{ image.page_id }}"/>
+                            <input size=20 type="submit" value="Remove Photo"/>
+                        </form>
+                    {% endifequal %}
                               <div>
                                     <h5><i class="fa fa-user"></i>  Posted by <span class="color">{{ image.user }}</span></li></h5>
                               </div>
