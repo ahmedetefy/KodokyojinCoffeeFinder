@@ -126,4 +126,10 @@ class EditStatus(forms.ModelForm):
 #edit status for manager of the page to be able to add status on his order
 #Ahmed Etefy 28 - 3954
 
+class viewCustomerOrders(forms.ModelForm):
+	phone = forms.CharField(max_length = 128, help_text = "Enter the Phone Number you ordered with")
+	class Meta:
+		model = Order
+		fields = ('phone',)
+
 
