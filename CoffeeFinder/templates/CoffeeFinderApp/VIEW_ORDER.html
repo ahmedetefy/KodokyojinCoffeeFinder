@@ -93,7 +93,11 @@
             <form role="form" data-menu-order="content-form" class="box" id="login_form"enctype="multipart/form-data" method="post" action="">
             {% csrf_token %}
             <div class="form-group">
+            {% if user.is_authenticated %}
+            <input type="text" name="phone" value="{{ phone }}" size="50" placeholder="" />  
+            {% else %}
             <input type="text" name="phone" value="" size="50" placeholder="Please Type in your Phone Number." />
+            {% endif %}
             </div>
             <input type="submit" value="View Orders" data-menu-order="content-form-submit" class="btn " />
         </form>

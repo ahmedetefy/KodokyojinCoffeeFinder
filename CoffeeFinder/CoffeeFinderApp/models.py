@@ -8,12 +8,18 @@ from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-
+    
 
     def __unicode__(self):
         return self.user.username
 
-
+class PhoneNumbers(models.Model):
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length = 128)
+    
+    def __unicode__(self):
+        return self.user.username  
+          
 class Page(models.Model):
         owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers
 from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, viewCustomerOrders
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
@@ -507,6 +507,11 @@ def view_orders(request):
         #page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
         context = RequestContext(request) # Get the context from the request.
         # A HTTP POST?
+        current_user = request.user #get the user instance currently logged onto the website
+        if request.user.is_authenticated():
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id)
+            phone = phoneInstance.phone
+            context_dict['phone']  = phone
         if request.method == 'POST':
             form = viewCustomerOrders(request.POST) #save the form instance into var form
             # Have we been provided with a valid form?
