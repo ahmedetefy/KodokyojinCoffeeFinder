@@ -19,6 +19,14 @@ from django.contrib import messages
 
 def index(request):
     context_dict = {}
+    #Retreieve the currently signed in user.
+    current_user = request.user
+    #Add the result to the template context under the name current_user.
+    context_dict['current_user'] = current_user
+    #Retreive coffeeshop where the current user is the owner
+    coffeeshop = Page.objects.filter(owner=current_user.username)
+    # Adds our results list to the template context under name pages.
+    context_dict['coffeeshop'] = coffeeshop
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 def map(request):

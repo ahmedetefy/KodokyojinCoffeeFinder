@@ -36,6 +36,9 @@
                 </li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
+                {% if user.is_staff %}
+                <li><a href="/CoffeeFinderApp/page/{{ coffeeshop.slug }}">View My Coffeeshops</a></li>
+                {% endif %}
                 {% if user.is_authenticated %}
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
                 {% else %}
