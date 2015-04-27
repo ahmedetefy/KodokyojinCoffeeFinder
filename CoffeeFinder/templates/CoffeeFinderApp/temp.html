@@ -1,9 +1,10 @@
-
-        <!DOCTYPE html>
 {% load staticfiles %}
+
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CoffeeFinder</title>
     <link rel="shortcut icon" href="assets/images/favicon.png">
@@ -15,12 +16,18 @@
     <link rel="stylesheet" href="{% static 'css/layerslider.css' %}">
     <link rel="stylesheet" href="{% static 'css/prettyPhoto.css' %}">
     <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
+        <style>
+      html, body, #map {
+        height: 500px;
+        margin: 100px 0px 0px 0px;
+        padding: 0px 5px 0px 5px;
+      }
+    </style>
   </head>
-  <body class="menu-style-2 responsive sticky-menu">
-    <!--include colorpicker-->
-    <div class="site-wrapper">
-      <!-- Site Header -->
-      <header class="site-header">
+  <body>
+        <body class="menu-style-2 responsive sticky-menu">
+        <div class="site-wrapper" >
+          <header class="site-header">
         <div class="container">
           <div class="row">
             <!-- Site Logo: change the width to fit your logo size-->
@@ -33,15 +40,12 @@
               </div>
               <!-- Site Navigation: main menu content-->
               <ul class="site-navigation">
-                <li><a href="/CoffeeFinderApp/page_list/">Find A CoffeeShop</a>
+                <li class="active"><a href="/CoffeeFinderApp/page_list/">Find A CoffeeShop</a>
                 </li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
                 {% if user.is_authenticated %}
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
-                 {% if user.is_superuser %}
-                <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
-                {% endif %}
                 {% else %}
                 <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
                 <li><a href="/CoffeeFinderApp/register/">Register</a></li>
@@ -51,56 +55,76 @@
           </div>
         </div>
       </header>
-      <!--<div id="home" style="background-image: url('http://i60.tinypic.com/2uhv7o2.jpg'); width: 100%; height: 862px;" class="parallax hidden-xs">-->
 
-
-
-
-            <div id="home" style="background-image: url('{% static "/static/images/background/pageList4.jpg" %}'); width: 100%; height: 862px;" class="parallax hidden-xs">
-                <section class="pizza-guy-wrapper">
+          <section class="style-2" style="background-image: url('http://i59.tinypic.com/280mx05.jpg'); border:0;">
         <div class="container">
           <div class="row">
             <div class="col-md-12">
-                <br><br><br><br>
-                <br><br>
-              <h1 style="top: 47%; left: 50%;" class="ls-l text-center"> <span class="color">CoffeeShops </a> </span></h1>
-              <br>
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="126px" height="112px" viewBox="0 0 126 112" enable-background="new 0 0 126 112" xml:space="preserve" class="mini-logo">
+                <g>
+                  <g>
+                    <g>
+                      <path d="M63.016,1.134C55.414,6.166,53.994,17.37,53,29c5.021,1.321,9.101,3.579,10.016,8.998 C63.93,32.579,68.01,30.321,73.031,29C72.037,17.37,70.617,6.166,63.016,1.134z"></path>
+                    </g>
+                  </g>
+                </g>
+                <g>
+                  <g>
+                    <g>
+                      <path d="M63.125,49.996C61.076,24.065,20.794,22.264,1,34c0,0.667,0.167,0.25,0.167,0.917C7.297,55.219,27.661,71.48,55.109,64 c-6.523,7.979,3.71,30.104-5.01,40c3.785,3.008,10.959,1.13,13.026-2.999c2.068,4.129,9.242,6.007,13.027,2.999 c-8.721-9.896,1.512-32.021-5.011-40c27.448,7.48,47.813-8.781,53.942-29.083c0-0.667,0.167-0.25,0.167-0.917 C105.457,22.264,65.175,24.065,63.125,49.996z"></path>
+                    </g>
+                  </g>
+                </g>
+                <g>
+                  <g>
+                    <g>
+                      <path d="M50,70c-25.705-1.039-29.236,20.098-34,40C31.967,101.301,53.156,97.822,50,70z"></path>
+                    </g>
+                  </g>
+                </g>
+                <g>
+                  <g>
+                    <g>
+                      <path d="M76.297,70c25.705-1.039,29.236,20.098,34,40C94.33,101.301,73.141,97.822,76.297,70z"></path>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+              <h2 id="contact" class="section-heading text-center"> Page verification </h2>
             </div>
           </div>
-
-          <div class="row pizza-guy">
-            <div class="col-md-6 col-md-offset-3">
-                {% if pages %}
-           
-                {% for page in pages %}
-                <!-- Following line changed to add an HTML hyperlink -->
-
-                {% ifnotequal page.verified 0 %}
-          
-                <h4 style="top: 55%; left: 50%;" class="ls-l text-center" ><a href="/CoffeeFinderApp/page/{{ page.slug }}">{{ page.name }}</a></h4>
-
-                {% endifnotequal %}
-
-                {% endfor %}
-           
-       {% else %}
-            <strong>There are no Coffee Shops present.</strong>
-       {% endif %}
-
+          <div class="row">
+            <div class="col-md-6">
+            <!-- form for getting coffeshop registeration info-->
+            <form role="form" data-menu-order="content-form" class="box" id="Page_verification_form" action ={{c}} method="post">
+            {% csrf_token %}
+            <div class="form-group">
+            <h6> Page  : {{page.name}} <br> </h6>
+            </div>
+            <div class="form-group">
+            <h6> Owner  : {{user.username}} <br> </h6>
+            </div>
+            <div class="form-group">
+            {{if page.description != ""}}</h5>
+            <h6> page.description </h6>
+            {% else %}
+            <h6> No description avalaible</h6>
+            {% endif  %} 
+            </div>
+            <input type="submit" name="accept" value="Accept" data-menu-order="content-form-submit" class="btn " />
+            <input type="submit" name="reject" value="Reject" data-menu-order="content-form-submit" class="btn " />
+        </form>
+            </div>
+            <div class="col-md-6" >
+              <br>
+              <h7> Note that rejecting the page would delete requested page for good  </h7>
             </div>
           </div>
         </div>
       </section>
-      </div>
-
-
     </div>
-      </div>
-
-      <!-- Including scripts-->
-      <!-- script(src="")-->
-      <input id="site-url" type="hidden" value="http://anpsthemes.com/latest/HTML/kataleya/">
-      <footer class="site-footer">
+    </div>
+                      <footer class="site-footer">
         <div class="copyright">
           <div class="container">
             <div class="row">
@@ -111,10 +135,12 @@
               </div>
             </div>
           </div>
-        </div>
       </footer>
+        </body>
+
+
+
       <script src="{% static 'javascript/jquery.js' %}"></script>
-      <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
       <script src="{% static 'javascript/gmap3.js' %}"></script>
       <script src="{% static 'javascript/jquery.cookie.js' %}"></script>
       <script src="{% static 'javascript/theme.js' %}"></script>
@@ -138,14 +164,14 @@
       <!-- Colorpicker-->
       <script src="{% static 'javascript/colorpicker.js' %}"></script>
       <script>
-        jQuery(function($) {
-         map('#map', '2 Elizabeth St, Melbourne', 14);
+        // jQuery(function($) {
+        //  map('#map', '2 Elizabeth St, Melbourne', 14);
          
-         $("#no-clutter").parallax("50%", 0.6);
-         $("#home").parallax("50%", 0.6);
-         $("#coffee-statement-1").parallax("50%", 0.6);
-         $("#pizza-statement-1").parallax("50%", 0.6);
-        });
+        //  $("#no-clutter").parallax("50%", 0.6);
+        //  $("#home").parallax("50%", 0.6);
+        //  $("#coffee-statement-1").parallax("50%", 0.6);
+        //  $("#pizza-statement-1").parallax("50%", 0.6);
+        // });
         
       </script>
       <script>
@@ -160,14 +186,5 @@
          });
         });
       </script>
-    </div>
   </body>
 </html>
-
-
-
-
-
-
-
-

@@ -15,7 +15,6 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib import messages
 
-
  
 def index(request):
     context_dict = {}

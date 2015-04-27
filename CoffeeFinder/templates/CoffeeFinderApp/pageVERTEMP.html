@@ -1,0 +1,47 @@
+<h3> {{page.name}} <br> </h3>
+<h5> Owner : {{user.username}} <br><br>
+{{page.street_number}} , {{page.area}} , {{page.city}} , {{page.country}} <br><br>
+
+{% if images %}
+{{page.description}}</h5>
+{% else %}
+No description avalaible
+{% endif  %} 
+<br>
+
+
+
+  <form id="Page_verification_form" method="post" action= {{c}} >
+
+            {% csrf_token %}
+            
+            {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                {{ field }}
+            {% endfor %} 
+
+                   {% if messages %}
+          <div class="alert alert-success">
+            {% for msg in messages %}{{ msg }}{% endfor %}
+          </div>
+          {% endif %}
+
+          <h4 style="top: 55%; left: 50%;" class="ls-l text-center" ><a href="/CoffeeFinderApp/page/{{ page.slug }}">{{ page.name }}</a></h4>
+
+
+
+     <h4> <input type="submit" name="accept" value="Accept" /> or
+      <input type="submit" name="reject" value="Reject" /> </h4>
+
+      <h5> Note that rejecting the request would delete the request for good </h5>
+
+        </form> <br><br>
+
+<h5> <a href="/CoffeeFinderApp/requests/"> Back to requests </a> </h5>
+
+
+
