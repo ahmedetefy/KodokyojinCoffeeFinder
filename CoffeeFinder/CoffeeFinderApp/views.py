@@ -24,9 +24,10 @@ def index(request):
     #Add the result to the template context under the name current_user.
     context_dict['current_user'] = current_user
     #Retreive coffeeshop where the current user is the owner
-    coffeeshop = Page.objects.filter(owner=current_user.username)
-    # Adds our results list to the template context under name pages.
-    context_dict['coffeeshop'] = coffeeshop
+    if request.user.is_authenticated():
+        coffeeshop = Page.objects.get(owner=current_user.username)
+        # Adds our results list to the template context under name pages.
+        context_dict['coffeeshop'] = coffeeshop
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 def map(request):
