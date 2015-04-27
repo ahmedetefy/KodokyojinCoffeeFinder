@@ -91,17 +91,12 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['coffee_item'] = coffee_item
         request.session['item_id'] = coffee_item.id
         context_dict['page_id'] = request.session['page_id']
-
         page = Page.objects.get(id= request.session['page_id'])
         context_dict['page'] = page
-
-
         images = Coffee_item_image.objects.filter(item_id= coffee_item.id ,page_id= page.id )
         context_dict['images'] = images
         form = ImageForm_item()
         context_dict['form'] = form
-
-
         reviews = Coffee_item_review.objects.filter(coffee_item_id = coffee_item_name_id)
         context_dict['reviews'] = reviews
 
@@ -110,9 +105,7 @@ def coffee_item_page(request, coffee_item_name_id):
         pass
     
     current_user = request.user
-    context_dict['user_id'] = current_user.id
-    context_dict['username'] = current_user.username
-
+    context_dict['user'] = current_user
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
 
 
@@ -428,26 +421,23 @@ def add_item(request):
     # page_id is passed to template to be inserted of the newly created item 
     # field checks are performed . price should be > 0 and item should be new to the page
     # Pre implemented django messaging system is used to guide user through the form 
-    # Kareem Tarek 28-1181 
+    # Kareem Tarek
 
 
 def description_edit(request):
 
     context = RequestContext(request)
-    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
-    context['page_name']= Page.objects.get(id=request.session['page_id']).name
-
-
     page = Page.objects.get(id=request.session['page_id'])
+    context['page'] = page
 
     if request.POST:
         form = Page_form_edit(request.POST, instance=page)
         if form.is_valid():
             form.save()
-            messages.success(request, " Your data has been edited successfully ! ")
+            messages.success(request, " Your data has been edited successfully")
             # If the save was successful, redirect to another page
             # Description attribute of page is fetched to be edited .
-            # Kareem Tarek 28-1181 
+            # Kareem Tarek
  
 
     else:
@@ -527,8 +517,7 @@ def upload_to_item(request):
     # In template we're able to browse computer to fetch desired image .
     # Once upload is triggered we're redirected to uploadImage for the actual upload of the image 
     # Necessary form validations are handled there.
-    # Kareem Tarek 28-1181
-
+    # Kareem Tarek
 
 def delete_photos(request, id):
         context_dict = {}

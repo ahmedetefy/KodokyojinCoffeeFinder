@@ -334,7 +334,7 @@
         </div>
       </header>
               <!-- Yasser -->
-        {% ifequal page.owner current_user.username %}
+        {% ifequal page.owner_id current_user.id %}
             <h4>Orders: </h4>
             {% if orders %}
                     <table style="width:60%">
@@ -366,7 +366,7 @@
         <!-- Yasser -->
 
         </br>
-        {% ifequal page.owner username %}
+        {% ifequal page.owner_id user_id %}
         <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
         <h4><a href="/CoffeeFinderApp/description_edit/"> Edit Page's Info </a></h4> 
         <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item </a></h4>

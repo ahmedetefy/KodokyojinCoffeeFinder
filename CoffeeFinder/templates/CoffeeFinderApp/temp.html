@@ -46,6 +46,9 @@
                 </li>
                 {% if user.is_authenticated %}
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
+                 {% if user.is_superuser %}
+                <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
+                {% endif %}
                 {% else %}
                 <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
                 <li><a href="/CoffeeFinderApp/register/">Register</a></li>
@@ -90,37 +93,46 @@
                   </g>
                 </g>
               </svg>
-              <h2 id="contact" class="section-heading text-center"> Page verification </h2>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
             <!-- form for getting coffeshop registeration info-->
-            <form role="form" data-menu-order="content-form" class="box" id="Page_verification_form" action ={{c}} method="post">
+            <form role="form" data-menu-order="content-form" class="box" id="Coffee_item_form" action = "/CoffeeFinderApp/item_edit/" method="post">
             {% csrf_token %}
             <div class="form-group">
-            <h6> Page  : {{page.name}} <br> </h6>
+           <div class="form-group">
+            <h6> <a href="/CoffeeFinderApp/page/{{page_slug}}"> Back </a> </h6>
+           </div>
+            <h5> Add new item to the list  </h5>
             </div>
             <div class="form-group">
-            <h6> Owner  : {{user.username}} <br> </h6>
+            <h6>{% for field in form.visible_fields %}
+                {{ field.errors }}
+                 {{ field.name }}  {{ field }} <br>
+                {% endfor %}  <br> </h6>
             </div>
-            <div class="form-group">
-            {{if page.description != ""}}</h5>
-            <h6> page.description </h6>
-            {% else %}
-            <h6> No description avalaible</h6>
-            {% endif  %} 
+            <div>
+             <h9>{% if messages %}
+             {% for msg in messages %}{{ msg }}{% endfor %}
+             {% endif %}</h9>
             </div>
-            <input type="submit" name="accept" value="Accept" data-menu-order="content-form-submit" class="btn " />
-            <input type="submit" name="reject" value="Reject" data-menu-order="content-form-submit" class="btn " />
-        </form>
+            
             </div>
-            <div class="col-md-6" >
-              <br>
-              <h7> Note that rejecting the page would delete requested page for good  </h7>
-            </div>
-          </div>
+                <div class="col-md-6" >
+                
+           </div>
         </div>
+    <div class="row">
+    <h6> <input type="submit" value="Create" data-menu-order="content-form-submit" class="btn " />
+        </form> </h6>
+      </div>
+
+
+
+
+
+
       </section>
     </div>
     </div>
