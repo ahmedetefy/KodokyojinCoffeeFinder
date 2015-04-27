@@ -139,25 +139,20 @@
           </div>
         </div>
       </div>
-
-              <div>
-                  {%  if page.owner_id  == current_user.id %}
-                    {% if page.verified == 0 %}
-                        <h4 style="top: 30%; left: 50%;" class="ls-l text-center">page status: <span style=" font-size:20px; color:#C80000;  " ></a> Pending Approval </span></h4>
-                      {% else %}
-                        <h4 style="top: 30%; left: 50%;" class="ls-l text-center">page status: <span style=" font-size:20px; color:#009933;  " ></a> Active </span></h4>
-                    {% endif %}
-                  {% endif %}
-                    </div>
-
-    
-                <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
-                    <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
-                        <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
-
-                    </div>
-                </div>
-          
+         <div>
+            {%  if page.owner_id  == current_user.id %}
+              {% if page.verified == 0 %}
+                <h4 style="top: 30%; left: 50%;" class="ls-l text-center">page status: <span style=" font-size:20px; color:#980000;  " ></a> Pending Approval </span></h4>
+              {% else %}
+                <h4 style="top: 30%; left: 50%;" class="ls-l text-center">page status: <span style=" font-size:20px; color:#009933;  " ></a> Active </span></h4>
+              {% endif %}
+            {% endif %}
+          </div>
+          <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
+              <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
+                  <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
+              </div>
+          </div> 
       <section>
         <div class="container">
           <div class="row">
