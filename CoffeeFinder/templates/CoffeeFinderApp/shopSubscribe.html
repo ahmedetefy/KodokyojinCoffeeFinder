@@ -231,6 +231,7 @@ function initialize() {
               <h2 id="contact" class="section-heading text-center">Create Your CoffeeShop</h2>
             </div>
           </div>
+        {% if user.is_authenticated %}
           <div class="row">
             <div class="col-md-6">
             <!-- form for getting coffeshop registeration info-->
@@ -275,6 +276,21 @@ function initialize() {
 
             </div>
           </div>
+          {% else %}
+         
+              <div class="container">
+                <div class="row">
+                      <h5 class="section-heading text-center" >
+                        You must Sign In in order to create a coffee page</h5>
+                      <h4 class="section-heading text-center"><a href="/CoffeeFinderApp/login/">Sign In</a></h4>
+                      <h5 class="section-heading text-center" >
+                        Or Register If you don't have an account yet!</h5>
+                      <h4 class="section-heading text-center"><a href="/CoffeeFinderApp/register/">Register</a></h4>
+                  </nav>
+                </div>
+              </div>
+    
+        {% endif %}
         </div>
       </section>
     </div>
