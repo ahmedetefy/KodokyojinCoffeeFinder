@@ -79,6 +79,17 @@
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
+                    
+                      {% if user.is_authenticated %}
+                        <form action="{%url "LikeReview"%}" method="post">
+                          {% csrf_token %}          
+                          {% if flag %}              
+                           <input size="20" type="button" name="Like" value="this is Liked" >
+                          {% else %}
+                           <input size="20" type="button" name="Like" value="Like" >
+                          {% endif %}
+                        </form>  
+                      {% endif %}
                   </div>
                 </div>
 			

@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item
+from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item, Like_Image, Like_Review
 from django.contrib.auth.models import User
 
 
@@ -7,15 +7,14 @@ class Page_form(forms.ModelForm):
 
 	class Meta:
 		model = Page
-
-
 		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
         # delivery added to the page_form 
 
+
 class Page_form_edit(forms.ModelForm):
 
-    description = forms.CharField(max_length=200,help_text="Description",
-            widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}))
+    description = forms.CharField(max_length=200, help_text="Description",
+    	widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}))
 
     class Meta:
 
@@ -24,13 +23,13 @@ class Page_form_edit(forms.ModelForm):
         fields = ['description']
 
 
-
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
+
 
 class DeliveryForm(forms.ModelForm):
 	coffeeshop_item_id = forms.IntegerField(help_text="Please enter the ID of your favorite Coffee.")
@@ -65,7 +64,7 @@ class Coffee_item_form(forms.ModelForm):
         fields = ('name', 'price', 'description' )
 
         exclude = ['page']
-        
+
 
 class ImageForm_item(forms.ModelForm):
     image = forms.ImageField( label='Select an image', )
@@ -115,6 +114,7 @@ class DeliveryForm(forms.ModelForm):
 		model = Order
 		fields = ('quantity', 'Name','phone')
 
+
 class EditStatus(forms.ModelForm):
 	id = forms.IntegerField(help_text="Please enter the ID of the Order.")
 	status = forms.CharField(max_length = 128, help_text = "Enter the Status of Order")
@@ -127,3 +127,15 @@ class EditStatus(forms.ModelForm):
 #Ahmed Etefy 28 - 3954
 
 
+class Like_ImageForm(forms.ModelForm):
+
+	class Meta:
+		model = Like_Image
+		fields = ('user', 'image')
+
+
+class Like_ReviewForm(forms.ModelForm):
+
+	class Meta:
+		model = Like_Review
+		fields = ('user', 'review')
