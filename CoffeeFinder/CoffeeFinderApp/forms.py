@@ -126,4 +126,3 @@ class EditStatus(forms.ModelForm):
 #edit status for manager of the page to be able to add status on his order
 #Ahmed Etefy 28 - 3954
 
-

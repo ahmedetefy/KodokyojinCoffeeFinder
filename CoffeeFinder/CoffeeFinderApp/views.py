@@ -93,6 +93,10 @@ def coffee_item_page(request, coffee_item_name_id):
     context_dict['user_id'] = current_user.id
     context_dict['username'] = current_user.username
 
+    if(request.GET.get('favbtn')):
+        favorite=Favourite(user = current_user,coffeeshop_item = coffee_item,page = page)
+        favorite.save()
+
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
 
 
@@ -521,4 +525,9 @@ def delete_photos(request, id):
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
 
 
-
+#def add_favorite(request, coffee_item_name_id):
+#    current_user=request.user
+#    item = Coffee_item.objects.get(id=coffee_item_name_id)
+#    favorite=Favourite(user = current_user,coffeeshop_item = item,page = item.page)
+#    favorite.save()
+#    return render(request, 'CoffeeFinderApp/coffee_item_page.html')
