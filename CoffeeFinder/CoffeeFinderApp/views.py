@@ -507,6 +507,7 @@ def like_review(request, review_id, user_id):
     flag = False
     if review_id in Like_Review.review and user_id in Like_Review.user:
         flag = True
+        context_dict = {}
         context_dict["flag"] = flag
     else:
         flag = False
@@ -515,14 +516,13 @@ def like_review(request, review_id, user_id):
             form = Like_ReviewForm(request.post)
             if form.is_valid:
                 form.save()
-                likes = Like_Review.filter(user_id=Like_Review.user, review_id=Like_Review.review)
-                context_dict["likes"] = likes
             return render(request, 'CoffeeFinderApp/page.html', context_dict)
 
 
 def like_image(request, image_id, user_id):
     if image_id in Like_Image.image and user_id in Like_Image.user:
         flag = True
+        context_dict = {}
         context_dict["flag"] = flag
     else:
         flag = False
@@ -531,7 +531,5 @@ def like_image(request, image_id, user_id):
             form = Like_ImageForm(request.post)
             if form.is_valid:
                 form.save()
-                likes = Like_Image.filter(user_id=Like_Image.user, image_id=Like_Image.image)
-                context_dict["likes"] = likes
                 context_dict["flag"] = flag
             return render(request, 'CoffeeFinderApp/page.html', context_dict)
