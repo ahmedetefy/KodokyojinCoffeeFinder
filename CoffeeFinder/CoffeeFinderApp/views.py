@@ -508,10 +508,11 @@ def view_orders(request):
         context = RequestContext(request) # Get the context from the request.
         # A HTTP POST?
         current_user = request.user #get the user instance currently logged onto the website
-        if request.user.is_authenticated():
-            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id)
-            phone = phoneInstance.phone
-            context_dict['phone']  = phone
+        if request.user.is_authenticated():#checks to see if a user is logged in
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance
+            #of logged in user
+            phone = phoneInstance.phone #gets the actual phone number
+            context_dict['phone']  = phone #passes phone number into dictionary
         if request.method == 'POST':
             form = viewCustomerOrders(request.POST) #save the form instance into var form
             # Have we been provided with a valid form?

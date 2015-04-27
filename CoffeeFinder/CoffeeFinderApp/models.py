@@ -14,12 +14,14 @@ class UserProfile(models.Model):
         return self.user.username
 
 class PhoneNumbers(models.Model):
+
     user = models.OneToOneField(User)
     phone = models.CharField(max_length = 128)
     
     def __unicode__(self):
-        return self.user.username  
-          
+       return self.user.username  
+#Model phone number has been added each is user is allowed to have one phone number registered
+#on system 
 class Page(models.Model):
         owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)

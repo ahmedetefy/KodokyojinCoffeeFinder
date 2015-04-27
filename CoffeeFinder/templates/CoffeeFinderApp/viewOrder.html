@@ -89,6 +89,7 @@
               <br>
             </div>
           </div>
+          <!-- if pending orders exists, they are displayed in a table like format -->
 		{% if orders %}
 			<div class="container">
 				<div class="col-md-7">
@@ -117,11 +118,8 @@
 	
 		{% else %}
 				<div class="col-md-14">
-					
+					<!-- otherwise this message is displayed -->
 				<h6 class = "text-center">It's been a while since you last made an Order.. We missed you</h6>
-				
-				
-				
 				</div>
 		{% endif %}
 		</div>
