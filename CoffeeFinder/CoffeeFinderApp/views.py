@@ -504,7 +504,6 @@ def delete_photos(request, id):
 
 
 def like_review(request, review_id, user_id):
-    flag = False
     if review_id in Like_Review.review and user_id in Like_Review.user:
         flag = True
         context_dict = {}
@@ -516,6 +515,7 @@ def like_review(request, review_id, user_id):
             form = Like_ReviewForm(request.post)
             if form.is_valid:
                 form.save()
+                context_dict["flag"] = flag
             return render(request, 'CoffeeFinderApp/page.html', context_dict)
 
 
