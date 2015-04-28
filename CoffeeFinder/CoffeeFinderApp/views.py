@@ -1,6 +1,12 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, Like_Image,Like_Review
+from CoffeeFinderApp.models import (
+    Coffee_item, Page, UserProfile,
+    Coffee_page_image, Order,
+    Coffee_item_review, Coffee_item_image,
+    Like_Image, Like_Review
+    )
+from django.contrib.auth.models import User
 from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, Like_ImageForm,Like_ReviewForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
@@ -57,8 +63,6 @@ def coffee_item_page(request, coffee_item_name_id):
 
         page = Page.objects.get(id= request.session['page_id'])
         context_dict['page'] = page
-
-
         images = Coffee_item_image.objects.filter(item_id=coffee_item.id, page_id=page.id)
         context_dict['images'] = images
         form = ImageForm_item()
@@ -66,6 +70,13 @@ def coffee_item_page(request, coffee_item_name_id):
 
 
         reviews = Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id)
+        reviews = []
+        for rev in Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id):
+            if rev.likes.all().filter(user=request.user):
+                reviews.append((rev, True))
+            else:
+                reviews.append((rev, False))
+
         context_dict['reviews'] = reviews
 
     except Coffee_item.DoesNotExist:
@@ -176,6 +187,14 @@ def page(request, page_name_slug):
         pass
 
     images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+
+    images = []
+    for im in Coffee_page_image.objects.filter(page_id=page.id) :
+            if im.likes.all().filter(user=request.user):
+                images.append((im, True))
+            else:
+                images.append((im, False))
+
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
@@ -503,33 +522,27 @@ def delete_photos(request, id):
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
 
 
-def like_review(request, review_id, user_id):
-    if review_id in Like_Review.review and user_id in Like_Review.user:
-        flag = True
+def like_review(request):
+    if request.POST:
         context_dict = {}
-        context_dict["flag"] = flag
-    else:
-        flag = False
-        context_dict = {}
-        if request.post:
-            form = Like_ReviewForm(request.post)
-            if form.is_valid:
-                form.save()
-                context_dict["flag"] = flag
-            return render(request, 'CoffeeFinderApp/page.html', context_dict)
+        review_id = request.POST['review']
+        coffee_item_review = get_object_or_404(
+            Coffee_item_review, id=review_id)
+        like_review, created = Like_Review.objects.get_or_create(
+            user=request.user, review=coffee_item_review)
+    return HttpResponseRedirect(
+        reverse(
+            'coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_review.coffee_item.id}))
 
 
-def like_image(request, image_id, user_id):
-    if image_id in Like_Image.image and user_id in Like_Image.user:
-        flag = True
+def like_image(request):
+    if request.POST:
         context_dict = {}
-        context_dict["flag"] = flag
-    else:
-        flag = False
-        context_dict = {}
-        if request.post:
-            form = Like_ImageForm(request.post)
-            if form.is_valid:
-                form.save()
-                context_dict["flag"] = flag
-            return render(request, 'CoffeeFinderApp/page.html', context_dict)
+        image_id = request.POST['image']
+        coffee_page_image = get_object_or_404(
+            Coffee_page_image, id=image_id)
+        like_image, created = Like_Image.objects.get_or_create(
+            user=request.user, image=coffee_page_image)
+    return HttpResponseRedirect(
+        reverse(
+            'page', kwargs={'page_name_slug': coffee_page_image.page.slug}))

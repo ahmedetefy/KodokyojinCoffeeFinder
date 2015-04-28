@@ -105,11 +105,11 @@ class Order(models.Model):
 
 class Like_Image(models.Model):
     user = models.ForeignKey(User)
-    image = models.ForeignKey(Coffee_page_image)
+    image = models.ForeignKey(Coffee_page_image, related_name='likes')
     create = models.DateTimeField(auto_now_add=True)
 
 
 class Like_Review(models.Model):
     user = models.ForeignKey(User)
-    review = models.ForeignKey(Coffee_item_review)
+    review = models.ForeignKey(Coffee_item_review, related_name='likes')
     create = models.DateTimeField(auto_now_add=True)

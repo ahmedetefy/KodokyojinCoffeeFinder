@@ -265,7 +265,7 @@
             <div class="col-md-12">
               <div class="posts blog">
                 {% if images %}
-                    {% for image in images %}
+                    {% for image,flag in images %}
                         <article class="col-md-4 col-sm-6"><a href="{{ image.image.url }}"><img alt="{{ image.image.name }}" src="{{ image.image.url }}">
                             <div class="hover"><i class="fa fa-cutlery"></i></div></a><a href="{{ image.image.url }}"></a>
                             <div class="author">
@@ -274,12 +274,16 @@
                               </div>
                             </div>
                             {% if user.is_authenticated %}
-                                <form action="{%url "LikeImage"%}" method="post">
-                                  {% csrf_token %}                                
-                                    {% if flag %}              
-                                      <input size="20" type="button" name="Like" value="this is Liked">
+                                <form action="{%url "LikeImage" %}" method="post">
+                                  {% csrf_token %}
+                                    {% if flag %}  
+                                      <input hidden id="image" size="20" type="text" name="image" value={{ image.id }} >
+                                      <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                                      <input size="20" type="submit" name="Like" value="Liked" >
                                     {% else %}
-                                      <input size="20" type="button" name="Like" value="Like" >
+                                      <input hidden id="image" size="20" type="text" name="image" value={{ image.id }} >
+                                      <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                                      <input size="20" type="submit" name="Like" value="Like" >
                                     {% endif %}
                                 </form>
                             {% endif %}
