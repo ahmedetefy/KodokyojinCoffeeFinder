@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Order2,Coffee_item_image ,Coffee_item_review, Coffee_item
+from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item
 from django.contrib.auth.models import User
 
 
@@ -106,7 +106,7 @@ class EditStatus(forms.ModelForm):
 
 class OrderForm(forms.ModelForm):
 	class Meta:
-		model = Order2
+		model = Order
 		fields = ('order','Name','phone','deliveryAddress','Page')
    
 

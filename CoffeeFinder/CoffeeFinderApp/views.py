@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, Order2
-from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, OrderForm
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, OrderForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -18,6 +18,18 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib import messages
 
+def order(request):
+    if request.POST:
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            page = form.cleaned_data['Page']
+            page_name_slug = page.slug
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+        else:
+            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
+            form = OrderForm()
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
 
 def index(request):
     context_dict = {}
@@ -163,7 +175,7 @@ def page(request, page_name_slug):
         context_dict['page'] = page
         #Yasser
         #Retrieve all orders that are associated with the current page.
-        order = Order.objects.filter(coffeeshop=page)
+        order = Order.objects.filter(Page=page)
         #Add the results to the template context under the name orders.
         context_dict['orders'] = order
         #Retreieve the currently signed in user.
