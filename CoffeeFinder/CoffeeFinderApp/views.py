@@ -1,11 +1,14 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
-from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, Order2
+from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, OrderForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
+import json
 
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -14,7 +17,6 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib import messages
-
 
 
 def index(request):
@@ -253,6 +255,7 @@ def makeOrder(request, page_name_slug):
     v = 'CoffeeFinderApp/makeOrder.html'
     return render_to_response(v, context_dict, context) #TO DO
 #done by Ahmed Etefy 28 - 3954
+
 def editStatus(request, page_name_slug):
     context_dict = {}
     page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
