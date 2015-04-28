@@ -32,15 +32,6 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password')
 
-class DeliveryForm(forms.ModelForm):
-	coffeeshop_item_id = forms.IntegerField(help_text="Please enter the ID of your favorite Coffee.")
-	quantity = forms.IntegerField(min_value = 1, help_text = "Enter a quantity")
-	Name = forms.CharField(max_length = 128, help_text = "Enter Your Name")
-	phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
-
-	class Meta:
-		model = Order
-		fields = ('quantity', 'Name','phone')
     
     #class Meta:
     #	model = Order
@@ -105,15 +96,6 @@ class ReviewForm(forms.ModelForm):
 
 
 
-class DeliveryForm(forms.ModelForm):
-	coffeeshop_item_id = forms.IntegerField(help_text="Please enter the ID of your favorite Coffee.")
-	quantity = forms.IntegerField(min_value = 1, help_text = "Enter a quantity")
-	Name = forms.CharField(max_length = 128, help_text = "Enter Your Name")
-	phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
-
-	class Meta:
-		model = Order
-		fields = ('quantity', 'Name','phone')
 
 class EditStatus(forms.ModelForm):
 	id = forms.IntegerField(help_text="Please enter the ID of the Order.")
@@ -122,7 +104,10 @@ class EditStatus(forms.ModelForm):
 		model = Order
 		fields = ('id',)
 
-
+class OrderForm(forms.ModelForm):
+	class Meta:
+		model = Order2
+		fields = ('order','Name','phone','deliveryAddress','Page')
    
 
 
