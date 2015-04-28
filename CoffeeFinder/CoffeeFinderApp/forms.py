@@ -125,17 +125,3 @@ class EditStatus(forms.ModelForm):
 #the delivery form for making an order 
 #edit status for manager of the page to be able to add status on his order
 #Ahmed Etefy 28 - 3954
-
-
-class Like_ImageForm(forms.ModelForm):
-
-	class Meta:
-		model = Like_Image
-		fields = ('user', 'image')
-
-
-class Like_ReviewForm(forms.ModelForm):
-
-	class Meta:
-		model = Like_Review
-		fields = ('user', 'review')

@@ -7,7 +7,7 @@ from CoffeeFinderApp.models import (
     Like_Image, Like_Review
     )
 from django.contrib.auth.models import User
-from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, Like_ImageForm,Like_ReviewForm
+from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -524,7 +524,6 @@ def delete_photos(request, id):
 
 def like_review(request):
     if request.POST:
-        context_dict = {}
         review_id = request.POST['review']
         coffee_item_review = get_object_or_404(
             Coffee_item_review, id=review_id)
@@ -532,12 +531,22 @@ def like_review(request):
             user=request.user, review=coffee_item_review)
     return HttpResponseRedirect(
         reverse(
-            'coffee_item_page', kwargs={'coffee_item_name_id': coffee_item_review.coffee_item.id}))
+            'coffee_item_page',
+            kwargs={'coffee_item_name_id':
+            coffee_item_review.coffee_item.id}))
+
+
+"""
+like_review take a request and check if the request is posting and
+then call the review_id from the request and get the review using the id
+then check if the user did not like this review before then it add the like
+with the image id and the user who request
+the like then return to the same page
+"""
 
 
 def like_image(request):
     if request.POST:
-        context_dict = {}
         image_id = request.POST['image']
         coffee_page_image = get_object_or_404(
             Coffee_page_image, id=image_id)
@@ -546,3 +555,10 @@ def like_image(request):
     return HttpResponseRedirect(
         reverse(
             'page', kwargs={'page_name_slug': coffee_page_image.page.slug}))
+"""
+like_image take a request and check if the request is posting and
+then call the image_id from the request and get the image using the id
+then check if the user did not like this image before then it add the like
+with the image id and the user who request
+the like then return to the same page
+"""
