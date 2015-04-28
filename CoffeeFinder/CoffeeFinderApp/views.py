@@ -92,10 +92,19 @@ def coffee_item_page(request, coffee_item_name_id):
     current_user = request.user
     context_dict['user_id'] = current_user.id
     context_dict['username'] = current_user.username
-
+    #checks if the favorite/unfavorite button is clicked
     if(request.GET.get('favbtn')):
+        #If clicked a new object is inserted in the model favorite
         favorite=Favourite(user = current_user,coffeeshop_item = coffee_item,page = page)
         favorite.save()
+    #checks if the current item already exists in the users favorites
+    if (Favourite.objects.filter(user = current_user,coffeeshop_item = coffee_item,page = page).exists()):
+        #if it does exist then the button will say remove from favorites
+        context_dict['btntxt'] = "Remove from favorites"
+    else:
+        #if does not exist the button will say add to favorites allowing the user to favorite the item
+        context_dict['btntxt'] = "Add to favorites"
+    
 
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
 
