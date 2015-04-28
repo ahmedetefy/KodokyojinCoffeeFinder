@@ -413,6 +413,15 @@ jQuery(function($) {
 			vals += el.attr('id') + ':' + el.find('.num').html();
 
 			$('.order-summary').append('<li><h3><span class="pull-left">' + el.find('h3').html() + '</span><span class="pull-right color">×' + el.find('.num').html() + '</span></h3></li>');
+			var item = el.find('h3').html()+"";
+			var start = item.indexOf(">");
+			var end = item.indexOf("<", start);
+			item = item.substring(start + 1, end );
+			var quantity = el.find('.num').html();
+			var start1 = quantity.indexOf(">");
+			var end1 = quantity.indexOf("<", start);
+			quantity = quantity.substring(start1 + 1 );
+			document.getElementById('myOrder').value += item + " Quantity: " + quantity +";";
 		});
 
 		$.cookie('kataleya-order', vals, { expires: 0, path: '/' });
