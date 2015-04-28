@@ -23,8 +23,9 @@ def index(request):
     current_user = request.user
     #Add the result to the template context under the name current_user.
     context_dict['current_user'] = current_user
-    #Retreive coffeeshop where the current user is the owner
+    #Check if current user is signed in
     if request.user.is_authenticated():
+        #Retreive coffeeshop where the current user is the owner
         coffeeshop = Page.objects.get(owner=current_user.username)
         # Adds our results list to the template context under name pages.
         context_dict['coffeeshop'] = coffeeshop
