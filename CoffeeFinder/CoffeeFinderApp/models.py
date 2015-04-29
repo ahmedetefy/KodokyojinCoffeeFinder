@@ -15,7 +15,7 @@ class UserProfile(models.Model):
 
 
 class Page(models.Model):
-        owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
+        owner = models.CharField(max_length=128 , null= False , unique=True) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)
         delivery = models.BooleanField(default=False)
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)

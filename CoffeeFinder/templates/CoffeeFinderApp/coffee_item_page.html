@@ -182,12 +182,12 @@
 <br><br>
 
 
-{% ifequal page.owner username %}
+{% if page.owner.username == username %}
 <a href="/CoffeeFinderApp/item_edit/"> Edit </a><br><br>
 <a href="/CoffeeFinderApp/upload_to_item/"> Upload photo</a><br><br>
 <a href="/CoffeeFinderApp/delete_photos/{{ coffee_item.id }}"> Delete associated photos </a><br><br>
 <a href="/CoffeeFinderApp/delete/{{ coffee_item.id }}"> Delete </a><br><br>
-{% endifequal %}
+{% endif %}
 	
 
 

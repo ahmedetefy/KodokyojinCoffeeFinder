@@ -26,7 +26,10 @@ def index(request):
     #Check if current user is signed in
     if request.user.is_authenticated():
         #Retreive coffeeshop where the current user is the owner
-        coffeeshop = Page.objects.get(owner=current_user.username)
+        try:
+            coffeeshop = Page.objects.get(owner=current_user)
+        except Page.DoesNotExist:
+            coffeeshop = None
         # Adds our results list to the template context under name pages.
         context_dict['coffeeshop'] = coffeeshop
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
