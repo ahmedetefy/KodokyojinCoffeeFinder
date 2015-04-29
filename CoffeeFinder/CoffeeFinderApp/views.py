@@ -505,6 +505,10 @@ def delete_review(request):
     Coffee_item_review.objects.get(id=review_id).delete()
     return HttpResponseRedirect("/CoffeeFinderApp/coffee_item_page/" + str(coffee_id))
 
+    #This view is for deleting a review.
+    #It get a request which contains the review id and the coffee id.
+    #It deletes the review from the database and then redirect the user to same coffee page by using the coffee id.
+
 def delete_photo_user(request):
     photo_id = request.POST.get('id', '')
     page_id = request.POST.get('page_id', '')
@@ -512,3 +516,7 @@ def delete_photo_user(request):
     page = Page.objects.get(id=page_id)
     page_name = page.slug
     return HttpResponseRedirect("/CoffeeFinderApp/page/" + page_name)
+
+    #This view is for deleting a photo.
+    #It get a request which contains the photo id and the page id. 
+    #It deletes the photo from the database and then redirect the user to same coffeeShop page by using the page name slug that we can get from the page id.
