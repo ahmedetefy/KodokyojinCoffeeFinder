@@ -96,7 +96,9 @@ class Coffee_item_review(models.Model):
 
 
 
-# Order model takes: order which is the summary of the order, Name which is 
+# Order model takes: order which is the summary of the order, Name which is the name of the user,
+# phone and delieveryAddress,
+# Order belongs to a CoffeePage
 class Order(models.Model):
     order = models.CharField(max_length = 500, default='')
     Name = models.CharField(max_length = 128, default = '')
