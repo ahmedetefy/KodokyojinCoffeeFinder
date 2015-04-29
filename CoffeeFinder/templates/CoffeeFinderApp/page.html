@@ -64,10 +64,10 @@
             handleNoGeolocation(false);
           }
         }
-          function ProcessRequest(response) {
+        function ProcessRequest(response) {
           //parse json object to a dictionary
           var json_data = JSON.parse(response);
-          
+            
           //get the formatted address from the dictionary
           var lol = json_data.results[0]['formatted_address'];
           document.getElementById("order-address").value = lol.toString();
