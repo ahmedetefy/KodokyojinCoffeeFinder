@@ -41,9 +41,14 @@ def page_list(request):
     # Render the response and send it back!
     return render(request, 'CoffeeFinderApp/page_list.html', context_dict)
 
-
+# action called by view favorites url to view user's favorite coffees. It selects the favorite coffees of the 
+# current logged in user. It gets the corresponding item and coffee page for that item, Then stores the results
+# items and pages array respectively. It adds the two arrays to the context dictionary and passes them to the 
+# view_favorites.html and renders to it.
+# author Mostafa Mahmoud
 def view_favorites(request):
     
+
     favorites = Favourite.objects.filter(user_id = request.user.id )
     items = []
     pages = []
