@@ -92,25 +92,26 @@
           <!-- if pending orders exists, they are displayed in a table like format -->
 		{% if orders %}
 			<div class="container">
-				<div class="col-md-7">
+				<div class="col-md-9">
 					<div class="col-md-offset-5">
 						<div class ="col-md-offset-1">
-							<table style="width:50%">
+							<table style="width:60%">
 								<tr>
 								<td><h5 >Coffeeshop</h5></td>
-								<td><h5 >Name</h5></td>
-								<td><h5 >Quantity</h5></td>
-								<td><h5 >Price</h5></td>
+								<td><h5 >Description</h5></td>
+								<!--<td><h5 >Quantity</h5></td>
+								<td><h5 >Price</h5></td>-->
 								</tr>
 			{% for order in orders %}
 								<div class ="col-mid-3">
 								<tr>
-									<td class = "text-center"><h6>{{ order.coffeeshop}}</h6></td>
-									<td class = "text-center"><h6>{{ order.coffeeshop_item.name}}</h6></td>
-									<td class = "text-center"><h6>{{ order.quantity}}</h6></td>
-									<td class = "text-center"><h6>{{ order.coffeeshop_item.price}}</h6></td>
+									<td class = "text-center"><h6>{{ order.Page}}</h6></td>
+									<td class = "text-center"><h6>{{ order.order}}</h6></td>
+									<!--<td class = "text-center"><h6>{{ order.quantity}}</h6></td>-->
+									<!--<td class = "text-center"><h6>{{ order.coffeeshop_item.price}}</h6></td>-->
 								</tr>	
 								</div>
+								
 			{% endfor %}
 								</table>
 					
@@ -163,6 +164,11 @@
       <script src="{% static 'javascript/layerslider.kreaturamedia.jquery.js' %}"></script>
       <!-- Colorpicker-->
       <script src="{% static 'javascript/colorpicker.js' %}"></script>
+      <script type="text/javascript">
+      $(document).ready(function(){
+      	var order = document.getElementById('order').value;
+      })
+      </script>
       <script>
         jQuery(function($) {
          map('#map', '2 Elizabeth St, Melbourne', 14);
