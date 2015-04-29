@@ -76,3 +76,13 @@ class ReviewMethodTests(TestCase):
 		page = Page(owner='test owner', name='test coffeeshop', delivery=True)
 		self.assertEqual(page.delivery, True)
 
+class OrderFormTests(TestCase):
+
+    def test_ensure_order_is_not_null(self):
+        """
+            test_ensure_order_is_not_null should result True when order is saved in the database
+        """
+        page = Page(owner='test owner', name='test coffeeshop', delivery=True)
+        order = Order(order='Cappucino quantity:1', Name='Rana', phone='01010', deliveryAddress='Roda', Page= page)
+        order.save
+        self.assertEqual(order.Name, 'Rana')
