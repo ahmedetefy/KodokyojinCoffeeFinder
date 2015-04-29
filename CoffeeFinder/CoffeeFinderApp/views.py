@@ -17,6 +17,20 @@ from django.template import RequestContext
 from django.contrib import messages
 
 
+#action called by orderForm, it validates the form and enters the Order in the Order model, 
+#then redirects to the coffeeshop page
+def order(request):
+    if request.POST:
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            page = form.cleaned_data['Page']
+            page_name_slug = page.slug
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+        else:
+            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
+            form = OrderForm()
+            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
 
 def index(request):
     context_dict = {}
