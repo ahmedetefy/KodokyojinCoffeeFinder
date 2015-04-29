@@ -5,8 +5,6 @@ from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, Orde
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-import json
-
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
 from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
@@ -18,18 +16,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib import messages
 
-def order(request):
-    if request.POST:
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            form.save()
-            page = form.cleaned_data['Page']
-            page_name_slug = page.slug
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
-        else:
-            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
-            form = OrderForm()
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+
 
 def index(request):
     context_dict = {}

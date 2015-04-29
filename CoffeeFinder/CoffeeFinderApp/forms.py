@@ -104,10 +104,8 @@ class EditStatus(forms.ModelForm):
 		model = Order
 		fields = ('id',)
 
-class OrderForm(forms.ModelForm):
-	class Meta:
-		model = Order
-		fields = ('order','Name','phone','deliveryAddress','Page')
+
+
    
 
 
