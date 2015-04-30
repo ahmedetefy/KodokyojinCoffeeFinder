@@ -336,6 +336,24 @@
         {% ifequal page.owner current_user.username %}
             <h4>Orders: </h4>
             {% if orders %}
+                        <td> 
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div hidden id="successMessage" class="alert alert-success contact-success">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <i class="fa fa-check"></i> The status has been changed successfully
+                              </div>
+                            </div>
+                          </div>
+                            <div class="row">
+                            <div class="col-md-12">
+                              <div hidden id="errorMessage" class="alert alert-success contact-success">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <i class="fa fa-check"></i> Sorry, there was an error changing the status
+                              </div>
+                            </div>
+                          </div>
+                        </td>
                     <table style="width:60%">
                       <tr>
                         <td>ID</td>
@@ -354,19 +372,16 @@
                         <td>{{ order.coffeeshop_item.price}}</td>
                         <td>{{ order.Name}}</td>
                         <td>{{ order.phone}}</td>
-                        
                         <td>
-                        <select id="change_status_{{order.id}}" class = "order_status" order-id="#order_{{order.id}}" >
-                          {% if order.status == "pending" %}
-                            <option selected = "true" name="status" value="pending">pending</option>
-                            <option name = "status" value="active">on the way</option>
-                          {% else %}
-                              <option name="status" value="pending">pending</option>
-                              <option selected = "true" name = "status" value="active">on the way</option>
-                          {% endif %}
-                        </select>
-                        
-                        
+                          <select id="change_status_{{order.id}}" class = "order_status" order-id="#order_{{order.id}}" >
+                            {% if order.status == "pending" %}
+                              <option selected = "true" name="status" value="pending">pending</option>
+                              <option name = "status" value="active">on the way</option>
+                            {% else %}
+                                <option name="status" value="pending">pending</option>
+                                <option selected = "true" name = "status" value="active">on the way</option>
+                            {% endif %}
+                          </select>
                         </td>
                         
                        <!-- <td><select id="about-btn">
@@ -384,6 +399,7 @@
                       
                     </form>
                     </table>
+
             {% else %}
                 <strong>There are currently no orders.</strong>
             {% endif %}
