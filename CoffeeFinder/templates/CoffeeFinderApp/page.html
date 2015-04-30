@@ -270,11 +270,12 @@
 
                             <div class="hover"><i class="fa fa-cutlery"></i></div></a><a href="{{ image.image.url }}"></a>
                             <div class="author">
+                            <br>
                             {% ifequal user_id image.user_id %}
                         <form action="/CoffeeFinderApp/delete_photo_user/" method='post'>{% csrf_token %}
                             <input type="hidden" name="id" value="{{ image.id }}"/>
                             <input type="hidden" name="page_id" value="{{ image.page_id }}"/>
-                            <input size=20 type="submit" value="Remove Photo"/>
+                            <input size=20 type="submit" value="Remove Photo" class="btn" style="width:120px"/>
                         </form>
                     {% endifequal %}
                               <div>

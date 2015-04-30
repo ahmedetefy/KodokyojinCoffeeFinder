@@ -86,11 +86,12 @@
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
+                    <br>
                     {% ifequal user_id review.user.id %}
-                    <form action="/CoffeeFinderApp/delete_review/" method='post'>{% csrf_token %}
+                    <form action="/CoffeeFinderApp/delete_review/" method='post' >{% csrf_token %}
                       <input type="hidden" name="id" value="{{ review.id }}"/>
                       <input type="hidden" name="coffee" value="{{ coffee_item.id }}"/>
-                      <input size=20 type="submit" value="Remove Review"/>
+                      <p><input type="submit" value="Remove Review" class="btn" style="width:120px"/></p>
                     </form>
                   {% endifequal %}
                   </div>
