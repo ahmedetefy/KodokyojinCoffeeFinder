@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers
-from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, viewCustomerOrders
+from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -76,7 +76,6 @@ def coffee_item_page(request, coffee_item_name_id):
     context_dict['username'] = current_user.username
 
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
-
 
 
 
@@ -161,7 +160,7 @@ def page(request, page_name_slug):
         context_dict['page'] = page
         #Yasser
         #Retrieve all orders that are associated with the current page.
-        order = Order.objects.filter(coffeeshop=page)
+        order = Order.objects.filter(Page_id=page)
         #Add the results to the template context under the name orders.
         context_dict['orders'] = order
         #Retreieve the currently signed in user.
@@ -209,6 +208,7 @@ def uploadImage(request):
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 
+
 def makeOrder(request, page_name_slug):
     #pageID = request.session['my_page']
     context_dict = {}
@@ -253,6 +253,26 @@ def makeOrder(request, page_name_slug):
     v = 'CoffeeFinderApp/makeOrder.html'
     return render_to_response(v, context_dict, context) #TO DO
 #done by Ahmed Etefy 28 - 3954
+
+
+def change_status(request):
+    if request.method == 'POST':
+        form = ChangeStatus(request.POST)
+        if form.is_valid():
+            myOrder = form.save(commit=False)
+            temp = Order.objects.get(id=form['id'].value())
+            temp.status = form['status'].value()
+            temp.save()
+            #noImage = False
+            #context_dict['noImage'] = noImage
+            return HttpResponse("success")
+            #return HttpResponseRedirect('/CoffeeFinderApp/map')
+    else:
+        return HttpResponse("error")
+    
+
+
+
 def editStatus(request, page_name_slug):
     context_dict = {}
     page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url

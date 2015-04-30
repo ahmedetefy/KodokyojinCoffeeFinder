@@ -27,5 +27,6 @@ urlpatterns = patterns('',
         url(r'^(?P<page_name_slug>[\w\-]+)/editStatus/', views.editStatus, name='editOrder'),
         url(r'^uploadImage_item/$', views.uploadImage_item, name='uploadImage_item'),
         url(r'^VIEW_ORDER/$', views.view_orders, name='viewmyorder'),
-        url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),       
+        url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),  
+        url(r'^change_status/$', views.change_status, name='change_status'),       
         )

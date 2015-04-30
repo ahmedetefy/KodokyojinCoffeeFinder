@@ -354,9 +354,35 @@
                         <td>{{ order.coffeeshop_item.price}}</td>
                         <td>{{ order.Name}}</td>
                         <td>{{ order.phone}}</td>
-                        <td>{{ order.status}}</td>
+                        
+                        <td>
+                        <select id="change_status_{{order.id}}" class = "order_status" order-id="#order_{{order.id}}" >
+                          {% if order.status == "pending" %}
+                            <option selected = "true" name="status" value="pending">pending</option>
+                            <option name = "status" value="active">on the way</option>
+                          {% else %}
+                              <option name="status" value="pending">pending</option>
+                              <option selected = "true" name = "status" value="active">on the way</option>
+                          {% endif %}
+                        </select>
+                        
+                        
+                        </td>
+                        
+                       <!-- <td><select id="about-btn">
+                        <option value="hii">{{order.status}}</option>
+                        <option value="lol">active</option>
+                        </select></td>-->
+
                       </tr>
                     {% endfor %}
+                    <form id = "change_status_form" action ="/CoffeeFinderApp/change_status/" method="POST" >{% csrf_token %}
+
+                      
+                          <input hidden class="order_form_id" name= "id" value='' id = "order_{{order.id}}">
+                          <input hidden name= "status" value = ''  id= "order_form_status">
+                      
+                    </form>
                     </table>
             {% else %}
                 <strong>There are currently no orders.</strong>
@@ -366,7 +392,6 @@
 
         </br>
         {% ifequal page.owner username %}
-        <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
         <h4><a href="/CoffeeFinderApp/description_edit/"> Edit Page's Info </a></h4> 
         <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item </a></h4>
         <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
@@ -433,6 +458,46 @@
               showCircleTimer   : false
              });
             });
+
+        
+        </script>
+
+        <script type="text/javascript">
+        $(document).ready( function() {
+
+            $(".order_status").change( function(event) {
+              // $("#successMessage").hide();
+              // $("#errorMessage").hide();
+              //alert($($(this).attr('id')).val($(this).val()));
+              //event.preventDefault();
+              // alert("h");
+              var id = $(this).attr('order-id').substring(7);
+              $('.order_form_id').val(id);
+              //alert($('.order_form_id').val());
+              //alert(id);
+              //alert($('#change_status').find(":selected").text());
+              var status = $('#change_status_'+id.toString()+' option:selected').text();
+              $('#order_form_status').val(status);
+              //alert($('#order_form_status').val());
+              // alert($($(this).attr('order-id')).val(id);
+              
+              $.ajax({
+                url: $('#change_status_form').attr('action'),
+                type: "POST",
+                data: $('#change_status_form').serialize(),
+                success: function(response){
+                  if (response == "error")
+                    $("#errorMessage").show();
+                  else  {
+                    $("#successMessage").show();
+                  }
+                },
+                error: function(response){
+                  $('#errorMessage').show();
+                },
+              });
+            });
+        });
         </script>
     </body>
 </html>

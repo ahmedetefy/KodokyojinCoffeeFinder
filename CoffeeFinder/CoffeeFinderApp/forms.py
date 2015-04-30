@@ -102,6 +102,13 @@ class ReviewForm(forms.ModelForm):
 		model = Coffee_item_review
 		fields = ['field','user','coffee_item']
 
+class ChangeStatus(forms.ModelForm):
+	id = forms.IntegerField(help_text="Please enter the ID of the Order.")
+	status = forms.CharField(max_length = 128, help_text = "Enter the Status of Order")
+	class Meta:
+		model = Order
+		fields = ('id','status',)
+
 
 
 
