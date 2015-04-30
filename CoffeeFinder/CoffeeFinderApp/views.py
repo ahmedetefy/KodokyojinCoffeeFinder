@@ -24,13 +24,10 @@ def order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
-            page = form.cleaned_data['Page']
-            page_name_slug = page.slug
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+            return HttpResponse("success")
         else:
-            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
             form = OrderForm()
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+            return HttpResponse("error")
 
 def index(request):
     context_dict = {}
