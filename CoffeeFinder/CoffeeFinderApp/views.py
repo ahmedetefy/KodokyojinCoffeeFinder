@@ -255,6 +255,8 @@ def makeOrder(request, page_name_slug):
 #done by Ahmed Etefy 28 - 3954
 
 
+#this view edits the value of the status of a specific Order determined by the ID sent by the request
+#to a new specified status
 def change_status(request):
     if request.method == 'POST':
         form = ChangeStatus(request.POST)
@@ -269,7 +271,7 @@ def change_status(request):
             #return HttpResponseRedirect('/CoffeeFinderApp/map')
     else:
         return HttpResponse("error")
-    
+#Mostafa Mahmoud
 
 
 
