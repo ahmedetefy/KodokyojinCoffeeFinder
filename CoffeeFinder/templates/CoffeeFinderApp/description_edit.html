@@ -100,8 +100,13 @@
             <!-- form for getting coffeshop registeration info-->
             <form role="form" data-menu-order="content-form" class="box" id="Coffee_item_form" action = "/CoffeeFinderApp/description_edit/" method="post">
             {% csrf_token %}
+              <div>
+             <h6>{% if messages %}
+             {% for msg in messages %}{{ msg }}{% endfor %}
+             {% endif %}</h6> 
+            </div>
             <div class="form-group">
-            <h6> Enter what makes your Coffeeshop special  </h6>
+            <h5> What makes {{page.name}} special  </h5>
             </div>
             <div class="form-group">
             <h6>{% for field in form.visible_fields %}
@@ -110,25 +115,16 @@
                 {% endfor %}  <br> </h6>
             </div>
             <div>
-             <h9>{% if messages %}
-             {% for msg in messages %}{{ msg }}{% endfor %}
-             {% endif %}</h9>
-            </div>
-            
+             <h6> <input type="submit" value="Update info " data-menu-order="content-form-submit" class="btn " /> <br>
+             <a href="/CoffeeFinderApp/page/{{page.slug}}">Back</a>
+        </form>
+        </div>
             </div>
                 <div class="col-md-6" >
                 <div> <h5> <br> Current info </h5> </div>
                 <div> <h6>    {{page.description}}   </h6></div>
            </div>
         </div>
-    <div class="row">
-    <h6> <input type="submit" value="Update info " data-menu-order="content-form-submit" class="btn " />
-        </form> </h6>
-      </div>
-
-      <div class="row">
-    <h6>    <li><a href="/CoffeeFinderApp/page/{{page.slug}}">Return</a></li>  </h6>
-      </div>
       </section>
     </div>
     </div>

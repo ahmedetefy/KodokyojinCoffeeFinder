@@ -101,6 +101,11 @@
             <form role="form" data-menu-order="content-form" class="box" id="Coffee_item_form" action = "/CoffeeFinderApp/add_item/" method="post">
             {% csrf_token %}
             <div class="form-group">
+               <div>
+             <h6>{% if messages %}
+             {% for msg in messages %}{{ msg }}{% endfor %}
+             {% endif %}</h6>
+            </div>
             <h5> Add new item to the list  </h5>
             </div>
             <div class="form-group">
@@ -108,23 +113,15 @@
                 {{ field.errors }}
                  {{ field.name }}  {{ field }} <br>
                 {% endfor %}  <br> </h6>
+                <h6> <input type="submit" value="Create your mew item " data-menu-order="content-form-submit" class="btn " /> <br>
+                <a  href="/CoffeeFinderApp/page/{{page_slug}}"> Back</a>  </h6>
+        </form> 
             </div>
-            <div>
-             <h9>{% if messages %}
-             {% for msg in messages %}{{ msg }}{% endfor %}
-             {% endif %}</h9>
-            </div>
-            
             </div>
                 <div class="col-md-6" >
                 
            </div>
         </div>
-    <div class="row">
-    <h6> <input type="submit" value="Create" data-menu-order="content-form-submit" class="btn " />
-        </form> </h6>
-          <h6> <a href="/CoffeeFinderApp/page/{{page_slug}}"> Back </a> </h6>
-      </div>
    </section>
     </div>
     </div>

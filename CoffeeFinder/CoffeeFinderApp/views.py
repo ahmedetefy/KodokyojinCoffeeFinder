@@ -6,7 +6,7 @@ from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
 
-from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
+from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit , Coffee_item_form_edit
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -33,8 +33,7 @@ def pageVerification(request, page_name_slug):
     user = User.objects.get(id= page.owner_id)
     context['page']= page
     context['user']= user
-    c = 'CoffeeFinderApp/pageVerification'+page_name_slug+'/'
-    context_dict = {'page': page , 'user': user , 'c' : c }
+    context_dict = {'page': page , 'user': user }
     request.session['page_id'] = page.id
 
     if request.POST:
@@ -45,6 +44,7 @@ def pageVerification(request, page_name_slug):
                 if 'accept' in request.POST:
                     form.save()
                     messages.success(request, " Page verified ! ")
+                    return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page_list'))
 
                 elif 'reject' in request.POST:
                     page.delete()
@@ -56,6 +56,15 @@ def pageVerification(request, page_name_slug):
  
     return render_to_response('CoffeeFinderApp/pageVerification.html', {
         'form': form, }, context)
+
+    # This view is for an Admin to verify requests to create coffeeshop pages by owners
+    # page with page_name_slug is fetched from database along with its owner 
+    # Then added to context dictionry , sent to template for displaying detailed info about the page
+    # In template , an admin decided wether to accept or reject the request 
+    # If accept , verified attribute is changed to 1 and admin is redirected to list of coffee shop page
+    # To find newly verified page added to the list .
+    # If reject , whole page is deleted from the database along with the request . 
+    # Kareem Tarek .
 
 def map(request):
 
@@ -375,7 +384,8 @@ def user_logout(request):
 def add_item(request):
     # Get the context from the request.
     context = RequestContext(request)
-    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
+    slug = Page.objects.get(id=request.session['page_id']).slug
+    context['page_slug']= slug
     context['page_name']= Page.objects.get(id=request.session['page_id']).name
 
  
@@ -392,14 +402,15 @@ def add_item(request):
             item = form.save(commit=False)
 
             if Coffee_item.objects.filter(name=item.name,page= page):
-               messages.error(request, " You've already added this item ")
+               messages.error(request, " Item's already on the list  ")
             else:
                 if item.price < 0:  
                    messages.error(request, " Invalid price ")
                 else: 
                     item.page = page
                     item.save()
-                    messages.success(request, " New item added !")
+                    messages.success(request, " Item added to your list  ")
+                   # return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': slug}))
 
 
       # Send a success message to the template using messages framework.
@@ -434,7 +445,7 @@ def description_edit(request):
         form = Page_form_edit(request.POST, instance=page)
         if form.is_valid():
             form.save()
-            messages.success(request, " Your data has been edited successfully")
+            messages.success(request, " Info has been edited successfully")
             # If the save was successful, redirect to another page
             # Description attribute of page is fetched to be edited .
             # Kareem Tarek
@@ -459,16 +470,17 @@ def item_edit(request):
 
 
     if request.POST:
-        form = Coffee_item_form(request.POST, instance=item)
+        form = Coffee_item_form_edit(request.POST, instance=item)
         if form.is_valid():
             if item.price < 0:  
                    messages.error(request, " Invalid price ")
             else: 
                 form.save()
-                messages.success(request, " Your Info have been edited successfully !")
+                messages.success(request, " Item has been edited successfully ")
+               # return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': item.id}))
  
     else:
-        form = Coffee_item_form(instance=item)
+        form = Coffee_item_form_edit(instance=item)
  
     return render_to_response('CoffeeFinderApp/item_edit.html', {
         'form': form, }, context)
