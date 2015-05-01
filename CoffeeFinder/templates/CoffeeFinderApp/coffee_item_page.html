@@ -58,6 +58,13 @@
           		{% for image in images %}
 				  <br><br> 
 				  <h1 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="{{ image.image.url }}"><img src="{{ image.image.url }}" width="400" height="400" alt="{{ image.image.name }}"></a></h1>
+
+          <br>
+           <form action="/CoffeeFinderApp/delete_photos/" method='post'>{% csrf_token %}
+                            <input type="hidden" name="id" value="{{ image.id }}"/>
+                            <input type="hidden" name="item_id" value="{{ image.item_id }}"/>
+                            <input size=20 type="submit" value="Remove Photo"/>
+                        </form>
 				 
 				  {% endfor %}
 
@@ -79,6 +86,14 @@
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
+                    <br>
+                    {% ifequal user_id review.user.id %}
+                    <form action="/CoffeeFinderApp/delete_review/" method='post' >{% csrf_token %}
+                      <input type="hidden" name="id" value="{{ review.id }}"/>
+                      <input type="hidden" name="coffee" value="{{ coffee_item.id }}"/>
+                      <p><input type="submit" value="Remove Review" class="btn" style="width:120px"/></p>
+                    </form>
+                  {% endifequal %}
                   </div>
                 </div>
 			
