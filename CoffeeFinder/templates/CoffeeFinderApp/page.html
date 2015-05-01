@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="{% static 'css/core.css' %}">
         <link rel="stylesheet" href="{% static 'css/theme.css' %}">
         <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,latin-ext">
+        {#<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,latin-ext">#}
         <link rel="stylesheet" href="{% static 'css/layerslider.css' %}">
         <link rel="stylesheet" href="{% static 'css/prettyPhoto.css' %}">
         <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
@@ -32,6 +32,7 @@
     <body>
         <body class="menu-style-2 responsive sticky-menu">
         <div class="site-wrapper">
+
          <div class="order-menu-wrapper">
         <button class="close-order fa fa-cutlery"></button>
         <div class="order-menu">
@@ -108,24 +109,27 @@
           </div>
           <div class="order-review hidden">
             <h2 class="color text-center">your order</h2>
+            <form role="form" data-menu-order="customer" id="order_form" action ="/CoffeeFinderApp/order/" method="post">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                {{ field.errors }}
+
             <ul class="order-summary"></ul>
             <h6 class="price text-center color">total: $<span>0</span></h6>
             <h2 class="color text-center">your delivery info</h2>
-            <form role="form" data-menu-order="customer" data-success="You order was successfully sent!">
               <div class="form-group">
-                <input type="text" placeholder="name" id="order-name" name="name">
-              </div>
-              <div class="form-group">
-                <input type="email" placeholder="email" id="order-email" name="email">
+                <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
+                <input type="text" placeholder="name" id="order-name" name="Name">
               </div>
               <div class="form-group">
                 <input type="tel" placeholder="phone" id="order-phone" name="phone">
               </div>
               <div class="form-group">
-                <input type="text" placeholder="delivery address" id="order-address" name="address">
+                <input type="text" placeholder="delivery address" id="order-address" name="deliveryAddress">
               </div>
               <div class="form-group">
-                <textarea placeholder="Add Notes" name="note" class="order-notes hidden"></textarea>
+                <input hidden id="page" size="20" type="text" name="Page" value={{ page.id }}  >
+                <!--<textarea placeholder="Add Notes" name="note" class="order-notes hidden"></textarea>-->
               </div>
               <div class="row">
                 <div class="col-md-6">
@@ -135,6 +139,22 @@
                   <button data-menu-order="place" type="submit" class="btn btn-md">place order</button>
                 </div>
               </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div hidden id="successMessage" class="alert alert-success contact-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      <i class="fa fa-check"></i> Your Order was sent successfully 
+                    </div>
+                  </div>
+                </div>
+                  <div class="row">
+                  <div class="col-md-12">
+                    <div hidden id="errorMessage" class="alert alert-success contact-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      <i class="fa fa-check"></i> Please fill in all the fields
+                    </div>
+                  </div>
+                </div>
             </form>
           </div>
         </div>
@@ -150,6 +170,17 @@
                     </div>
                 </div>
           
+
+                  <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
+                      <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
+                          <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
+
+                          <br><br>
+                          <!--<h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>-->
+
+                      </div>
+                  </div>
+        
       <section>
         <div class="container">
           <div class="row">
@@ -400,9 +431,10 @@
           </div>
       </footer>
 
-        
 
+        
         <script src="{% static 'javascript/jquery.js' %}"></script>
+        <script src="{% static 'javascript/main.js' %}"></script>
         <script src="{% static 'javascript/gmap3.js' %}"></script>
         <script src="{% static 'javascript/jquery.cookie.js' %}"></script>
         <script src="{% static 'javascript/theme.js' %}"></script>

@@ -94,6 +94,7 @@ class Coffee_item_review(models.Model):
     user = models.ForeignKey(User)
 
 
+
 class Order(models.Model):
         coffeeshop_item = models.ForeignKey(Coffee_item)
         quantity = models.IntegerField(default=1)
@@ -101,6 +102,21 @@ class Order(models.Model):
         phone = models.CharField(max_length=128)
         status = models.CharField(max_length=128)
         coffeeshop = models.ForeignKey(Page)
+
+
+# Order model takes: order which is the summary of the order, Name which is the name of the user,
+# phone and delieveryAddress,
+# Order belongs to a CoffeePage
+class Order(models.Model):
+    order = models.CharField(max_length = 500, default='')
+    Name = models.CharField(max_length = 128, default = '')
+    phone = models.CharField(max_length = 128, default = '')
+    deliveryAddress = models.CharField(max_length = 128, default = '')
+    Page = models.ForeignKey(Page)
+
+
+
+
 
 
 class Like_Image(models.Model):
