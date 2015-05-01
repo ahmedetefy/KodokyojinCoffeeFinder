@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, Favourite, PhoneNumbers
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm
+from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, Favourite, PhoneNumbers, User
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm, Page_verification_form
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -17,6 +17,7 @@ from django.template import RequestContext
 from django.contrib import messages
 
 
+
 #action called by orderForm, it validates the form and enters the Order in the Order model, 
 #then redirects to the coffeeshop page
 def order(request):
@@ -29,9 +30,47 @@ def order(request):
             form = OrderForm()
             return HttpResponse("error")
 
+
 def index(request):
     context_dict = {}
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
+def requests(request):
+    context_dict = {}
+    pages = Page.objects.filter(verified=0)
+    context_dict = {'pages': pages }
+    return render(request, 'CoffeeFinderApp/requests.html', context_dict)
+
+def pageVerification(request, page_name_slug):
+    context_dict = {}
+    context = RequestContext(request)
+    page = Page.objects.get(slug= page_name_slug ) 
+    user = User.objects.get(id= page.owner_id)
+    context['page']= page
+    context['user']= user
+    c = 'CoffeeFinderApp/pageVerification'+page_name_slug+'/'
+    context_dict = {'page': page , 'user': user , 'c' : c }
+    request.session['page_id'] = page.id
+
+    if request.POST:
+        form = Page_verification_form(request.POST, instance=page)
+        if form.is_valid():
+                p = form.save(commit=False)
+                p.verified = 1
+                if 'accept' in request.POST:
+                    form.save()
+                    messages.success(request, " Page verified ! ")
+
+                elif 'reject' in request.POST:
+                    page.delete()
+                    messages.success(request, " Request has been removed ! ")
+
+
+    else:
+        form = Page_verification_form(instance=page)
+ 
+    return render_to_response('CoffeeFinderApp/pageVerification.html', {
+        'form': form, }, context)
 
 def map(request):
 
@@ -42,7 +81,9 @@ def map(request):
 
 def shopSubscribe(request):
 
-    context_dict = {'APIkey': settings.GOOGLE_APIKEY,}
+    context_dict = {'APIkey': settings.GOOGLE_APIKEY, 'current_user' :  request.user.id,}
+    
+
     return render(request, 'CoffeeFinderApp/shopSubscribe.html', context_dict)
 
 def page_list(request):

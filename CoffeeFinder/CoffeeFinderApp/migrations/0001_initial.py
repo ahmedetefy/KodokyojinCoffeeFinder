@@ -75,7 +75,6 @@ class Migration(migrations.Migration):
             name='Page',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('owner', models.CharField(max_length=128)),
                 ('name', models.CharField(unique=True, max_length=128)),
                 ('longitude', models.DecimalField(default=0.0, max_digits=50, decimal_places=30)),
                 ('latitude', models.DecimalField(default=0.0, max_digits=50, decimal_places=30)),
@@ -86,6 +85,7 @@ class Migration(migrations.Migration):
                 ('country', models.CharField(default=b'', max_length=128)),
                 ('street_number', models.CharField(default=0, max_length=12)),
                 ('description', models.CharField(default=b'', max_length=500)),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
