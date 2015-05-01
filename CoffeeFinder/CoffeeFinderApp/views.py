@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers,  Favourite, User, Like_Image, Like_Review
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form,  addPhoneNumber
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -257,7 +257,12 @@ def page(request, page_name_slug):
         context_dict['current_user'] = current_user
         #Yasser
         request.session['page_id'] = page.id
-        
+        try: # Try to obtain the user's phone number
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
+            phone = phoneInstance.phone #gets the actual phone number
+            context_dict['phone']  = phone #passes phone number into dictionary
+        except: # If the user doesnt have a phone number
+            context_dict['phone'] = "" 
         images = Coffee_page_image.objects.filter(page_id =page.id)
         images = []
         for im in Coffee_page_image.objects.filter(page_id=page.id) :
@@ -272,9 +277,6 @@ def page(request, page_name_slug):
 
 
      # Render list page with the documents and the form 
-
-
-
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
@@ -423,7 +425,10 @@ def register(request):
             password = request.POST.get('password')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return HttpResponseRedirect('/CoffeeFinderApp/')
+            context_dict = {}
+            current_user = request.user
+            context_dict['user_id'] = current_user.id
+            return render(request, 'CoffeeFinderApp/add_view_phonenumber.html', context_dict)
         else:
             print user_form.errors
     else:
@@ -654,6 +659,50 @@ def view_orders(request):
             form = viewCustomerOrders()
         context_dict['form'] = form #pass the form into the context dictionary
         return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
+# Author: Aly Yakan
+# This view redirects to a page that views the user's current phone number if he has it
+# It will also allow the user to replace/add a phone number
+def add_view_phonenumber(request):
+    context_dict = {}
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    if request.method == 'GET':
+        if request.user.is_authenticated(): #checks to see if a user is logged in
+            try: # Try to obtain the user's phone number
+                phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
+                phone = phoneInstance.phone #gets the actual phone number
+                context_dict['phone']  = phone #passes phone number into dictionary
+            except: # If the user doesnt have a phone number
+                context_dict['phone'] = "" 
+            form = addPhoneNumber()
+            context_dict['form'] = form
+            return render(request, 'CoffeeFinderApp/add_view_phonenumber.html', context_dict)
+        else:
+            return HttpResponse('CoffeeFinderApp/index.html')
+    else: 
+        form = addPhoneNumber(request.POST)
+        if form.is_valid():
+            falseForm = form.save(commit=False)
+            try:
+                tempNbr = PhoneNumbers.objects.get(user_id = current_user.id)
+                tempNbr.phone = form.cleaned_data['phone']
+                tempNbr.save()
+            except: # Else create a new entry in the model
+                tempNbr = PhoneNumbers(user_id = current_user.id, phone = form.cleaned_data['phone'])
+                tempNbr.save()
+            context_dict['phone'] = form.cleaned_data['phone'] #passes phone number into dictionary
+            messages.success(request, " Your data has been edited successfully ! ")
+            return render(request, 'CoffeeFinderApp/index.html', context_dict)
+        else:
+            print form.errors
+            try: # Try to obtain the user's phone number
+                phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
+                phone = phoneInstance.phone #gets the actual phone number
+                context_dict['phone']  = phone #passes phone number into dictionary
+            except: # If the user doesnt have a phone number, pass this message
+                context_dict['phone'] = "You haven't added a phone number yet" 
+            return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
 
 
 def like_review(request):

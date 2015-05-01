@@ -242,7 +242,7 @@ function initialize() {
                <form role="form" data-menu-order="content-form" class="box" id="login_form" action ="/CoffeeFinderApp/create_page/" method="post">
                 {% csrf_token %}
                   <div class="form-group">
-                    <input size="20" type="text"  name='owner' placeholder="CoffeeShop Owner" id="name" >
+                    <input size="20" type="text"  name='owner' value={{ user.id }}  id="name" hidden>
                   </div>
                   <div class="form-group">
                     <input size="20" type="text"  name="name" placeholder="CoffeeShop Name">

@@ -4,7 +4,7 @@ from forms import Coffee_item_form
 from django.core.urlresolvers import reverse
 from django import forms 
 from CoffeeFinderApp.models import Coffee_page_image
-from CoffeeFinderApp.models import Coffee_item_review, Page, Order
+from CoffeeFinderApp.models import Coffee_item_review, Page, Order, PhoneNumbers
 from django.core.urlresolvers import reverse
 
 class Coffee_itemTest(TestCase):
@@ -86,3 +86,14 @@ class OrderFormTests(TestCase):
         order = Order(order='Cappucino quantity:1', Name='Rana', phone='01010', deliveryAddress='Roda', Page= page)
         order.save
         self.assertEqual(order.Name, 'Rana')
+
+class AddPhoneNumbersTests(TestCase):
+
+    def test_ensure_phone_number_not_null(self):
+
+        """
+                test_ensure_phone_number_not_null should result True for Phone numbers where phone not equal null
+        """
+        nbr = PhoneNumbers(phone = '0112345678', user_id=4)
+        nbr.save()
+        self.assertEqual((nbr.phone != 0), True)

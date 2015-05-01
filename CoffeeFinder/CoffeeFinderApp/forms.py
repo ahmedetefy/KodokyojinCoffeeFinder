@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item
+from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item, PhoneNumbers
 from django.contrib.auth.models import User
 
 
@@ -147,4 +147,9 @@ class viewCustomerOrders(forms.ModelForm):
 		model = Order
 		fields = ('phone',)
 
+class addPhoneNumber(forms.ModelForm):
+    phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
+    class Meta:
+        model = PhoneNumbers
+        fields = ['phone', 'user']
 
