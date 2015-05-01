@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item
+from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item, Like_Image, Like_Review
 from django.contrib.auth.models import User
 
 
@@ -7,22 +7,20 @@ class Page_form(forms.ModelForm):
 
 	class Meta:
 		model = Page
-
-
 		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
         # delivery added to the page_form 
 
+
 class Page_form_edit(forms.ModelForm):
 
-    description = forms.CharField(max_length=200,help_text="Description",
-            widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}))
+    description = forms.CharField(max_length=200, help_text="Description",
+    	widget=forms.Textarea(attrs={'cols': 50, 'rows': 8}))
 
     class Meta:
 
         model = Page
 
         fields = ['description']
-
 
 
 class UserForm(forms.ModelForm):
@@ -32,7 +30,17 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password')
 
-    
+
+class DeliveryForm(forms.ModelForm):
+	coffeeshop_item_id = forms.IntegerField(help_text="Please enter the ID of your favorite Coffee.")
+	quantity = forms.IntegerField(min_value = 1, help_text = "Enter a quantity")
+	Name = forms.CharField(max_length = 128, help_text = "Enter Your Name")
+	phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
+
+	class Meta:
+		model = Order
+		fields = ('quantity', 'Name','phone')
+
     #class Meta:
     #	model = Order
     #	fields = ('coffeeshop_item', 'quantity','Name','phone')
@@ -56,7 +64,7 @@ class Coffee_item_form(forms.ModelForm):
         fields = ('name', 'price', 'description' )
 
         exclude = ['page']
-        
+
 
 class ImageForm_item(forms.ModelForm):
     image = forms.ImageField( label='Select an image', )
@@ -97,6 +105,7 @@ class ReviewForm(forms.ModelForm):
 
 
 
+
 class EditStatus(forms.ModelForm):
 	id = forms.IntegerField(help_text="Please enter the ID of the Order.")
 	status = forms.CharField(max_length = 128, help_text = "Enter the Status of Order")
@@ -111,11 +120,17 @@ class OrderForm(forms.ModelForm):
 		fields = ('order','Name','phone','deliveryAddress','Page')
    
 
+#the delivery form for making an order 
+#edit status for manager of the page to be able to add status on his order
+#Ahmed Etefy 28 - 3954
+
+
 
 class viewCustomerOrders(forms.ModelForm):
 	phone = forms.CharField(max_length = 128, help_text = "Enter the Phone Number you ordered with")
 	class Meta:
 		model = Order
 		fields = ('phone',)
+
 
 

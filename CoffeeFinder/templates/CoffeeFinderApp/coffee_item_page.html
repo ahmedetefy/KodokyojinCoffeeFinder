@@ -73,13 +73,28 @@
 			<h3>Customers' Reviews</h3>
 			{%if reviews%}
 			<ul>
-				{%for review in reviews%}
+				{%for review,flag in reviews%}
 				<div class="author">
                   <div>
 				<h4><i class="fa fa-user"></i>  Posted by <span class="color">{{ review.user }}</span></li></h4>
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
+                    
+                      {% if user.is_authenticated %}
+                        <form action="{%url "LikeReview" %}" method="post">
+                          {% csrf_token %}          
+                          {% if flag %}    
+                            <input hidden id="review" size="20" type="text" name="review" value={{ review.id }} >
+                            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >                   
+                            <input size="20" type="submit" name="Like" value="Liked" >
+                          {% else %}
+                            <input hidden id="review" size="20" type="text" name="review" value={{ review.id }} >
+                            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                            <input size="20" type="submit" name="Like" value="Like" >
+                          {% endif %}
+                        </form>  
+                      {% endif %}
                   </div>
                 </div>
 			

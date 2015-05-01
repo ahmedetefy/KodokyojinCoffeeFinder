@@ -164,6 +164,22 @@
                 <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
                     <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
                         <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
+
+                        <br><br>
+                        <!--<h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>-->
+
+                    </div>
+                </div>
+          
+
+                  <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
+                      <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
+                          <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
+
+
+                <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
+                    <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
+                        <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
                         <br><br>
                         <!--<h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>-->
 
@@ -286,7 +302,7 @@
             <div class="col-md-12">
               <div class="posts blog">
                 {% if images %}
-                    {% for image in images %}
+                    {% for image,flag in images %}
                         <article class="col-md-4 col-sm-6"><a href="{{ image.image.url }}"><img alt="{{ image.image.name }}" src="{{ image.image.url }}">
                             <div class="hover"><i class="fa fa-cutlery"></i></div></a><a href="{{ image.image.url }}"></a>
                             <div class="author">
@@ -294,6 +310,20 @@
                                     <h5><i class="fa fa-user"></i>  Posted by <span class="color">{{ image.user }}</span></li></h5>
                               </div>
                             </div>
+                            {% if user.is_authenticated %}
+                                <form action="{%url "LikeImage" %}" method="post">
+                                  {% csrf_token %}
+                                    {% if flag %}  
+                                      <input hidden id="image" size="20" type="text" name="image" value={{ image.id }} >
+                                      <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                                      <input size="20" type="submit" name="Like" value="Liked" >
+                                    {% else %}
+                                      <input hidden id="image" size="20" type="text" name="image" value={{ image.id }} >
+                                      <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                                      <input size="20" type="submit" name="Like" value="Like" >
+                                    {% endif %}
+                                </form>
+                            {% endif %}
                         </article>
                     {% endfor %}
                 {% else %}
