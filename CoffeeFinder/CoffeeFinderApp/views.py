@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
-from forms import Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -16,6 +17,17 @@ from django.template import RequestContext
 from django.contrib import messages
 
 
+#action called by orderForm, it validates the form and enters the Order in the Order model, 
+#then redirects to the coffeeshop page
+def order(request):
+    if request.POST:
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse("success")
+        else:
+            form = OrderForm()
+            return HttpResponse("error")
 
 def index(request):
     context_dict = {}
@@ -161,7 +173,7 @@ def page(request, page_name_slug):
         context_dict['page'] = page
         #Yasser
         #Retrieve all orders that are associated with the current page.
-        order = Order.objects.filter(coffeeshop=page)
+        order = Order.objects.filter(Page=page)
         #Add the results to the template context under the name orders.
         context_dict['orders'] = order
         #Retreieve the currently signed in user.
@@ -253,6 +265,7 @@ def makeOrder(request, page_name_slug):
     v = 'CoffeeFinderApp/makeOrder.html'
     return render_to_response(v, context_dict, context) #TO DO
 #done by Ahmed Etefy 28 - 3954
+
 def editStatus(request, page_name_slug):
     context_dict = {}
     page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
@@ -502,5 +515,35 @@ def delete_photos(request, id):
 
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
 
-
+def view_orders(request):
+        context_dict = {}
+        #page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
+        context = RequestContext(request) # Get the context from the request.
+        # A HTTP POST?
+        current_user = request.user #get the user instance currently logged onto the website
+        if request.user.is_authenticated():#checks to see if a user is logged in
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance
+            #of logged in user
+            phone = phoneInstance.phone #gets the actual phone number
+            context_dict['phone']  = phone #passes phone number into dictionary
+        if request.method == 'POST':
+            form = viewCustomerOrders(request.POST) #save the form instance into var form
+            # Have we been provided with a valid form?
+            if form.is_valid():
+                # save the form item to x.
+                x = form.save(commit=False)
+                try:
+                    temp = Order.objects.filter(phone__iexact=form['phone'].value()) #obtain the order object with id passed in form into temp
+                except:
+                    return HttpResponse('Invalid Phone Number') #send to a HTTP page with the following text
+                context_dict['orders'] = temp
+                return render_to_response('CoffeeFinderApp/viewOrder.html',context_dict,context) #redirect to a HTTP Page that has the following text
+            else:
+                # The supplied form contained errors - just print them to the terminal.
+                print form.errors
+        else:
+            # If the request was not a POST, display the form to enter details.
+            form = viewCustomerOrders()
+        context_dict['form'] = form #pass the form into the context dictionary
+        return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
 

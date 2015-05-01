@@ -8,12 +8,20 @@ from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-
+    
 
     def __unicode__(self):
         return self.user.username
 
+class PhoneNumbers(models.Model):
 
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length = 128)
+    
+    def __unicode__(self):
+       return self.user.username  
+#Model phone number has been added each is user is allowed to have one phone number registered
+#on system 
 class Page(models.Model):
         owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
         name = models.CharField(max_length=128,unique=True)
@@ -94,11 +102,16 @@ class Coffee_item_review(models.Model):
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
 
+
+
+# Order model takes: order which is the summary of the order, Name which is the name of the user,
+# phone and delieveryAddress,
+# Order belongs to a CoffeePage
 class Order(models.Model):
-        coffeeshop_item = models.ForeignKey(Coffee_item)
-        quantity = models.IntegerField(default=1)
-        Name = models.CharField(max_length = 128)
-        phone = models.CharField(max_length = 128)
+        order = models.CharField(max_length = 500, default='')
+        Name = models.CharField(max_length = 128, default = '')
+        phone = models.CharField(max_length = 128, default = '')
+        deliveryAddress = models.CharField(max_length = 128, default = '')
         status = models.CharField(max_length = 128)
-        coffeeshop = models.ForeignKey(Page)
+        Page = models.ForeignKey(Page)
 
