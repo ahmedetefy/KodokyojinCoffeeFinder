@@ -103,6 +103,7 @@ class Coffee_item_review(models.Model):
     user = models.ForeignKey(User)
 
 
+
 # Order model takes: order which is the summary of the order, Name which is the name of the user,
 # phone and delieveryAddress,
 # Order belongs to a CoffeePage
@@ -113,3 +114,4 @@ class Order(models.Model):
         deliveryAddress = models.CharField(max_length = 128, default = '')
         status = models.CharField(max_length = 128)
         Page = models.ForeignKey(Page)
+

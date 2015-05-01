@@ -28,4 +28,5 @@ urlpatterns = patterns('',
         url(r'^uploadImage_item/$', views.uploadImage_item, name='uploadImage_item'),
         url(r'^VIEW_ORDER/$', views.view_orders, name='viewmyorder'),
         url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),       
+        url(r'^order/$', views.order, name='order'),
         )
