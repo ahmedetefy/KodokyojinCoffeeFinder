@@ -1,11 +1,13 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image,User
-from forms import Page_verification_form , Page_form , UserForm , ReviewForm, DeliveryForm, EditStatus, ImageForm
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers,  Favourite, User, Like_Image, Like_Review
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
-
+from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit , Coffee_item_form_edit
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit , Coffee_item_form_edit
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -15,7 +17,22 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib import messages
 
- 
+
+
+
+#action called by orderForm, it validates the form and enters the Order in the Order model, 
+#then redirects to the coffeeshop page
+def order(request):
+    if request.POST:
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse("success")
+        else:
+            form = OrderForm()
+            return HttpResponse("error")
+
+
 def index(request):
     context_dict = {}
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
@@ -88,6 +105,29 @@ def page_list(request):
     # Render the response and send it back!
     return render(request, 'CoffeeFinderApp/page_list.html', context_dict)
 
+# action called by view favorites url to view user's favorite coffees. It selects the favorite coffees of the 
+# current logged in user. It gets the corresponding item and coffee page for that item, Then stores the results
+# items and pages array respectively. It adds the two arrays to the context dictionary and passes them to the 
+# view_favorites.html and renders to it.
+# author Mostafa Mahmoud
+def view_favorites(request):
+    
+
+    favorites = Favourite.objects.filter(user_id = request.user.id )
+    items = []
+    pages = []
+    for favorite in favorites:
+       item = Coffee_item.objects.get(id=favorite.coffeeshop_item_id)
+       items.append(item)
+
+
+    for item in items:
+        page = Page.objects.get(id=item.page_id)
+        pages.append(page)
+
+    context_dict = { 'items': items, 'pages': pages }
+    return render(request, 'CoffeeFinderApp/view_favorites.html', context_dict)
+
 
 def coffee_item_page(request, coffee_item_name_id):
 
@@ -106,7 +146,13 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['images'] = images
         form = ImageForm_item()
         context_dict['form'] = form
-        reviews = Coffee_item_review.objects.filter(coffee_item_id = coffee_item_name_id)
+        reviews = Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id)
+        reviews = []
+        for rev in Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id):
+            if rev.likes.all().filter(user=request.user):
+                reviews.append((rev, True))
+            else:
+                reviews.append((rev, False))
         context_dict['reviews'] = reviews
 
     except Coffee_item.DoesNotExist:
@@ -116,7 +162,6 @@ def coffee_item_page(request, coffee_item_name_id):
     current_user = request.user
     context_dict['user'] = current_user
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
-
 
 
 
@@ -201,7 +246,9 @@ def page(request, page_name_slug):
         context_dict['page'] = page
         #Yasser
         #Retrieve all orders that are associated with the current page.
-        order = Order.objects.filter(coffeeshop=page)
+
+        order = Order.objects.filter(Page_id=page)
+
         #Add the results to the template context under the name orders.
         context_dict['orders'] = order
         #Retreieve the currently signed in user.
@@ -210,13 +257,24 @@ def page(request, page_name_slug):
         context_dict['current_user'] = current_user
         #Yasser
         request.session['page_id'] = page.id
-
+        
+        images = Coffee_page_image.objects.filter(page_id =page.id)
+        images = []
+        for im in Coffee_page_image.objects.filter(page_id=page.id) :
+            if im.likes.all().filter(user=current_user.id):
+                images.append((im, True))
+            else:
+                images.append((im, False))
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
-    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+
+     # Render list page with the documents and the form 
+
+
+
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
@@ -247,6 +305,7 @@ def uploadImage(request):
     else:
         form = ImageForm()
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
 
 
 def makeOrder(request, page_name_slug):
@@ -293,6 +352,29 @@ def makeOrder(request, page_name_slug):
     v = 'CoffeeFinderApp/makeOrder.html'
     return render_to_response(v, context_dict, context) #TO DO
 #done by Ahmed Etefy 28 - 3954
+
+
+
+#this view edits the value of the status of a specific Order determined by the ID sent by the request
+#to a new specified status
+def change_status(request):
+    if request.method == 'POST':
+        form = ChangeStatus(request.POST)
+        if form.is_valid():
+            myOrder = form.save(commit=False)
+            temp = Order.objects.get(id=form['id'].value())
+            temp.status = form['status'].value()
+            temp.save()
+            #noImage = False
+            #context_dict['noImage'] = noImage
+            return HttpResponse("success")
+            #return HttpResponseRedirect('/CoffeeFinderApp/map')
+    else:
+        return HttpResponse("error")
+#Mostafa Mahmoud
+
+
+
 def editStatus(request, page_name_slug):
     context_dict = {}
     page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
@@ -541,5 +623,76 @@ def delete_photos(request, id):
 
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
 
+def view_orders(request):
+        context_dict = {}
+        #page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
+        context = RequestContext(request) # Get the context from the request.
+        # A HTTP POST?
+        current_user = request.user #get the user instance currently logged onto the website
+        if request.user.is_authenticated():#checks to see if a user is logged in
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance
+            #of logged in user
+            phone = phoneInstance.phone #gets the actual phone number
+            context_dict['phone']  = phone #passes phone number into dictionary
+        if request.method == 'POST':
+            form = viewCustomerOrders(request.POST) #save the form instance into var form
+            # Have we been provided with a valid form?
+            if form.is_valid():
+                # save the form item to x.
+                x = form.save(commit=False)
+                try:
+                    temp = Order.objects.filter(phone__iexact=form['phone'].value()) #obtain the order object with id passed in form into temp
+                except:
+                    return HttpResponse('Invalid Phone Number') #send to a HTTP page with the following text
+                context_dict['orders'] = temp
+                return render_to_response('CoffeeFinderApp/viewOrder.html',context_dict,context) #redirect to a HTTP Page that has the following text
+            else:
+                # The supplied form contained errors - just print them to the terminal.
+                print form.errors
+        else:
+            # If the request was not a POST, display the form to enter details.
+            form = viewCustomerOrders()
+        context_dict['form'] = form #pass the form into the context dictionary
+        return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
 
 
+def like_review(request):
+    if request.POST:
+        review_id = request.POST['review']
+        coffee_item_review = get_object_or_404(
+            Coffee_item_review, id=review_id)
+        like_review, created = Like_Review.objects.get_or_create(
+            user=request.user, review=coffee_item_review)
+    return HttpResponseRedirect(
+        reverse(
+            'coffee_item_page',
+            kwargs={'coffee_item_name_id':
+            coffee_item_review.coffee_item.id}))
+
+
+"""
+like_review take a request and check if the request is posting and
+then call the review_id from the request and get the review using the id
+then check if the user did not like this review before then it add the like
+with the image id and the user who request
+the like then return to the same page
+"""
+
+
+def like_image(request):
+    if request.POST:
+        image_id = request.POST['image']
+        coffee_page_image = get_object_or_404(
+            Coffee_page_image, id=image_id)
+        like_image, created = Like_Image.objects.get_or_create(
+            user=request.user, image=coffee_page_image)
+    return HttpResponseRedirect(
+        reverse(
+            'page', kwargs={'page_name_slug': coffee_page_image.page.slug}))
+"""
+like_image take a request and check if the request is posting and
+then call the image_id from the request and get the image using the id
+then check if the user did not like this image before then it add the like
+with the image id and the user who request
+the like then return to the same page
+"""

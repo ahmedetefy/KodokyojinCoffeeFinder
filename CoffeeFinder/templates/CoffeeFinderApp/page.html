@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="{% static 'css/core.css' %}">
         <link rel="stylesheet" href="{% static 'css/theme.css' %}">
         <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,latin-ext">
+        {#<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,latin-ext">#}
         <link rel="stylesheet" href="{% static 'css/layerslider.css' %}">
         <link rel="stylesheet" href="{% static 'css/prettyPhoto.css' %}">
         <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
@@ -28,10 +28,67 @@
       <script type="text/javascript"
         src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places">
       </script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> 
+      <script src="http://malsup.github.com/jquery.form.js"></script> 
+      <script type="text/javascript">
+      
+        var lat;
+        var long;
+        var coords;
+
+
+        function reverseGecoding(location){
+          var lat = location.lat();
+          var lng = location.lng();
+          var xmlHttp = null;
+        
+        
+          //initialize request and send it
+          xmlHttp = new XMLHttpRequest();
+          xmlHttp.open( "GET", "https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&key={{APIkey}}", false );
+          xmlHttp.send( null );
+          //calls a function to process the response that was received from the request
+          ProcessRequest(xmlHttp.responseText);
+        }
+
+
+
+        function myFunction() {
+          if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            window.alert("Your location will be added automatically as the delivery address");
+            reverseGecoding(pos);
+            }, function() {
+              handleNoGeolocation(true);
+            }, {enableHighAccuracy: true});
+          } else {
+            // Browser doesn't support Geolocation
+            handleNoGeolocation(false);
+          }
+        }
+        function ProcessRequest(response) {
+          //parse json object to a dictionary
+          var json_data = JSON.parse(response);
+            
+          //get the formatted address from the dictionary
+          var address = json_data.results[0]['formatted_address'];
+          document.getElementById("order-address").value = address.toString();
+        }
+        function handleNoGeolocation(errorFlag) {
+          if (errorFlag) {
+            var content = 'Error: The Geolocation service failed.';
+          } else {
+            var content = 'Error: Your browser doesn\'t support geolocation.';
+          }
+        }
+      
+      </script>
     </head>
     <body>
         <body class="menu-style-2 responsive sticky-menu">
         <div class="site-wrapper">
+
          <div class="order-menu-wrapper">
         <button class="close-order fa fa-cutlery"></button>
         <div class="order-menu">
@@ -102,30 +159,37 @@
                 <button data-menu-order="notes" class="btn btn-md">add order notes</button>
               </div>
               <div class="col-md-6">
-                <button data-menu-order="review" class="btn btn-md">review your order</button>
+                <button onclick="myFunction()" data-menu-order="review" class="btn btn-md">review your order</button>
               </div>
             </div>
           </div>
           <div class="order-review hidden">
             <h2 class="color text-center">your order</h2>
+            <form role="form" data-menu-order="customer" id="order_form" action ="/CoffeeFinderApp/order/" method="post">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                {{ field.errors }}
+
             <ul class="order-summary"></ul>
             <h6 class="price text-center color">total: $<span>0</span></h6>
             <h2 class="color text-center">your delivery info</h2>
-            <form role="form" data-menu-order="customer" data-success="You order was successfully sent!">
               <div class="form-group">
-                <input type="text" placeholder="name" id="order-name" name="name">
-              </div>
-              <div class="form-group">
-                <input type="email" placeholder="email" id="order-email" name="email">
+                <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
+                <input type="text" placeholder="name" id="order-name" name="Name">
               </div>
               <div class="form-group">
                 <input type="tel" placeholder="phone" id="order-phone" name="phone">
               </div>
               <div class="form-group">
-                <input type="text" placeholder="delivery address" id="order-address" name="address">
+                <input type="text" placeholder="delivery address" id="order-address" name="deliveryAddress">
               </div>
               <div class="form-group">
-                <textarea placeholder="Add Notes" name="note" class="order-notes hidden"></textarea>
+                <input hidden id="page" size="20" type="text" name="Page" value={{ page.id }}  >
+                <!--<textarea placeholder="Add Notes" name="note" class="order-notes hidden"></textarea>-->
+              </div>
+              <div class="form-group">
+                <input id="long" size="20" type="text" name="longitude"  hidden> <br>
+                <input id="lat" size="20" type="text" name="latitude" hidden >
               </div>
               <div class="row">
                 <div class="col-md-6">
@@ -135,19 +199,41 @@
                   <button data-menu-order="place" type="submit" class="btn btn-md">place order</button>
                 </div>
               </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div hidden id="successMessage" class="alert alert-success contact-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      <i class="fa fa-check"></i> Your Order was sent successfully 
+                    </div>
+                  </div>
+                </div>
+                  <div class="row">
+                  <div class="col-md-12">
+                    <div hidden id="errorMessage" class="alert alert-success contact-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      <i class="fa fa-check"></i> Please fill in all the fields
+                    </div>
+                  </div>
+                </div>
             </form>
           </div>
         </div>
       </div>
-    
-                <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
-                    <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
-                        <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
-                        <br><br>
-                        <!--<h4 style="top: 55%; left: 35%;" class="style-2 ls-l text-center">{{ page.description }}</h4>-->
-                    </div>
-                </div>
-          
+
+         <div>
+            {%  if page.owner_id  == current_user.id %}
+              {% if page.verified == 0 %}
+                <h4 style="top: 30%; left: 50%;" class="ls-l text-center">page status: <span style=" font-size:20px; color:#980000;  " ></a> Pending Approval </span></h4>
+              {% else %}
+                <h4 style="top: 30%; left: 50%;" class="ls-l text-center">page status: <span style=" font-size:20px; color:#009933;  " ></a> Active </span></h4>
+              {% endif %}
+            {% endif %}
+          </div>
+          <div id="home" style="background-image: url('{% static "/static/images/background/pageList2.jpg" %}'); width: 100%; height: 95%;" class="parallax hidden-xs">
+              <div data-ls="slidedelay: 4000; transition2d: 5,5;" class="ls-slide">
+                  <h1 style="top: 47%; left: 50%;" class="ls-l text-center">Welcome to <span class="color"></a> {{ page_name }} </span></h1>
+              </div>
+          </div> 
       <section>
         <div class="container">
           <div class="row">
@@ -263,7 +349,7 @@
             <div class="col-md-12">
               <div class="posts blog">
                 {% if images %}
-                    {% for image in images %}
+                    {% for image,flag in images %}
                         <article class="col-md-4 col-sm-6"><a href="{{ image.image.url }}"><img alt="{{ image.image.name }}" src="{{ image.image.url }}">
                             <div class="hover"><i class="fa fa-cutlery"></i></div></a><a href="{{ image.image.url }}"></a>
                             <div class="author">
@@ -271,6 +357,20 @@
                                     <h5><i class="fa fa-user"></i>  Posted by <span class="color">{{ image.user }}</span></li></h5>
                               </div>
                             </div>
+                            {% if user.is_authenticated %}
+                                <form action="{%url "LikeImage" %}" method="post">
+                                  {% csrf_token %}
+                                    {% if flag %}  
+                                      <input hidden id="image" size="20" type="text" name="image" value={{ image.id }} >
+                                      <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                                      <input size="20" type="submit" name="Like" value="Liked" >
+                                    {% else %}
+                                      <input hidden id="image" size="20" type="text" name="image" value={{ image.id }} >
+                                      <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                                      <input size="20" type="submit" name="Like" value="Like" >
+                                    {% endif %}
+                                </form>
+                            {% endif %}
                         </article>
                     {% endfor %}
                 {% else %}
@@ -282,22 +382,23 @@
             <div class="row">
               <div class="col-md-4 col-sm-6">
                   {% if user.is_authenticated %}
-                     <h5> Upload an Image of our CoffeeShop</h5>
-                  <!-- Upload form. Note enctype attribute! -->
-                      <form action="{% url "uploadImage" %}" method="post" class="box" enctype="multipart/form-data">
-                          {% csrf_token %}
-                          <p>{{ form.non_field_errors }}</p>
-                          <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
-                          <p>
-                              {{ form.image.errors }}
-                              {{ form.image }}
-                          </p>
-                          <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} 
-                          <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
-                          <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
-                          <p><input type="submit" value="Upload" class="btn md" /></p>
-                      </form>
-                  {% endif %}
+
+                  <h5> Upload an Image of our CoffeeShop</h5>
+        <!-- Upload form. Note enctype attribute! -->
+            <form action="{% url "uploadImage" %}" method="post" class="box" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                <p>{{ form.image.label_tag }} {{ form.image.help_text }}</p>
+                <p>
+                    {{ form.image.errors }}
+                    {{ form.image }}
+                </p>
+                <input hidden id="image" size="20" type="text" name="image" value={{ form.image }} >
+                <input hidden id="page" size="20" type="text" name="page" value={{ page.id }}  >
+                <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                <p><input type="submit" value="Upload" class="btn md" /></p>
+            </form>
+        {% endif %}
       </div>
       </div>
         </div>
@@ -317,9 +418,11 @@
               <ul class="site-navigation">
                 <li class="active"><a href="/CoffeeFinderApp/page_list/">Find A CoffeeShop</a>
                 </li>
+                <li><a href="/CoffeeFinderApp/VIEW_ORDER/">View My Orders</a></li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
                 {% if user.is_authenticated %}
+                <li><a href="/CoffeeFinderApp/view_favorites/">View Favorites</a>
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
                  {% if user.is_superuser %}
                 <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
@@ -337,6 +440,24 @@
         {% ifequal page.owner_id current_user.id %}
             <h4>Orders: </h4>
             {% if orders %}
+                        <td> 
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div hidden id="successMessage" class="alert alert-success contact-success">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <i class="fa fa-check"></i> The status has been changed successfully
+                              </div>
+                            </div>
+                          </div>
+                            <div class="row">
+                            <div class="col-md-12">
+                              <div hidden id="errorMessage" class="alert alert-success contact-success">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <i class="fa fa-check"></i> Sorry, there was an error changing the status
+                              </div>
+                            </div>
+                          </div>
+                        </td>
                     <table style="width:60%">
                       <tr>
                         <td>ID</td>
@@ -355,10 +476,34 @@
                         <td>{{ order.coffeeshop_item.price}}</td>
                         <td>{{ order.Name}}</td>
                         <td>{{ order.phone}}</td>
-                        <td>{{ order.status}}</td>
+                        <td>
+                          <select id="change_status_{{order.id}}" class = "order_status" order-id="#order_{{order.id}}" >
+                            {% if order.status == "pending" %}
+                              <option selected = "true" name="status" value="pending">pending</option>
+                              <option name = "status" value="active">on the way</option>
+                            {% else %}
+                                <option name="status" value="pending">pending</option>
+                                <option selected = "true" name = "status" value="active">on the way</option>
+                            {% endif %}
+                          </select>
+                        </td>
+                        
+                       <!-- <td><select id="about-btn">
+                        <option value="hii">{{order.status}}</option>
+                        <option value="lol">active</option>
+                        </select></td>-->
+
                       </tr>
                     {% endfor %}
+                    <form id = "change_status_form" action ="/CoffeeFinderApp/change_status/" method="POST" >{% csrf_token %}
+
+                      
+                          <input hidden class="order_form_id" name= "id" value='' id = "order_{{order.id}}">
+                          <input hidden name= "status" value = ''  id= "order_form_status">
+                      
+                    </form>
                     </table>
+
             {% else %}
                 <strong>There are currently no orders.</strong>
             {% endif %}
@@ -370,7 +515,6 @@
         <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
         <h4><a href="/CoffeeFinderApp/description_edit/"> What makes us special </a></h4> 
         <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item to the list  </a></h4>
-        {% endifequal %}
 
           
         <footer class="site-footer">
@@ -386,9 +530,10 @@
           </div>
       </footer>
 
-        
 
+        
         <script src="{% static 'javascript/jquery.js' %}"></script>
+        <script src="{% static 'javascript/main.js' %}"></script>
         <script src="{% static 'javascript/gmap3.js' %}"></script>
         <script src="{% static 'javascript/jquery.cookie.js' %}"></script>
         <script src="{% static 'javascript/theme.js' %}"></script>
@@ -433,6 +578,46 @@
               showCircleTimer   : false
              });
             });
+
+        
+        </script>
+
+        <script type="text/javascript">
+        $(document).ready( function() {
+
+            $(".order_status").change( function(event) {
+              // $("#successMessage").hide();
+              // $("#errorMessage").hide();
+              //alert($($(this).attr('id')).val($(this).val()));
+              //event.preventDefault();
+              // alert("h");
+              var id = $(this).attr('order-id').substring(7);
+              $('.order_form_id').val(id);
+              //alert($('.order_form_id').val());
+              //alert(id);
+              //alert($('#change_status').find(":selected").text());
+              var status = $('#change_status_'+id.toString()+' option:selected').text();
+              $('#order_form_status').val(status);
+              //alert($('#order_form_status').val());
+              // alert($($(this).attr('order-id')).val(id);
+              
+              $.ajax({
+                url: $('#change_status_form').attr('action'),
+                type: "POST",
+                data: $('#change_status_form').serialize(),
+                success: function(response){
+                  if (response == "error")
+                    $("#errorMessage").show();
+                  else  {
+                    $("#successMessage").show();
+                  }
+                },
+                error: function(response){
+                  $('#errorMessage').show();
+                },
+              });
+            });
+        });
         </script>
     </body>
 </html>

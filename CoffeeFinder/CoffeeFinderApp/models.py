@@ -8,10 +8,21 @@ from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-
+    
 
     def __unicode__(self):
         return self.user.username
+
+
+class PhoneNumbers(models.Model):
+
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length = 128)
+    
+    def __unicode__(self):
+       return self.user.username  
+#Model phone number has been added each is user is allowed to have one phone number registered
+#on system 
 
 class Page(models.Model):
         owner = models.ForeignKey(User)
@@ -96,11 +107,43 @@ class Coffee_item_review(models.Model):
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
 
+
+
+# Order model takes: order which is the summary of the order, Name which is the name of the user,
+# phone and delieveryAddress,
+# Order belongs to a CoffeePage
 class Order(models.Model):
-        coffeeshop_item = models.ForeignKey(Coffee_item)
-        quantity = models.IntegerField(default=1)
-        Name = models.CharField(max_length = 128)
-        phone = models.CharField(max_length = 128)
-        status = models.CharField(max_length = 128)
-        coffeeshop = models.ForeignKey(Page)
+        order = models.CharField(max_length = 500, default='')
+        Name = models.CharField(max_length = 128, default = '')
+        phone = models.CharField(max_length = 128, default = '')
+        deliveryAddress = models.CharField(max_length = 128, default = '')
+        status = models.CharField(max_length = 128, default = 'pending')
+        Page = models.ForeignKey(Page)
+
+
+class Favourite(models.Model):
+    user = models.ForeignKey(User)
+    coffeeshop_item = models.ForeignKey(Coffee_item)
+    page = models.ForeignKey(Page)
+
+
+
+class Like_Image(models.Model):
+    user = models.ForeignKey(User)
+    image = models.ForeignKey(Coffee_page_image, related_name='likes')
+    create = models.DateTimeField(auto_now_add=True)
+"""
+Like_Image takes the image and user as a ForeignKey
+and the date the image is liked in
+"""
+
+
+class Like_Review(models.Model):
+    user = models.ForeignKey(User)
+    review = models.ForeignKey(Coffee_item_review, related_name='likes')
+    create = models.DateTimeField(auto_now_add=True)
+"""
+Like_Review takes the review and user as a ForeignKey
+and the date the review is liked in
+"""
 

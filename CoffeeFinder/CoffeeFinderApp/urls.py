@@ -25,9 +25,14 @@ urlpatterns = patterns('',
         url(r'^uploadImage/$', views.uploadImage, name='uploadImage'),
         url(r'^(?P<page_name_slug>[\w\-]+)/makeOrder/', views.makeOrder, name='makeOrder'),
         url(r'^(?P<page_name_slug>[\w\-]+)/editStatus/', views.editStatus, name='editOrder'),
+        url(r'^view_favorites/$', views.view_favorites, name='view_favorites'),     
         url(r'^uploadImage_item/$', views.uploadImage_item, name='uploadImage_item'),
         url(r'^requests/', views.requests, name='requests'),
         url(r'^pageVerification/(?P<page_name_slug>[\w\-]+)/$', views.pageVerification, name='pageVerification'),
-
-      
+        url(r'^VIEW_ORDER/$', views.view_orders, name='viewmyorder'),
+        url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),     
+        url(r'^change_status/$', views.change_status, name='change_status'),      
+        url(r'^order/$', views.order, name='order'),
+        url(r'^Like_image/$', views.like_image, name='LikeImage'),
+        url(r'^Like_review/$', views.like_review, name='LikeReview'),
         )
