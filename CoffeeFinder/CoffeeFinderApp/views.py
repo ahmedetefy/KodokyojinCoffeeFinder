@@ -163,7 +163,7 @@ def coffee_item_page(request, coffee_item_name_id):
         reviews = Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id)
         reviews = []
         for rev in Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id):
-            if rev.likes.all().filter(user=request.user):
+            if rev.likes.all().filter(user=request.user.id):
                 reviews.append((rev, True))
             else:
                 reviews.append((rev, False))
