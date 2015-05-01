@@ -134,4 +134,3 @@ class viewCustomerOrders(forms.ModelForm):
 		model = Order
 		fields = ('phone',)
 
-

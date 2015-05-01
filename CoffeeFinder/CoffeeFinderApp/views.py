@@ -669,6 +669,7 @@ def view_orders(request):
         return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
 
 
+
 def like_review(request):
     if request.POST:
         review_id = request.POST['review']
