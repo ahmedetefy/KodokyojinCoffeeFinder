@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, OrderForm
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -24,13 +24,10 @@ def order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
-            page = form.cleaned_data['Page']
-            page_name_slug = page.slug
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+            return HttpResponse("success")
         else:
-            page_name_slug = Page.objects.get(id=request.session['page_id']).slug
             form = OrderForm()
-            return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': page_name_slug}))
+            return HttpResponse("error")
 
 def index(request):
     context_dict = {}
@@ -518,5 +515,35 @@ def delete_photos(request, id):
 
         return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
 
-
+def view_orders(request):
+        context_dict = {}
+        #page = Page.objects.get(slug=page_name_slug) #get page object from the slug name in url
+        context = RequestContext(request) # Get the context from the request.
+        # A HTTP POST?
+        current_user = request.user #get the user instance currently logged onto the website
+        if request.user.is_authenticated():#checks to see if a user is logged in
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance
+            #of logged in user
+            phone = phoneInstance.phone #gets the actual phone number
+            context_dict['phone']  = phone #passes phone number into dictionary
+        if request.method == 'POST':
+            form = viewCustomerOrders(request.POST) #save the form instance into var form
+            # Have we been provided with a valid form?
+            if form.is_valid():
+                # save the form item to x.
+                x = form.save(commit=False)
+                try:
+                    temp = Order.objects.filter(phone__iexact=form['phone'].value()) #obtain the order object with id passed in form into temp
+                except:
+                    return HttpResponse('Invalid Phone Number') #send to a HTTP page with the following text
+                context_dict['orders'] = temp
+                return render_to_response('CoffeeFinderApp/viewOrder.html',context_dict,context) #redirect to a HTTP Page that has the following text
+            else:
+                # The supplied form contained errors - just print them to the terminal.
+                print form.errors
+        else:
+            # If the request was not a POST, display the form to enter details.
+            form = viewCustomerOrders()
+        context_dict['form'] = form #pass the form into the context dictionary
+        return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
 
