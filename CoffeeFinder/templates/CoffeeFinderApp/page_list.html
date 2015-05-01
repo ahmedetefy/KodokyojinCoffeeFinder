@@ -39,7 +39,11 @@
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
                 {% if user.is_authenticated %}
+                <li><a href="/CoffeeFinderApp/view_favorites/">View Favorites</a>
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
+                 {% if user.is_superuser %}
+                <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
+                {% endif %}
                 {% else %}
                 <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
                 <li><a href="/CoffeeFinderApp/register/">Register</a></li>
@@ -72,8 +76,12 @@
            
                 {% for page in pages %}
                 <!-- Following line changed to add an HTML hyperlink -->
+
+                {% ifnotequal page.verified 0 %}
           
                 <h4 style="top: 55%; left: 50%;" class="ls-l text-center" ><a href="/CoffeeFinderApp/page/{{ page.slug }}">{{ page.name }}</a></h4>
+
+                {% endifnotequal %}
 
                 {% endfor %}
            
