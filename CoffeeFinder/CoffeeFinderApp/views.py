@@ -161,6 +161,24 @@ def coffee_item_page(request, coffee_item_name_id):
     
     current_user = request.user
     context_dict['user'] = current_user
+    context_dict['user_id'] = current_user.id
+    context_dict['username'] = current_user.username
+    #check if customer is signed in
+    if request.user.is_authenticated():
+        #bit to hide or show button if user is signed in
+        context_dict['auth']=1
+        #checks if the favorite/unfavorite button is clicked
+        if(request.GET.get('favbtn')):
+            #If clicked a new object is inserted in the model favorite
+            favorite=Favourite(user = current_user,coffeeshop_item = coffee_item,page = page)
+            favorite.save()
+        #checks if the current item already exists in the users favorites
+        if (Favourite.objects.filter(user = current_user,coffeeshop_item = coffee_item,page = page).exists()):
+            #if it does exist then the button will say remove from favorites
+            context_dict['btntxt'] = "Remove from favorites"
+        else:
+            #if does not exist the button will say add to favorites allowing the user to favorite the item
+            context_dict['btntxt'] = "Add to favorites"
     return render(request, 'CoffeeFinderApp/coffee_item_page.html', context_dict)
 
 
@@ -702,6 +720,7 @@ def add_view_phonenumber(request):
             except: # If the user doesnt have a phone number, pass this message
                 context_dict['phone'] = "You haven't added a phone number yet" 
             return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
 
 
 

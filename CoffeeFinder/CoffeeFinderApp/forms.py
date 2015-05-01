@@ -147,6 +147,7 @@ class viewCustomerOrders(forms.ModelForm):
 		model = Order
 		fields = ('phone',)
 
+
 class addPhoneNumber(forms.ModelForm):
     phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
     class Meta:
