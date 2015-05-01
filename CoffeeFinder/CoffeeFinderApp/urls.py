@@ -31,5 +31,6 @@ urlpatterns = patterns('',
         url(r'^VIEW_ORDER/$', views.view_orders, name='viewmyorder'),
         url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),       
         url(r'^order/$', views.order, name='order'),
-
+        url(r'^Like_image/$', views.like_image, name='LikeImage'),
+        url(r'^Like_review/$', views.like_review, name='LikeReview'),
         )
