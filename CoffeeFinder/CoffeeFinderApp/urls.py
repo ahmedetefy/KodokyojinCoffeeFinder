@@ -33,10 +33,7 @@ urlpatterns = patterns('',
         url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),     
         url(r'^change_status/$', views.change_status, name='change_status'),      
         url(r'^order/$', views.order, name='order'),
-<<<<<<< HEAD
         url(r'^add_view_phonenumber/$', views.add_view_phonenumber, name='add_view_phonenumber'),
-=======
         url(r'^Like_image/$', views.like_image, name='LikeImage'),
         url(r'^Like_review/$', views.like_review, name='LikeReview'),
->>>>>>> master
         )

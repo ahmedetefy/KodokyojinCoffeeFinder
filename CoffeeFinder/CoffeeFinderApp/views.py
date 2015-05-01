@@ -1,12 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-<<<<<<< HEAD
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm, addPhoneNumber
-=======
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers,  Favourite, User, Like_Image, Like_Review
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form
->>>>>>> master
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form,  addPhoneNumber
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -262,15 +257,12 @@ def page(request, page_name_slug):
         context_dict['current_user'] = current_user
         #Yasser
         request.session['page_id'] = page.id
-<<<<<<< HEAD
         try: # Try to obtain the user's phone number
             phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
             phone = phoneInstance.phone #gets the actual phone number
             context_dict['phone']  = phone #passes phone number into dictionary
         except: # If the user doesnt have a phone number
             context_dict['phone'] = "" 
-=======
-        
         images = Coffee_page_image.objects.filter(page_id =page.id)
         images = []
         for im in Coffee_page_image.objects.filter(page_id=page.id) :
@@ -278,21 +270,13 @@ def page(request, page_name_slug):
                 images.append((im, True))
             else:
                 images.append((im, False))
->>>>>>> master
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
-<<<<<<< HEAD
-    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
-=======
 
 
      # Render list page with the documents and the form 
-
-
-
->>>>>>> master
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
