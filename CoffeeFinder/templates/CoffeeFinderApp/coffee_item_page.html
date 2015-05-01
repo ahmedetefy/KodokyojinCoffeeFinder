@@ -57,7 +57,6 @@
             <h4 style="top: 55%; left: 50%;" class="style-2 ls-l text-center"> {{ coffee_item.description }}</h4>
                     {% if images %}
 
-<<<<<<< HEAD
           		{% for image in images %}
 				  <br><br> 
 				  <h1 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="{{ image.image.url }}"><img src="{{ image.image.url }}" width="400" height="400" alt="{{ image.image.name }}"></a></h1>
@@ -70,13 +69,7 @@
                         </form>
 				 
 				  {% endfor %}
-=======
-              {% for image in images %}
-          <br><br> 
-          <h1 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="{{ image.image.url }}"><img src="{{ image.image.url }}" width="400" height="400" alt="{{ image.image.name }}"></a></h1>
-         
-          {% endfor %}
->>>>>>> master
+
 
           {% endif %}
         </div>
@@ -101,7 +94,6 @@
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
-<<<<<<< HEAD
                     <br>
                     {% ifequal user_id review.user.id %}
                     <form action="/CoffeeFinderApp/delete_review/" method='post' >{% csrf_token %}
@@ -110,7 +102,6 @@
                       <p><input type="submit" value="Remove Review" class="btn" style="width:120px"/></p>
                     </form>
                   {% endifequal %}
-=======
                     {% if user.is_authenticated %}
                         <form action="{%url "LikeReview" %}" method="post">
                           {% csrf_token %}          
@@ -125,7 +116,6 @@
                           {% endif %}
                         </form>  
                       {% endif %}
->>>>>>> master
                   </div>
                 </div>
       
