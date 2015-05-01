@@ -453,7 +453,11 @@
         </div>
       </header>
               <!-- Yasser -->
+<<<<<<< HEAD
         {% ifequal page.owner_id current_user.id %}
+=======
+        {% if page.owner.username == current_user.username %}
+>>>>>>> be3612441ea072fd259da530086e0b9485489198
             <h4>Orders: </h4>
             {% if orders %}
                         <td> 
@@ -523,10 +527,11 @@
             {% else %}
                 <strong>There are currently no orders.</strong>
             {% endif %}
-        {% endifequal %}
+        {% endif %}
         <!-- Yasser -->
 
         </br>
+<<<<<<< HEAD
         {% ifequal page.owner_id user_id %}
         <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
         <h4><a href="/CoffeeFinderApp/description_edit/"> What makes us special </a></h4> 
@@ -534,6 +539,14 @@
                 {% endifequal %}
 
 
+=======
+        {% if page.owner.username == username %}
+        <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
+        <h4><a href="/CoffeeFinderApp/description_edit/"> Edit Page's Info </a></h4> 
+        <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item </a></h4>
+        <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
+        {% endif %}
+>>>>>>> be3612441ea072fd259da530086e0b9485489198
 
           
         <footer class="site-footer">
