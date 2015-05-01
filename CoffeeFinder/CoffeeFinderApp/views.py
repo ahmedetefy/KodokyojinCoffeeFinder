@@ -636,15 +636,37 @@ def upload_to_item(request):
     # Necessary form validations are handled there.
     # Kareem Tarek
 
-def delete_photos(request, id):
-        context_dict = {}
-        page= Page.objects.get(id=request.session['page_id'])
-        item = Coffee_item.objects.get(id=id)
-        context_dict['item']= item
-        images = Coffee_item_image.objects.filter(item_id= item.id ,page_id= page.id ).delete()
+
+def delete_photos(request):
+    photo_id = request.POST.get('id', '')
+    coffee_id = request.POST.get('item_id', '')
+    Coffee_item_image.objects.get(id=photo_id).delete()
+    return HttpResponseRedirect("/CoffeeFinderApp/coffee_item_page/" + str(coffee_id))
+
+def delete_review(request):
+    review_id = request.POST.get('id', '')
+    coffee_id = request.POST.get('coffee', '')
+    Coffee_item_review.objects.get(id=review_id).delete()
+    return HttpResponseRedirect("/CoffeeFinderApp/coffee_item_page/" + str(coffee_id))
+
+    #This view is for deleting a review.
+    #It get a request which contains the review id and the coffee id.
+    #It deletes the review from the database and then redirect the user to same coffee page by using the coffee id.
+
+def delete_photo_user(request):
+    photo_id = request.POST.get('id', '')
+    page_id = request.POST.get('page_id', '')
+    Coffee_page_image.objects.get(id=photo_id).delete()
+    page = Page.objects.get(id=page_id)
+    page_name = page.slug
+    return HttpResponseRedirect("/CoffeeFinderApp/page/" + page_name)
+
+    #This view is for deleting a photo.
+    #It get a request which contains the photo id and the page id. 
+    #It deletes the photo from the database and then redirect the user to same coffeeShop page by using the page name slug that we can get from the page id.
 
 
-        return render(request, 'CoffeeFinderApp/deleted_photos.html', context_dict)
+
 
 def view_orders(request):
         context_dict = {}
