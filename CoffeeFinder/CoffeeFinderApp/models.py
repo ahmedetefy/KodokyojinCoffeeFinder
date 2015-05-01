@@ -121,6 +121,13 @@ class Order(models.Model):
         Page = models.ForeignKey(Page)
 
 
+class Favourite(models.Model):
+    user = models.ForeignKey(User)
+    coffeeshop_item = models.ForeignKey(Coffee_item)
+    page = models.ForeignKey(Page)
+
+
+
 class Like_Image(models.Model):
     user = models.ForeignKey(User)
     image = models.ForeignKey(Coffee_page_image, related_name='likes')
@@ -139,3 +146,4 @@ class Like_Review(models.Model):
 Like_Review takes the review and user as a ForeignKey
 and the date the review is liked in
 """
+

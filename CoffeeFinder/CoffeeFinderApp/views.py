@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image,User, PhoneNumbers, Like_Image,Like_Review
+from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, Favourite, PhoneNumbers, User, Like_Image, Like_Review
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm, Page_verification_form
+from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, User, PhoneNumbers, Like_Image,Like_Review
 from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, Page_verification_form, viewCustomerOrders, OrderForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
@@ -93,6 +95,29 @@ def page_list(request):
 
     # Render the response and send it back!
     return render(request, 'CoffeeFinderApp/page_list.html', context_dict)
+
+# action called by view favorites url to view user's favorite coffees. It selects the favorite coffees of the 
+# current logged in user. It gets the corresponding item and coffee page for that item, Then stores the results
+# items and pages array respectively. It adds the two arrays to the context dictionary and passes them to the 
+# view_favorites.html and renders to it.
+# author Mostafa Mahmoud
+def view_favorites(request):
+    
+
+    favorites = Favourite.objects.filter(user_id = request.user.id )
+    items = []
+    pages = []
+    for favorite in favorites:
+       item = Coffee_item.objects.get(id=favorite.coffeeshop_item_id)
+       items.append(item)
+
+
+    for item in items:
+        page = Page.objects.get(id=item.page_id)
+        pages.append(page)
+
+    context_dict = { 'items': items, 'pages': pages }
+    return render(request, 'CoffeeFinderApp/view_favorites.html', context_dict)
 
 
 def coffee_item_page(request, coffee_item_name_id):
@@ -230,21 +255,23 @@ def page(request, page_name_slug):
         context_dict['current_user'] = current_user
         #Yasser
         request.session['page_id'] = page.id
-
+        
+        images = Coffee_page_image.objects.filter(page_id =page.id)
+        images = []
+        for im in Coffee_page_image.objects.filter(page_id=page.id) :
+            if im.likes.all().filter(user=current_user.id):
+                images.append((im, True))
+            else:
+                images.append((im, False))
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
 
-    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+     # Render list page with the documents and the form 
 
-    images = []
-    for im in Coffee_page_image.objects.filter(page_id=page.id) :
-            if im.likes.all().filter(user=request.user):
-                images.append((im, True))
-            else:
-                images.append((im, False))
+
 
     context_dict['images'] = images
     form = ImageForm()
