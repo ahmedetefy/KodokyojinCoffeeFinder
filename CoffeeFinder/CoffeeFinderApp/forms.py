@@ -112,4 +112,10 @@ class OrderForm(forms.ModelForm):
    
 
 
+class viewCustomerOrders(forms.ModelForm):
+	phone = forms.CharField(max_length = 128, help_text = "Enter the Phone Number you ordered with")
+	class Meta:
+		model = Order
+		fields = ('phone',)
+
 
