@@ -173,13 +173,29 @@
             <ul class="order-summary"></ul>
             <h6 class="price text-center color">total: $<span>0</span></h6>
             <h2 class="color text-center">your delivery info</h2>
-              <div class="form-group">
-                <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
-                <input type="text" placeholder="name" id="order-name" name="Name">
-              </div>
-              <div class="form-group">
-                <input type="tel" placeholder="phone" id="order-phone" name="phone">
-              </div>
+              {% if user.is_authenticated %}
+                <div class="form-group">
+                  <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
+                  <input type="text" placeholder="name" id="order-name" name="Name" value={{ username }}>
+                </div>
+                {% if phone %}
+                  <div class="form-group">
+                    <input type="tel" placeholder="phone" id="order-phone" name="phone" value={{ phone }}>
+                  </div>
+                {% else %}
+                  <div class="form-group">
+                    <input type="tel" placeholder="phone" id="order-phone" name="phone">
+                  </div>
+                {% endif %}
+              {% else %}
+                <div class="form-group">
+                  <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
+                  <input type="text" placeholder="name" id="order-name" name="Name">
+                </div>
+                <div class="form-group">
+                  <input type="tel" placeholder="phone" id="order-phone" name="phone">
+                </div>
+              {% endif %}
               <div class="form-group">
                 <input type="text" placeholder="delivery address" id="order-address" name="deliveryAddress">
               </div>
@@ -219,6 +235,7 @@
           </div>
         </div>
       </div>
+
          <div>
             {%  if page.owner_id  == current_user.id %}
               {% if page.verified == 0 %}
@@ -381,6 +398,7 @@
             <div class="row">
               <div class="col-md-4 col-sm-6">
                   {% if user.is_authenticated %}
+
                   <h5> Upload an Image of our CoffeeShop</h5>
         <!-- Upload form. Note enctype attribute! -->
             <form action="{% url "uploadImage" %}" method="post" class="box" enctype="multipart/form-data">
@@ -422,6 +440,9 @@
                 {% if user.is_authenticated %}
                 <li><a href="/CoffeeFinderApp/view_favorites/">View Favorites</a>
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
+                 {% if user.is_superuser %}
+                <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
+                {% endif %}
                 {% else %}
                 <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
                 <li><a href="/CoffeeFinderApp/register/">Register</a></li>
@@ -506,11 +527,13 @@
         <!-- Yasser -->
 
         </br>
-        {% ifequal page.owner username %}
-        <h4><a href="/CoffeeFinderApp/description_edit/"> Edit Page's Info </a></h4> 
-        <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item </a></h4>
-        <h4> <a href="/CoffeeFinderApp/"> Back to homepage </a></h4>
-        {% endifequal %}
+        {% ifequal page.owner_id user_id %}
+        <h4><a href="/CoffeeFinderApp/{{ page_name_slug}}/editStatus">Edit Status on an Order</a></h4>
+        <h4><a href="/CoffeeFinderApp/description_edit/"> What makes us special </a></h4> 
+        <h4> <a href="/CoffeeFinderApp/add_item/"> Add New Item to the list  </a></h4>
+                {% endifequal %}
+
+
 
           
         <footer class="site-footer">

@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers,  Favourite, User, Like_Image, Like_Review
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, Page_verification_form,  addPhoneNumber
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
+from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit , Coffee_item_form_edit
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
-from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit
+from forms import Coffee_item_form , Page_form_edit , ImageForm_item ,ImageForm_item_edit , Coffee_item_form_edit
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -15,6 +16,7 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.contrib import messages
+
 
 
 
@@ -42,14 +44,11 @@ def requests(request):
     return render(request, 'CoffeeFinderApp/requests.html', context_dict)
 
 def pageVerification(request, page_name_slug):
-    context_dict = {}
     context = RequestContext(request)
     page = Page.objects.get(slug= page_name_slug ) 
-    user = User.objects.get(id= page.owner_id)
+    owner = User.objects.get(id= page.owner_id)
     context['page']= page
-    context['user']= user
-    c = 'CoffeeFinderApp/pageVerification'+page_name_slug+'/'
-    context_dict = {'page': page , 'user': user , 'c' : c }
+    context['owner']= owner
     request.session['page_id'] = page.id
 
     if request.POST:
@@ -60,10 +59,13 @@ def pageVerification(request, page_name_slug):
                 if 'accept' in request.POST:
                     form.save()
                     messages.success(request, " Page verified ! ")
+                    return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page_list'))
 
                 elif 'reject' in request.POST:
                     page.delete()
                     messages.success(request, " Request has been removed ! ")
+                    return HttpResponseRedirect(reverse('CoffeeFinderApp.views.requests'))
+
 
 
     else:
@@ -71,6 +73,15 @@ def pageVerification(request, page_name_slug):
  
     return render_to_response('CoffeeFinderApp/pageVerification.html', {
         'form': form, }, context)
+
+    # This view is for an Admin to verify requests to create coffeeshop pages by owners
+    # page with page_name_slug is fetched from database along with its owner 
+    # Then added to context dictionry , sent to template for displaying detailed info about the page
+    # In template , an admin decided wether to accept or reject the request 
+    # If accept , verified attribute is changed to 1 and admin is redirected to list of coffee shop page
+    # To find newly verified page added to the list .
+    # If reject , whole page is deleted from the database along with the request . 
+    # Kareem Tarek.
 
 def map(request):
 
@@ -129,17 +140,12 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['coffee_item'] = coffee_item
         request.session['item_id'] = coffee_item.id
         context_dict['page_id'] = request.session['page_id']
-
         page = Page.objects.get(id= request.session['page_id'])
         context_dict['page'] = page
-
-
         images = Coffee_item_image.objects.filter(item_id= coffee_item.id ,page_id= page.id )
         context_dict['images'] = images
         form = ImageForm_item()
         context_dict['form'] = form
-
-
         reviews = Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id)
         reviews = []
         for rev in Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id):
@@ -147,7 +153,6 @@ def coffee_item_page(request, coffee_item_name_id):
                 reviews.append((rev, True))
             else:
                 reviews.append((rev, False))
-
         context_dict['reviews'] = reviews
 
     except Coffee_item.DoesNotExist:
@@ -155,6 +160,7 @@ def coffee_item_page(request, coffee_item_name_id):
         pass
     
     current_user = request.user
+    context_dict['user'] = current_user
     context_dict['user_id'] = current_user.id
     context_dict['username'] = current_user.username
     #check if customer is signed in
@@ -269,7 +275,12 @@ def page(request, page_name_slug):
         context_dict['current_user'] = current_user
         #Yasser
         request.session['page_id'] = page.id
-        
+        try: # Try to obtain the user's phone number
+            phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
+            phone = phoneInstance.phone #gets the actual phone number
+            context_dict['phone']  = phone #passes phone number into dictionary
+        except: # If the user doesnt have a phone number
+            context_dict['phone'] = "" 
         images = Coffee_page_image.objects.filter(page_id =page.id)
         images = []
         for im in Coffee_page_image.objects.filter(page_id=page.id) :
@@ -284,9 +295,6 @@ def page(request, page_name_slug):
 
 
      # Render list page with the documents and the form 
-
-
-
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
@@ -435,7 +443,10 @@ def register(request):
             password = request.POST.get('password')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return HttpResponseRedirect('/CoffeeFinderApp/')
+            context_dict = {}
+            current_user = request.user
+            context_dict['user_id'] = current_user.id
+            return render(request, 'CoffeeFinderApp/add_view_phonenumber.html', context_dict)
         else:
             print user_form.errors
     else:
@@ -478,7 +489,8 @@ def user_logout(request):
 def add_item(request):
     # Get the context from the request.
     context = RequestContext(request)
-    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
+    slug = Page.objects.get(id=request.session['page_id']).slug
+    context['page_slug']= slug
     context['page_name']= Page.objects.get(id=request.session['page_id']).name
 
  
@@ -495,14 +507,15 @@ def add_item(request):
             item = form.save(commit=False)
 
             if Coffee_item.objects.filter(name=item.name,page= page):
-               messages.error(request, " You've already added this item ")
+               messages.error(request, " Item's already on the list  ")
             else:
                 if item.price < 0:  
                    messages.error(request, " Invalid price ")
                 else: 
                     item.page = page
                     item.save()
-                    messages.success(request, " New item added !")
+                    messages.success(request, " Item added to your list  ")
+                   # return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page', kwargs={'page_name_slug': slug}))
 
 
       # Send a success message to the template using messages framework.
@@ -524,26 +537,23 @@ def add_item(request):
     # page_id is passed to template to be inserted of the newly created item 
     # field checks are performed . price should be > 0 and item should be new to the page
     # Pre implemented django messaging system is used to guide user through the form 
-    # Kareem Tarek 28-1181 
+    # Kareem Tarek
 
 
 def description_edit(request):
 
     context = RequestContext(request)
-    context['page_slug']= Page.objects.get(id=request.session['page_id']).slug
-    context['page_name']= Page.objects.get(id=request.session['page_id']).name
-
-
     page = Page.objects.get(id=request.session['page_id'])
+    context['page'] = page
 
     if request.POST:
         form = Page_form_edit(request.POST, instance=page)
         if form.is_valid():
             form.save()
-            messages.success(request, " Your data has been edited successfully ! ")
+            messages.success(request, " Info has been edited successfully")
             # If the save was successful, redirect to another page
             # Description attribute of page is fetched to be edited .
-            # Kareem Tarek 28-1181 
+            # Kareem Tarek
  
 
     else:
@@ -565,16 +575,17 @@ def item_edit(request):
 
 
     if request.POST:
-        form = Coffee_item_form(request.POST, instance=item)
+        form = Coffee_item_form_edit(request.POST, instance=item)
         if form.is_valid():
             if item.price < 0:  
                    messages.error(request, " Invalid price ")
             else: 
                 form.save()
-                messages.success(request, " Your Info have been edited successfully !")
+                messages.success(request, " Item has been edited successfully ")
+               # return HttpResponseRedirect(reverse('CoffeeFinderApp.views.coffee_item_page', kwargs={'coffee_item_name_id': item.id}))
  
     else:
-        form = Coffee_item_form(instance=item)
+        form = Coffee_item_form_edit(instance=item)
  
     return render_to_response('CoffeeFinderApp/item_edit.html', {
         'form': form, }, context)
@@ -623,8 +634,7 @@ def upload_to_item(request):
     # In template we're able to browse computer to fetch desired image .
     # Once upload is triggered we're redirected to uploadImage for the actual upload of the image 
     # Necessary form validations are handled there.
-    # Kareem Tarek 28-1181
-
+    # Kareem Tarek
 
 def delete_photos(request, id):
         context_dict = {}
@@ -667,6 +677,50 @@ def view_orders(request):
             form = viewCustomerOrders()
         context_dict['form'] = form #pass the form into the context dictionary
         return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
+# Author: Aly Yakan
+# This view redirects to a page that views the user's current phone number if he has it
+# It will also allow the user to replace/add a phone number
+def add_view_phonenumber(request):
+    context_dict = {}
+    current_user = request.user
+    context_dict['user_id'] = current_user.id
+    if request.method == 'GET':
+        if request.user.is_authenticated(): #checks to see if a user is logged in
+            try: # Try to obtain the user's phone number
+                phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
+                phone = phoneInstance.phone #gets the actual phone number
+                context_dict['phone']  = phone #passes phone number into dictionary
+            except: # If the user doesnt have a phone number
+                context_dict['phone'] = "" 
+            form = addPhoneNumber()
+            context_dict['form'] = form
+            return render(request, 'CoffeeFinderApp/add_view_phonenumber.html', context_dict)
+        else:
+            return HttpResponse('CoffeeFinderApp/index.html')
+    else: 
+        form = addPhoneNumber(request.POST)
+        if form.is_valid():
+            falseForm = form.save(commit=False)
+            try:
+                tempNbr = PhoneNumbers.objects.get(user_id = current_user.id)
+                tempNbr.phone = form.cleaned_data['phone']
+                tempNbr.save()
+            except: # Else create a new entry in the model
+                tempNbr = PhoneNumbers(user_id = current_user.id, phone = form.cleaned_data['phone'])
+                tempNbr.save()
+            context_dict['phone'] = form.cleaned_data['phone'] #passes phone number into dictionary
+            messages.success(request, " Your data has been edited successfully ! ")
+            return render(request, 'CoffeeFinderApp/index.html', context_dict)
+        else:
+            print form.errors
+            try: # Try to obtain the user's phone number
+                phoneInstance= PhoneNumbers.objects.get(user_id = current_user.id) #gets the phonenumbers instance of logged in user
+                phone = phoneInstance.phone #gets the actual phone number
+                context_dict['phone']  = phone #passes phone number into dictionary
+            except: # If the user doesnt have a phone number, pass this message
+                context_dict['phone'] = "You haven't added a phone number yet" 
+            return render(request, 'CoffeeFinderApp/index.html', context_dict)
+
 
 
 

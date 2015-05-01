@@ -1,33 +1,25 @@
-{% load staticfiles %}
-
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
-  <head>
-     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CoffeeFinder</title>
-    <link rel="shortcut icon" href="assets/images/favicon.png">
-    <!-- Including stylesheets-->
-    <link rel="stylesheet" href="{% static 'css/core.css' %}">
-    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
-    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,latin-ext">
-    <link rel="stylesheet" href="{% static 'css/layerslider.css' %}">
-    <link rel="stylesheet" href="{% static 'css/prettyPhoto.css' %}">
-    <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
-        <style>
-      html, body, #map {
-        height: 500px;
-        margin: 100px 0px 0px 0px;
-        padding: 0px 5px 0px 5px;
-      }
-    </style>
-  </head>
-  <body>
-        <body class="menu-style-2 responsive sticky-menu">
-        <div class="site-wrapper" >
-          <header class="site-header">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>CoffeeFinder</title>
+        <link rel="shortcut icon" href="assets/images/favicon.png">
+        <!-- Including stylesheets-->
+        <link rel="stylesheet" href="{% static 'css/core.css' %}">
+        <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+        <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=latin,latin-ext">
+        <link rel="stylesheet" href="{% static 'css/layerslider.css' %}">
+        <link rel="stylesheet" href="{% static 'css/prettyPhoto.css' %}">
+        <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
+    </head>
+    <body class="menu-style-2 responsive sticky-menu">
+    <!--include colorpicker-->
+
+      <!-- Site Header -->
+      <header class="site-header">
         <div class="container">
           <div class="row">
             <!-- Site Logo: change the width to fit your logo size-->
@@ -39,30 +31,30 @@
                 <button type="button" data-toggle="collapse" data-target=".site-navigation" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="fa fa-bars"></span></button>
               </div>
               <!-- Site Navigation: main menu content-->
-              <ul class="site-navigation">
-                <li class="active"><a href="/CoffeeFinderApp/page_list/">Find A CoffeeShop</a>
+              <ul class="site-navigation"> 
+                <li><a href="/CoffeeFinderApp/page_list/">Find A CoffeeShop</a>
                 </li>
+                <li><a href="/CoffeeFinderApp/VIEW_ORDER/">View My Orders</a></li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
                 {% if user.is_authenticated %}
-                <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
-                 {% if user.is_superuser %}
-                <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
-                {% endif %}
+                  <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
                 {% else %}
-                <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
-                <li><a href="/CoffeeFinderApp/register/">Register</a></li>
+                  <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
+                  <li><a href="/CoffeeFinderApp/register/">Register</a></li>
                 {% endif %}
               </ul>
             </nav>
           </div>
         </div>
       </header>
-
-          <section class="style-2" style="background-image: url('http://i59.tinypic.com/280mx05.jpg'); border:0;">
+      
+        <div id="home" style="background-image: url(http://i62.tinypic.com/2gx2r6w.jpg); width: 100%; height: 862px;" class="parallax hidden-xs">
+                <section class="pizza-guy-wrapper">
         <div class="container">
           <div class="row">
             <div class="col-md-12">
+                <br><br><br><br>
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="126px" height="112px" viewBox="0 0 126 112" enable-background="new 0 0 126 112" xml:space="preserve" class="mini-logo">
                 <g>
                   <g>
@@ -93,24 +85,44 @@
                   </g>
                 </g>
               </svg>
+              <h2 id="order" class="section-heading text-center">If you skip this step you will have to enter your phone number when making order. Adding a phone number won't prevent from changing it when making orders</h2>
+              <br>
             </div>
           </div>
-          <div class="row"> <h4>
-              Item {{item.name}} has been successfully deleted ! <br><br>
-              <a href="/CoffeeFinderApp/page/{{page_slug}}"> Back </a>
-              </h4>   
-        
+            <div class="col-md-6 col-md-offset-3">
+            <!-- form that takes phone number of user and types in the phone number automatically if the user is logged in  -->
+            <form role="form" data-menu-order="content-form" class="box" id="login_form" enctype="multipart/form-data" method="post" action="/CoffeeFinderApp/add_view_phonenumber/">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="text" name="phone" id="phone" size="50" placeholder="Please Type in your Phone Number." />
+              </div>
+              <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  />
+              <input type="submit" value="Add Phone Number" data-menu-order="content-form-submit" class="btn " />
+            </form>
+        <!--  -->
             </div>
-         
         </div>
-   </section>
-    </div>
-    </div>
-        </body>
-
-
-
+      </section>
+      </div>
+        
+        <!-- Including scripts-->
+      <!-- script(src="")-->
+      <input id="site-url" type="hidden" value="http://anpsthemes.com/latest/HTML/kataleya/">
+      <footer class="site-footer">
+        <div class="copyright">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6"></div>
+              <div class="col-sm-6">
+                <div class="social"><a href="#" class="fa fa-twitter"></a><a href="#" class="fa fa-facebook"></a><a href="#" class="fa fa-behance"></a><a href="#" class="fa fa-skype"></a><a href="#" class="fa fa-vimeo-square"></a><a href="#" class="fa fa-google-plus"></a><a href="#" class="fa fa-linkedin-square"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
       <script src="{% static 'javascript/jquery.js' %}"></script>
+      <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
       <script src="{% static 'javascript/gmap3.js' %}"></script>
       <script src="{% static 'javascript/jquery.cookie.js' %}"></script>
       <script src="{% static 'javascript/theme.js' %}"></script>
@@ -134,27 +146,28 @@
       <!-- Colorpicker-->
       <script src="{% static 'javascript/colorpicker.js' %}"></script>
       <script>
-        // jQuery(function($) {
-        //  map('#map', '2 Elizabeth St, Melbourne', 14);
+        jQuery(function($) {
+         map('#map', '2 Elizabeth St, Melbourne', 14);
          
-        //  $("#no-clutter").parallax("50%", 0.6);
-        //  $("#home").parallax("50%", 0.6);
-        //  $("#coffee-statement-1").parallax("50%", 0.6);
-        //  $("#pizza-statement-1").parallax("50%", 0.6);
-        // });
+         $("#no-clutter").parallax("50%", 0.6);
+         $("#home").parallax("50%", 0.6);
+         $("#coffee-statement-1").parallax("50%", 0.6);
+         $("#pizza-statement-1").parallax("50%", 0.6);
+        });
         
       </script>
       <script>
         jQuery(function() {
          jQuery('#home').layerSlider({
-          skin        : 'kataleya',
-          skinsPath       : 'assets/css/layerslider/skins/',
-          responsiveUnder   : 1200,
+          skin              : 'kataleya',
+          skinsPath             : 'assets/css/layerslider/skins/',
+          responsiveUnder       : 1200,
           layersContainer   : 1200,
-          responsive      : true,
-          showCircleTimer   : false
+          responsive            : true,
+          showCircleTimer       : false
          });
         });
       </script>
-  </body>
+    </div>
+    </body>
 </html>

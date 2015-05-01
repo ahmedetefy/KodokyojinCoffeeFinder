@@ -1,5 +1,5 @@
 from django import forms 
-from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item
+from CoffeeFinderApp.models import Page, Coffee_page_image, Coffee_item_review, Order,Coffee_item_image ,Coffee_item_review, Coffee_item, PhoneNumbers
 from django.contrib.auth.models import User
 
 
@@ -26,7 +26,8 @@ class Page_form_edit(forms.ModelForm):
 
 class Page_verification_form(forms.ModelForm):
     
-    # verified = forms.BooleanField(widget= forms.HiddenInput())
+    # Form for toggling only verified attribute of page .
+    # Kareem Tarek 
 
     class Meta:
 
@@ -65,7 +66,19 @@ class Coffee_item_form(forms.ModelForm):
         fields = ('name', 'price', 'description' )
 
         exclude = ['page']
-        
+
+class Coffee_item_form_edit(forms.ModelForm):
+    price = forms.IntegerField(initial=0,help_text="Price")
+    description = forms.CharField(max_length=200,help_text="Description",
+            widget=forms.Textarea(attrs={'cols': 50, 'rows': 2}))
+
+    class Meta:
+        model = Coffee_item
+
+
+        fields = ('price', 'description' )
+
+        exclude = ['name','page']        
 
 class ImageForm_item(forms.ModelForm):
     image = forms.ImageField( label='Select an image', )
@@ -133,4 +146,11 @@ class viewCustomerOrders(forms.ModelForm):
 	class Meta:
 		model = Order
 		fields = ('phone',)
+
+
+class addPhoneNumber(forms.ModelForm):
+    phone = forms.CharField(max_length = 128, help_text = "Enter your phone number")
+    class Meta:
+        model = PhoneNumbers
+        fields = ['phone', 'user']
 
