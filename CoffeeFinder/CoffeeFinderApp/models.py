@@ -13,7 +13,15 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return self.user.username
 
+class PhoneNumbers(models.Model):
 
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length = 128)
+    
+    def __unicode__(self):
+       return self.user.username  
+#Model phone number has been added each is user is allowed to have one phone number registered
+#on system 
 class Page(models.Model):
         owner = models.CharField(max_length=128, null= False)# Foreign Key to table Owner
         name = models.CharField(max_length=128, unique=True)
@@ -108,14 +116,12 @@ class Order(models.Model):
 # phone and delieveryAddress,
 # Order belongs to a CoffeePage
 class Order(models.Model):
-    order = models.CharField(max_length = 500, default='')
-    Name = models.CharField(max_length = 128, default = '')
-    phone = models.CharField(max_length = 128, default = '')
-    deliveryAddress = models.CharField(max_length = 128, default = '')
-    Page = models.ForeignKey(Page)
-
-
-
+        order = models.CharField(max_length = 500, default='')
+        Name = models.CharField(max_length = 128, default = '')
+        phone = models.CharField(max_length = 128, default = '')
+        deliveryAddress = models.CharField(max_length = 128, default = '')
+        status = models.CharField(max_length = 128)
+        Page = models.ForeignKey(Page)
 
 
 
