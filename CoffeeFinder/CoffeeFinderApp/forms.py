@@ -10,6 +10,7 @@ class Page_form(forms.ModelForm):
 
 
 		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+		
         # delivery added to the page_form 
 
 class Page_form_edit(forms.ModelForm):
@@ -23,7 +24,15 @@ class Page_form_edit(forms.ModelForm):
 
         fields = ['description']
 
+class Page_verification_form(forms.ModelForm):
+    
+    # verified = forms.BooleanField(widget= forms.HiddenInput())
 
+    class Meta:
+
+        model = Page
+
+        fields = ['verified']
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -92,6 +101,13 @@ class ReviewForm(forms.ModelForm):
 	class Meta:
 		model = Coffee_item_review
 		fields = ['field','user','coffee_item']
+
+class ChangeStatus(forms.ModelForm):
+	id = forms.IntegerField(help_text="Please enter the ID of the Order.")
+	status = forms.CharField(max_length = 128, help_text = "Enter the Status of Order")
+	class Meta:
+		model = Order
+		fields = ('id','status',)
 
 
 
