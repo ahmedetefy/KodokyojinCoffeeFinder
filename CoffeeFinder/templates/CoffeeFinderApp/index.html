@@ -37,6 +37,11 @@
                 <li><a href="/CoffeeFinderApp/VIEW_ORDER/">View My Orders</a></li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
+                {% if user.is_staff %}
+                  {% if not coffeeshop == None %}
+                  <li><a href="/CoffeeFinderApp/page/{{ coffeeshop.slug }}">View My Coffeeshop</a></li>
+                  {% endif%}
+                {% endif %}
                 {% if user.is_authenticated %}
                 <li><a href="/CoffeeFinderApp/view_favorites/">View Favorites</a>
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
