@@ -16,7 +16,7 @@ class UserProfile(models.Model):
 class PhoneNumbers(models.Model):
 
     user = models.OneToOneField(User)
-    phone = models.CharField(max_length = 128)
+    phone = models.CharField(max_length = 128, null=False)
     
     def __unicode__(self):
        return self.user.username  

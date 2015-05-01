@@ -4,7 +4,7 @@ from forms import Coffee_item_form
 from django.core.urlresolvers import reverse
 from django import forms 
 from CoffeeFinderApp.models import Coffee_page_image
-from CoffeeFinderApp.models import Coffee_item_review, Page, Order
+from CoffeeFinderApp.models import Coffee_item_review, Page, Order, PhoneNumbers
 from django.core.urlresolvers import reverse
 
 class Coffee_itemTest(TestCase):

@@ -117,17 +117,25 @@
             <ul class="order-summary"></ul>
             <h6 class="price text-center color">total: $<span>0</span></h6>
             <h2 class="color text-center">your delivery info</h2>
-              <div class="form-group">
-                <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
-                <input type="text" placeholder="name" id="order-name" name="Name">
-              </div>
               {% if user.is_authenticated %}
+                <div class="form-group">
+                  <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
+                  <input type="text" placeholder="name" id="order-name" name="Name" value={{ username }}>
+                </div>
                 {% if phone %}
                   <div class="form-group">
                     <input type="tel" placeholder="phone" id="order-phone" name="phone" value={{ phone }}>
                   </div>
+                {% else %}
+                  <div class="form-group">
+                    <input type="tel" placeholder="phone" id="order-phone" name="phone">
+                  </div>
                 {% endif %}
               {% else %}
+                <div class="form-group">
+                  <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
+                  <input type="text" placeholder="name" id="order-name" name="Name">
+                </div>
                 <div class="form-group">
                   <input type="tel" placeholder="phone" id="order-phone" name="phone">
                 </div>
