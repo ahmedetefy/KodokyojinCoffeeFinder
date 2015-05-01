@@ -432,7 +432,7 @@
         </div>
       </header>
               <!-- Yasser -->
-        {% ifequal page.owner current_user.username %}
+        {% ifequal page.owner_id current_user.id %}
             <h4>Orders: </h4>
             {% if orders %}
                         <td> 
