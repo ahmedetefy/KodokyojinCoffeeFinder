@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, Favourite, PhoneNumbers, User, Like_Image, Like_Review
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm, Page_verification_form
-from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, User, PhoneNumbers, Like_Image,Like_Review
-from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, Page_verification_form, viewCustomerOrders, OrderForm
+from CoffeeFinderApp.models import Coffee_item,Page,UserProfile, Coffee_page_image, Order, Coffee_item_review,Coffee_item_image, PhoneNumbers,  Favourite, User, Like_Image, Like_Review
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, ChangeStatus, OrderForm, , Page_verification_form
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -164,7 +162,6 @@ def coffee_item_page(request, coffee_item_name_id):
 
 
 
-
 def create_page(request):
 
     if request.POST:
@@ -246,7 +243,9 @@ def page(request, page_name_slug):
         context_dict['page'] = page
         #Yasser
         #Retrieve all orders that are associated with the current page.
-        order = Order.objects.filter(Page=page)
+
+        order = Order.objects.filter(Page_id=page)
+
         #Add the results to the template context under the name orders.
         context_dict['orders'] = order
         #Retreieve the currently signed in user.
@@ -305,6 +304,7 @@ def uploadImage(request):
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 
+
 def makeOrder(request, page_name_slug):
     #pageID = request.session['my_page']
     context_dict = {}
@@ -349,6 +349,28 @@ def makeOrder(request, page_name_slug):
     v = 'CoffeeFinderApp/makeOrder.html'
     return render_to_response(v, context_dict, context) #TO DO
 #done by Ahmed Etefy 28 - 3954
+
+
+
+#this view edits the value of the status of a specific Order determined by the ID sent by the request
+#to a new specified status
+def change_status(request):
+    if request.method == 'POST':
+        form = ChangeStatus(request.POST)
+        if form.is_valid():
+            myOrder = form.save(commit=False)
+            temp = Order.objects.get(id=form['id'].value())
+            temp.status = form['status'].value()
+            temp.save()
+            #noImage = False
+            #context_dict['noImage'] = noImage
+            return HttpResponse("success")
+            #return HttpResponseRedirect('/CoffeeFinderApp/map')
+    else:
+        return HttpResponse("error")
+#Mostafa Mahmoud
+
+
 
 def editStatus(request, page_name_slug):
     context_dict = {}

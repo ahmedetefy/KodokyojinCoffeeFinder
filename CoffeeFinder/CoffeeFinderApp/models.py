@@ -117,7 +117,7 @@ class Order(models.Model):
         Name = models.CharField(max_length = 128, default = '')
         phone = models.CharField(max_length = 128, default = '')
         deliveryAddress = models.CharField(max_length = 128, default = '')
-        status = models.CharField(max_length = 128)
+        status = models.CharField(max_length = 128, default = 'pending')
         Page = models.ForeignKey(Page)
 
 
