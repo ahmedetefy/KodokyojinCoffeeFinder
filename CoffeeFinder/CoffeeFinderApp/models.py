@@ -120,8 +120,30 @@ class Order(models.Model):
         status = models.CharField(max_length = 128)
         Page = models.ForeignKey(Page)
 
+
 class Favourite(models.Model):
     user = models.ForeignKey(User)
     coffeeshop_item = models.ForeignKey(Coffee_item)
     page = models.ForeignKey(Page)
+
+
+
+class Like_Image(models.Model):
+    user = models.ForeignKey(User)
+    image = models.ForeignKey(Coffee_page_image, related_name='likes')
+    create = models.DateTimeField(auto_now_add=True)
+"""
+Like_Image takes the image and user as a ForeignKey
+and the date the image is liked in
+"""
+
+
+class Like_Review(models.Model):
+    user = models.ForeignKey(User)
+    review = models.ForeignKey(Coffee_item_review, related_name='likes')
+    create = models.DateTimeField(auto_now_add=True)
+"""
+Like_Review takes the review and user as a ForeignKey
+and the date the review is liked in
+"""
 

@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, Favourite, PhoneNumbers, User
+from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, Favourite, PhoneNumbers, User, Like_Image, Like_Review
 from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, viewCustomerOrders, OrderForm, Page_verification_form
+from CoffeeFinderApp.models import Coffee_item,Page, UserProfile, Coffee_page_image, Order, Coffee_item_review, Coffee_item_image, User, PhoneNumbers, Like_Image,Like_Review
+from forms import Page_form , UserForm , ReviewForm, EditStatus, ImageForm, Page_verification_form, viewCustomerOrders, OrderForm
 from django.shortcuts import render , render_to_response
 from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden
 from django.core.context_processors import csrf
@@ -140,7 +142,14 @@ def coffee_item_page(request, coffee_item_name_id):
         context_dict['form'] = form
 
 
-        reviews = Coffee_item_review.objects.filter(coffee_item_id = coffee_item_name_id)
+        reviews = Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id)
+        reviews = []
+        for rev in Coffee_item_review.objects.filter(coffee_item_id=coffee_item_name_id):
+            if rev.likes.all().filter(user=request.user):
+                reviews.append((rev, True))
+            else:
+                reviews.append((rev, False))
+
         context_dict['reviews'] = reviews
 
     except Coffee_item.DoesNotExist:
@@ -246,13 +255,24 @@ def page(request, page_name_slug):
         context_dict['current_user'] = current_user
         #Yasser
         request.session['page_id'] = page.id
-
+        
+        images = Coffee_page_image.objects.filter(page_id =page.id)
+        images = []
+        for im in Coffee_page_image.objects.filter(page_id=page.id) :
+            if im.likes.all().filter(user=current_user.id):
+                images.append((im, True))
+            else:
+                images.append((im, False))
     except Page.DoesNotExist:
         # We get here if we didn't find the specified page.
         # Don't do anything - the template displays the "no page" message for us.
         pass
 
-    images = Coffee_page_image.objects.filter(page_id =page.id) # Render list page with the documents and the form 
+
+     # Render list page with the documents and the form 
+
+
+
     context_dict['images'] = images
     form = ImageForm()
     context_dict['form'] = form
@@ -611,3 +631,44 @@ def view_orders(request):
         context_dict['form'] = form #pass the form into the context dictionary
         return render_to_response('CoffeeFinderApp/VIEW_ORDER.html',context_dict,context)
 
+
+def like_review(request):
+    if request.POST:
+        review_id = request.POST['review']
+        coffee_item_review = get_object_or_404(
+            Coffee_item_review, id=review_id)
+        like_review, created = Like_Review.objects.get_or_create(
+            user=request.user, review=coffee_item_review)
+    return HttpResponseRedirect(
+        reverse(
+            'coffee_item_page',
+            kwargs={'coffee_item_name_id':
+            coffee_item_review.coffee_item.id}))
+
+
+"""
+like_review take a request and check if the request is posting and
+then call the review_id from the request and get the review using the id
+then check if the user did not like this review before then it add the like
+with the image id and the user who request
+the like then return to the same page
+"""
+
+
+def like_image(request):
+    if request.POST:
+        image_id = request.POST['image']
+        coffee_page_image = get_object_or_404(
+            Coffee_page_image, id=image_id)
+        like_image, created = Like_Image.objects.get_or_create(
+            user=request.user, image=coffee_page_image)
+    return HttpResponseRedirect(
+        reverse(
+            'page', kwargs={'page_name_slug': coffee_page_image.page.slug}))
+"""
+like_image take a request and check if the request is posting and
+then call the image_id from the request and get the image using the id
+then check if the user did not like this image before then it add the like
+with the image id and the user who request
+the like then return to the same page
+"""
