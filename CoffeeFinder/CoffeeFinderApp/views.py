@@ -35,6 +35,19 @@ def order(request):
 
 def index(request):
     context_dict = {}
+    #Retreieve the currently signed in user.
+    current_user = request.user
+    #Add the result to the template context under the name current_user.
+    context_dict['current_user'] = current_user
+    #Check if current user is signed in
+    if request.user.is_authenticated():
+        #Retreive coffeeshop where the current user is the owner
+        try:
+            coffeeshop = Page.objects.get(owner=current_user)
+        except Page.DoesNotExist:
+            coffeeshop = None
+        # Adds our results list to the template context under name pages.
+        context_dict['coffeeshop'] = coffeeshop
     return render(request, 'CoffeeFinderApp/index.html', context_dict)
 
 def requests(request):
