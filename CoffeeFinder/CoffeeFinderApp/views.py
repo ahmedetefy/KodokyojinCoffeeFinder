@@ -71,6 +71,8 @@ def pageVerification(request, page_name_slug):
                 p = form.save(commit=False)
                 p.verified = 1
                 if 'accept' in request.POST:
+                    owner.is_staff = 1
+                    owner.save()
                     form.save()
                     messages.success(request, " Page verified ! ")
                     return HttpResponseRedirect(reverse('CoffeeFinderApp.views.page_list'))
