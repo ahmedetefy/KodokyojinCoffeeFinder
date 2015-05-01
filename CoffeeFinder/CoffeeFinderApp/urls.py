@@ -29,4 +29,5 @@ urlpatterns = patterns('',
         url(r'^VIEW_ORDER/$', views.view_orders, name='viewmyorder'),
         url(r'^viewOrder/$', views.view_orders, name='viewmyorders'),       
         url(r'^order/$', views.order, name='order'),
+        url(r'^add_view_phonenumber/$', views.add_view_phonenumber, name='add_view_phonenumber'),
         )

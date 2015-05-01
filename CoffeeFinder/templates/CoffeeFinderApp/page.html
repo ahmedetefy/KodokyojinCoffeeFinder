@@ -121,9 +121,17 @@
                 <input  hidden id="myOrder" size="20" type="text" name="order" value = "">
                 <input type="text" placeholder="name" id="order-name" name="Name">
               </div>
-              <div class="form-group">
-                <input type="tel" placeholder="phone" id="order-phone" name="phone">
-              </div>
+              {% if user.is_authenticated %}
+                {% if phone %}
+                  <div class="form-group">
+                    <input type="tel" placeholder="phone" id="order-phone" name="phone" value={{ phone }}>
+                  </div>
+                {% endif %}
+              {% else %}
+                <div class="form-group">
+                  <input type="tel" placeholder="phone" id="order-phone" name="phone">
+                </div>
+              {% endif %}
               <div class="form-group">
                 <input type="text" placeholder="delivery address" id="order-address" name="deliveryAddress">
               </div>
