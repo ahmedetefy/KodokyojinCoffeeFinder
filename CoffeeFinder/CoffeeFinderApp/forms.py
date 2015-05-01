@@ -10,6 +10,7 @@ class Page_form(forms.ModelForm):
 
 
 		fields = ['owner', 'name' , 'delivery', 'latitude', 'longitude', 'area', 'city', 'country', 'street_number']
+		
         # delivery added to the page_form 
 
 class Page_form_edit(forms.ModelForm):
@@ -23,7 +24,15 @@ class Page_form_edit(forms.ModelForm):
 
         fields = ['description']
 
+class Page_verification_form(forms.ModelForm):
+    
+    # verified = forms.BooleanField(widget= forms.HiddenInput())
 
+    class Meta:
+
+        model = Page
+
+        fields = ['verified']
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())

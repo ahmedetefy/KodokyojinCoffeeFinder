@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/colorpicker.css' %}">
   </head>
   <body class="menu-style-2 responsive sticky-menu">
-	<header class="site-header">
+  <header class="site-header">
         <div class="container">
           <div class="row">
             <!-- Site Logo: change the width to fit your logo size-->
@@ -35,6 +35,7 @@
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
                 {% if user.is_authenticated %}
+                <li><a href="/CoffeeFinderApp/view_favorites/">View Favorites</a>
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
                 {% else %}
                 <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
@@ -48,50 +49,64 @@
 
 
        <section class="style-2" >
-      	<section class="blog-single" >
+        <section class="blog-single" >
         <div class="container" >
-        	<div class="row">
-        	<br><br>
-        		<h1 style="top: 47%; left: 50%;" class="ls-l text-center">{{ coffee_item.name }} <span class="color"></a>  {{ coffee_item.price }} $ </span></h1>
-          	<h4 style="top: 55%; left: 50%;" class="style-2 ls-l text-center"> {{ coffee_item.description }}</h4>
-          				  {% if images %}
+          <div class="row">
+          <br><br>
+            <h1 style="top: 47%; left: 50%;" class="ls-l text-center">{{ coffee_item.name }} <span class="color"></a>  {{ coffee_item.price }} $ </span></h1>
+            <h4 style="top: 55%; left: 50%;" class="style-2 ls-l text-center"> {{ coffee_item.description }}</h4>
+                    {% if images %}
 
-          		{% for image in images %}
-				  <br><br> 
-				  <h1 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="{{ image.image.url }}"><img src="{{ image.image.url }}" width="400" height="400" alt="{{ image.image.name }}"></a></h1>
-				 
-				  {% endfor %}
+              {% for image in images %}
+          <br><br> 
+          <h1 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="{{ image.image.url }}"><img src="{{ image.image.url }}" width="400" height="400" alt="{{ image.image.name }}"></a></h1>
+         
+          {% endfor %}
 
-				  {% endif %}
-				</div>
-			<div class="row">
-				<h2 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="/CoffeeFinderApp/page/{{ page.slug }}"> Back to {{ page.name}} </a> </h2><br>
-			</div>
+          {% endif %}
+        </div>
+      <div class="row">
+        <h2 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="/CoffeeFinderApp/page/{{ page.slug }}"> Back to {{ page.name}} </a> </h2><br>
+      </div>
           <div class="row">
             <div class="col-md-9">
               <article>
-			<h3>Customers' Reviews</h3>
-			{%if reviews%}
-			<ul>
-				{%for review in reviews%}
-				<div class="author">
+      <h3>Customers' Reviews</h3>
+      {%if reviews%}
+      <ul>
+        {%for review,flag in reviews%}
+        <div class="author">
                   <div>
-				<h4><i class="fa fa-user"></i>  Posted by <span class="color">{{ review.user }}</span></li></h4>
+        <h4><i class="fa fa-user"></i>  Posted by <span class="color">{{ review.user }}</span></li></h4>
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
+                    {% if user.is_authenticated %}
+                        <form action="{%url "LikeReview" %}" method="post">
+                          {% csrf_token %}          
+                          {% if flag %}    
+                            <input hidden id="review" size="20" type="text" name="review" value={{ review.id }} >
+                            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >                   
+                            <input size="20" type="submit" name="Like" value="Liked" >
+                          {% else %}
+                            <input hidden id="review" size="20" type="text" name="review" value={{ review.id }} >
+                            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
+                            <input size="20" type="submit" name="Like" value="Like" >
+                          {% endif %}
+                        </form>  
+                      {% endif %}
                   </div>
                 </div>
-			
+      
                 {%endfor%}
             </ul>
             {% else %}
             <h5> There are no reviews.</h5>
             {%endif%}
-			
+      
 
-				{% if user.is_authenticated %}
-		         <h5 class="comments-submit-title">{{username}}! Your opinion matters</h5>
+        {% if user.is_authenticated %}
+             <h5 class="comments-submit-title">{{username}}! Your opinion matters</h5>
 
                   <div class="row">
                     <div class="col-sm-12">
@@ -100,20 +115,20 @@
                     </div>
                   </div>
                   <form action ="/CoffeeFinderApp/post_item_review/" method="post" id="reviewForm">{% csrf_token%}
-			        <br>
-			        <input size="20" type="text" name="user" value={{user_id}} hidden>
-	        		<input size="20" type="text" name="coffee_item" value={{coffee_item.id}} hidden >
-	        		<input size = "20" type="submit" value="Submit review" class="btn btn-md">
-			        </form>
+              <br>
+              <input size="20" type="text" name="user" value={{user_id}} hidden>
+              <input size="20" type="text" name="coffee_item" value={{coffee_item.id}} hidden >
+              <input size = "20" type="submit" value="Submit review" class="btn btn-md">
+              </form>
               </article>
             </div>
             {% endif %}
-					</div>
-				</div>
-			</div>
-		</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-	</section>
+  </section>
 </section>
       <footer class="site-footer">
         <div class="copyright">
@@ -129,8 +144,8 @@
         </div>
       </footer>
       <script src="http://code.jquery.com/jquery-1.5.js"></script>
-		<!-- Character counting function for the review -->
-	  <script src="{% static "js/CharCount.js" %}"></script> <!-- Loading JavaScript -->
+    <!-- Character counting function for the review -->
+    <script src="{% static "js/CharCount.js" %}"></script> <!-- Loading JavaScript -->
       <script src="{% static 'javascript/jquery.js' %}"></script>
       <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
       <script src="{% static 'javascript/gmap3.js' %}"></script>
@@ -169,12 +184,12 @@
       <script>
         jQuery(function() {
          jQuery('#home').layerSlider({
-          skin 				: 'kataleya',
-          skinsPath 			: 'static/css/layerslider/skins/',
-          responsiveUnder		: 1200,
-          layersContainer 	: 1200,
-          responsive 			: true,
-          showCircleTimer		: false
+          skin        : 'kataleya',
+          skinsPath       : 'static/css/layerslider/skins/',
+          responsiveUnder   : 1200,
+          layersContainer   : 1200,
+          responsive      : true,
+          showCircleTimer   : false
          });
         });
       </script>
@@ -189,7 +204,7 @@
 <a href="/CoffeeFinderApp/delete_photos/{{ coffee_item.id }}"> Delete associated photos </a><br><br>
 <a href="/CoffeeFinderApp/delete/{{ coffee_item.id }}"> Delete </a><br><br>
 {% endifequal %}
-	
+  
 
 
 
