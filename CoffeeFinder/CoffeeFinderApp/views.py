@@ -64,7 +64,7 @@ def pageVerification(request, page_name_slug):
     # If accept , verified attribute is changed to 1 and admin is redirected to list of coffee shop page
     # To find newly verified page added to the list .
     # If reject , whole page is deleted from the database along with the request . 
-    # Kareem Tarek .
+    # Kareem Tarek.
 
 def map(request):
 
