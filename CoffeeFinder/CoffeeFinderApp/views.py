@@ -27,13 +27,11 @@ def requests(request):
     return render(request, 'CoffeeFinderApp/requests.html', context_dict)
 
 def pageVerification(request, page_name_slug):
-    context_dict = {}
     context = RequestContext(request)
     page = Page.objects.get(slug= page_name_slug ) 
-    user = User.objects.get(id= page.owner_id)
+    owner = User.objects.get(id= page.owner_id)
     context['page']= page
-    context['user']= user
-    context_dict = {'page': page , 'user': user }
+    context['owner']= owner
     request.session['page_id'] = page.id
 
     if request.POST:
@@ -49,6 +47,8 @@ def pageVerification(request, page_name_slug):
                 elif 'reject' in request.POST:
                     page.delete()
                     messages.success(request, " Request has been removed ! ")
+                    return HttpResponseRedirect(reverse('CoffeeFinderApp.views.requests'))
+
 
 
     else:
