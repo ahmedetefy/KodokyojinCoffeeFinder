@@ -8,14 +8,24 @@ from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-
+    
 
     def __unicode__(self):
         return self.user.username
 
 
+class PhoneNumbers(models.Model):
+
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length = 128, null=False)
+    
+    def __unicode__(self):
+       return self.user.username  
+#Model phone number has been added each is user is allowed to have one phone number registered
+#on system 
+
 class Page(models.Model):
-        owner = models.CharField(max_length=128 , null= False) # Foreign Key to table Owner
+        owner = models.ForeignKey(User)
         name = models.CharField(max_length=128,unique=True)
         delivery = models.BooleanField(default=False)
         longitude = models.DecimalField(max_digits=50, decimal_places=30 ,default=0.0)
@@ -27,6 +37,9 @@ class Page(models.Model):
         country = models.CharField(max_length=128,default='')
         street_number = models.CharField(max_length=12,default=0)
         description = models.CharField(max_length=500,default='')
+        verified = models.BooleanField(default=0)
+
+
 
         def save(self, *args, **kwargs):
                 self.slug = slugify(self.name)
@@ -71,13 +84,13 @@ class Coffee_item_image(models.Model):
 # After assigning a ' space free 'slug name Mocha-Frappe is easily accessed as an individual item through the url 
 # http://localhost:8000/CoffeeFinderApp/coffee_item/mocha-frappe/
 
-# Kareem Tarek 28-1181
+# Kareem Tarek 
 
 
 # Coffee_item_image model is used to attach one or more image to each Coffee_item model 
 # Use of item foreign key makes sure that an image should belong to a single Coffee item 
 # page foreign key specifies the page the Coffee item belongs to 
-# Kareem Tarek 28-1181
+# Kareem Tarek 
 
 
 class Coffee_page_image(models.Model):
@@ -94,11 +107,43 @@ class Coffee_item_review(models.Model):
     coffee_item = models.ForeignKey(Coffee_item)
     user = models.ForeignKey(User)
 
+
+
+# Order model takes: order which is the summary of the order, Name which is the name of the user,
+# phone and delieveryAddress,
+# Order belongs to a CoffeePage
 class Order(models.Model):
-        coffeeshop_item = models.ForeignKey(Coffee_item)
-        quantity = models.IntegerField(default=1)
-        Name = models.CharField(max_length = 128)
-        phone = models.CharField(max_length = 128)
-        status = models.CharField(max_length = 128)
-        coffeeshop = models.ForeignKey(Page)
+        order = models.CharField(max_length = 500, default='')
+        Name = models.CharField(max_length = 128, default = '')
+        phone = models.CharField(max_length = 128, default = '')
+        deliveryAddress = models.CharField(max_length = 128, default = '')
+        status = models.CharField(max_length = 128, default = 'pending')
+        Page = models.ForeignKey(Page)
+
+
+class Favourite(models.Model):
+    user = models.ForeignKey(User)
+    coffeeshop_item = models.ForeignKey(Coffee_item)
+    page = models.ForeignKey(Page)
+
+
+
+class Like_Image(models.Model):
+    user = models.ForeignKey(User)
+    image = models.ForeignKey(Coffee_page_image, related_name='likes')
+    create = models.DateTimeField(auto_now_add=True)
+"""
+Like_Image takes the image and user as a ForeignKey
+and the date the image is liked in
+"""
+
+
+class Like_Review(models.Model):
+    user = models.ForeignKey(User)
+    review = models.ForeignKey(Coffee_item_review, related_name='likes')
+    create = models.DateTimeField(auto_now_add=True)
+"""
+Like_Review takes the review and user as a ForeignKey
+and the date the review is liked in
+"""
 

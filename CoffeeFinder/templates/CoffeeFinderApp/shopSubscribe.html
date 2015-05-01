@@ -163,8 +163,8 @@ function initialize() {
     </script>
   </head>
   <body>
-        <body class="menu-style-2 responsive sticky-menu">
-        <div class="site-wrapper" >
+    <body class="menu-style-2 responsive sticky-menu">
+    <div class="site-wrapper" >
           <header class="site-header">
         <div class="container">
           <div class="row">
@@ -180,10 +180,15 @@ function initialize() {
               <ul class="site-navigation">
                 <li class="active"><a href="/CoffeeFinderApp/page_list/">Find A CoffeeShop</a>
                 </li>
+                <li><a href="/CoffeeFinderApp/VIEW_ORDER/">View My Orders</a></li>
                 <li><a href="/CoffeeFinderApp/shopSubscribe" data-toggle="dropdown" class="dropdown-toggle">Create Your CoffeeShop</a>
                 </li>
                 {% if user.is_authenticated %}
+                <li><a href="/CoffeeFinderApp/view_favorites/">View Favorites</a>
                 <li><a href="/CoffeeFinderApp/logout/">Logout</a></li>
+                 {% if user.is_superuser %}
+                <li><a href="/CoffeeFinderApp/requests/">Requests</a></li>
+                {% endif %}
                 {% else %}
                 <li><a href="/CoffeeFinderApp/login/">Sign In</a></li>
                 <li><a href="/CoffeeFinderApp/register/">Register</a></li>
@@ -193,8 +198,7 @@ function initialize() {
           </div>
         </div>
       </header>
-
-          <section class="style-2" style="background-image: url('http://i59.tinypic.com/280mx05.jpg'); border:0;">
+      <section class="style-2" style="background-image: url('http://i59.tinypic.com/280mx05.jpg'); border:0;">
         <div class="container">
           <div class="row">
             <div class="col-md-12">
@@ -231,55 +235,63 @@ function initialize() {
               <h2 id="contact" class="section-heading text-center">Create Your CoffeeShop</h2>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-6">
-            <!-- form for getting coffeshop registeration info-->
-            <form role="form" data-menu-order="content-form" class="box" id="login_form" action ="/CoffeeFinderApp/create_page/" method="post">
-            {% csrf_token %}
-            <div class="form-group">
-            <input size="20" type="text"  name='owner' placeholder="CoffeeShop Owner" id="name" >
+          {% if user.is_authenticated %}
+            <div class="row">
+              <div class="col-md-6">
+               <!-- form for getting coffeshop registeration info-->
+               <form role="form" data-menu-order="content-form" class="box" id="login_form" action ="/CoffeeFinderApp/create_page/" method="post">
+                {% csrf_token %}
+                  <div class="form-group">
+                    <input size="20" type="text"  name='owner' value={{ user.id }}  id="name" hidden>
+                  </div>
+                  <div class="form-group">
+                    <input size="20" type="text"  name="name" placeholder="CoffeeShop Name">
+                  </div>
+                  <div class="form-group">
+                    Do You Offer Delivery? : <input size="20" type="checkbox"  name="delivery"  >
+                  </div>
+                  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+                  <div class="form-group">
+                  </div>
+                  <div class="form-group">
+                    <input id="street" size="20" type="text"  name="street_number" placeholder="Street Nr." >
+                  </div>
+                  <div class="form-group">
+                    <input id="area" size="20" type="text" name="area" placeholder="Area">
+                  </div>
+                  <div class="form-group">
+                    <input id="city" size="20" type="text" name="city" placeholder="City">
+                  </div>
+                  <div class="form-group">
+                    <input id="country" size="20" type="text" name="country" placeholder = "Country" >
+                  </div>
+                  <div class="form-group">
+                    <input id="long" size="20" type="text" name="longitude"  hidden> <br>
+                    <input id="lat" size="20" type="text" name="latitude" hidden >
+                  </div>
+                  <input type="submit" value="Create Your Page" data-menu-order="content-form-submit" class="btn " />
+                </form>
+              </div>
+              <div class="col-md-6" >
+               <br>
+               <h6> Where is your Coffee Maker? </h6>
+               <section id="map" class ="map"></section>
+              </div>
             </div>
-            <div class="form-group">
-            <input size="20" type="text"  name="name" placeholder="CoffeeShop Name"  >
+          {% else %}
+            <div class="container">
+              <div class="row">
+                <h5 class="section-heading text-center" >You must Sign In in order to create a coffee page</h5>
+                <h4 class="section-heading text-center"><a href="/CoffeeFinderApp/login/">Sign In</a></h4>
+                <h5 class="section-heading text-center" >Or Register If you don't have an account yet!</h5>
+                <h4 class="section-heading text-center"><a href="/CoffeeFinderApp/register/">Register</a></h4>
+              </div>
             </div>
-            <div class="form-group">
-            Do You Offer Delivery? : <input size="20" type="checkbox"  name="delivery"  >
-            </div>
-            <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-            <div class="form-group">
-          </div>
-            <div class="form-group">
-            <input id="street" size="20" type="text"  name="street_number" placeholder="Street Nr." >
-            </div>
-            <div class="form-group">
-            <input id="area" size="20" type="text" name="area" placeholder="Area">
-            </div>
-            <div class="form-group">
-            <input id="city" size="20" type="text" name="city" placeholder="City">
-            </div>
-            <div class="form-group">
-            <input id="country" size="20" type="text" name="country" placeholder = "Country" >
-            </div>
-            <div class="form-group">
-            <input id="long" size="20" type="text" name="longitude"  hidden> <br>
-            <input id="lat" size="20" type="text" name="latitude" hidden >
-          </div>
-            <input type="submit" value="Create Your Page" data-menu-order="content-form-submit" class="btn " />
-        </form>
-            </div>
-            <div class="col-md-6" >
-              <br>
-              <h6> Where is your Coffee Maker? </h6>
-                          <section id="map" class ="map"></section>
-
-
-            </div>
-          </div>
+          {% endif %}
         </div>
       </section>
     </div>
-    </div>
-                      <footer class="site-footer">
+     <footer class="site-footer">
         <div class="copyright">
           <div class="container">
             <div class="row">
@@ -292,9 +304,6 @@ function initialize() {
           </div>
       </footer>
         </body>
-
-
-
       <script src="{% static 'javascript/jquery.js' %}"></script>
       <script src="{% static 'javascript/gmap3.js' %}"></script>
       <script src="{% static 'javascript/jquery.cookie.js' %}"></script>
