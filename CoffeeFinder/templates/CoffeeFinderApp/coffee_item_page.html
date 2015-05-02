@@ -62,28 +62,23 @@
 				  <h1 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="{{ image.image.url }}"><img src="{{ image.image.url }}" width="400" height="400" alt="{{ image.image.name }}"></a></h1>
 
           <br>
-           <form action="/CoffeeFinderApp/delete_photos/" method='post'>{% csrf_token %}
-                            <input type="hidden" name="id" value="{{ image.id }}"/>
-                            <input type="hidden" name="item_id" value="{{ image.item_id }}"/>
-                            <input size=20 type="submit" value="Remove Photo"/>
-                        </form>
 				 
 				  {% endfor %}
-
-
           {% endif %}
         </div>
       <div class="row">
         <h2 style="top: 47%; left: 50%;" class="ls-l text-center"><a href="/CoffeeFinderApp/page/{{ page.slug }}"> Back to {{ page.name}} </a> </h2><br>
       </div>
           <div class="row">
-            <div class="col-md-9">
-              <article>
-      {% if auth == 1%}
+                  {% if auth == 1%}
         <form action="#" method="get">
-         <input type="submit" class="btn" value="{{btntxt}}" name="favbtn">
+         <h2 class="ls-l text-center"><input type="submit" class="btn btn-md" value="{{btntxt}}" name="favbtn" style="width:250px; top: 47%; left: 50%;"></h2>
         </form>
       {% endif %}
+    </div>
+            <div class="col-md-9">
+              <article>
+
       <h3>Customers' Reviews</h3>
       {%if reviews%}
       <ul>
@@ -94,7 +89,6 @@
                     <p>{{ review.field }}</p>
                     <br>
                     <a href="/CoffeeFinderApp/review/{{ review.id }}/" class="btn"> Share Review </a>
-                    <br>
                     {% ifequal user_id review.user.id %}
                     <form action="/CoffeeFinderApp/delete_review/" method='post' >{% csrf_token %}
                       <input type="hidden" name="id" value="{{ review.id }}"/>
@@ -102,20 +96,6 @@
                       <p><input type="submit" value="Remove Review" class="btn" style="width:120px"/></p>
                     </form>
                   {% endifequal %}
-                    {% if user.is_authenticated %}
-                        <form action="{%url "LikeReview" %}" method="post">
-                          {% csrf_token %}          
-                          {% if flag %}    
-                            <input hidden id="review" size="20" type="text" name="review" value={{ review.id }} >
-                            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >                   
-                            <input size="20" type="submit" name="Like" value="Liked" >
-                          {% else %}
-                            <input hidden id="review" size="20" type="text" name="review" value={{ review.id }} >
-                            <input hidden id="user" size="20" type="text" name="user" value={{ user_id }}  >
-                            <input size="20" type="submit" name="Like" value="Like" >
-                          {% endif %}
-                        </form>  
-                      {% endif %}
                   </div>
                 </div>
       
@@ -147,6 +127,13 @@
                 <a href="/CoffeeFinderApp/upload_to_item/"> Upload photo</a><br><br>
                 <a href="/CoffeeFinderApp/delete_photos/{{ coffee_item.id }}"> Delete associated photos </a><br><br>
                 <a href="/CoffeeFinderApp/delete/{{ coffee_item.id }}"> Delete </a><br><br>
+                {% for image in images %}
+                <form action="/CoffeeFinderApp/delete_photos/" method='post'>{% csrf_token %}
+                <input type="hidden" name="id" value="{{ image.id }}"/>
+                <input type="hidden" name="item_id" value="{{ image.item_id }}"/>
+                <input size=20 type="submit" value="Remove Photo"/>
+                </form>           
+                {% endfor %}
                 {% endifequal %}
               </h6>
 
@@ -230,13 +217,6 @@
 
 
 
-{% ifequal page.owner_id user.id %}
-<a href="/CoffeeFinderApp/item_edit/"> Edit </a><br><br>
-<a href="/CoffeeFinderApp/upload_to_item/"> Upload photo</a><br><br>
-<a href="/CoffeeFinderApp/delete_photos/{{ coffee_item.id }}"> Delete associated photos </a><br><br>
-<a href="/CoffeeFinderApp/delete/{{ coffee_item.id }}"> Delete </a><br><br>
-{% endifequal %}
-  
 
 
 
